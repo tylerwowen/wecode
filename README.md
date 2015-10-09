@@ -2,7 +2,11 @@
 An application that assists untraditional students to study together.
 
 ## Setup
-TBD
+- Install [NodeJS](http://nodejs.org/) (this might be available using your package manager)
+- Clone the source code: `git clone https://github.ucsb.edu/CitrixNChill/WeStudy.git`
+- Inside the `WeStudy` directory, run `npm install` to install the modules the app uses.
+- Create your own branch with git checkout -b "your_branch_name"
+
 
 ## Running
 TBD
