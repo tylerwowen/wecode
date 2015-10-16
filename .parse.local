@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "WeStudy": {
+      "applicationId": "mxwTWgOduKziA6I6YTwQ5ZlqSESu52quHsqX0xId"
+    },
+    "_default": {
+      "link": "WeStudy"
+    }
+  }
+}
