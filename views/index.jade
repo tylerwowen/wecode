@@ -1,6 +1,15 @@
 extends layout
 
 block content
-  include codeeditor
+  table#in_session_table
+    tr(style='height:90%')
+      td(style='width:20%') Files
+      td(style='width:60%')
+        include codeeditor
+      td(style='width:20%') Web
+    tr
+      td
+        include webrtc
+
 
 
