@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+<html>
 
+<head>
+    <meta name="keywords" content="JavaScript, WebRTC" />
+    <meta name="description" content="WebRTC codelab" />
+    <base target="_blank">
+
+    <title>WebRTC</title>
+</head>
+
+<body>
+    <div id="container">
+        <div id="videos">
+            <video id="localVideo" autoplay muted></video>
+            <video id="remoteVideo" autoplay></video>
+        </div>
+    </div>
+
+    <!--<script src="/socket.io/socket.io.js"></script>-->
+    <script src="bower_components/webrtc-adapter/adapter.js"></script>
+    <script src="javascripts/webRTC.js"></script>
 </body>
 </html>
