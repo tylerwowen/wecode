@@ -10,7 +10,7 @@ var http = require('http');
 /**
  * Set port and store in Express.
  */
-var port = 3000;
+var port = process.env.PORT || 3000;
 app.set('port', port);
 
 /**
