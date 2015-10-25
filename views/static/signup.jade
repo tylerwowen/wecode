@@ -1,15 +1,38 @@
-//
-   Created by tyler on 10/15/15.
+//Created by tyler on 10/15/15.
 
 doctype html
 html(lang="en")
     head
+        title Sign Up
         script(src='//www.parsecdn.com/js/parse-1.6.7.min.js')
-<<<<<<< HEAD
-        script(src='./javascripts/signup.js')
-=======
-        script(src='../javascripts/signup.js')
->>>>>>> 1. Added raw parse signup page
+        script(src='//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js')
+        script(src='/javascripts/signup.js')
+        script(src='https://apis.google.com/js/client.js?onload=handleClientLoad')
+
     body
-        h1 Sign up
-        h1 Log in
+        div
+            | User Name:
+            input#userName(type='text' name='username')
+            br
+            br
+            | Password:
+            input#password(type='text' name='password')
+
+        br
+        div
+            button(onclick='signup()') Sign up
+            button(onclick='login()') Log in
+
+        br
+        div
+            | Status:
+            p#status You are NOT logged in
+        br
+        div
+            button(onclick='getGDriveAuthentication()') Connect Google Drive
+
+        div#authorizeDiv(style='display: none')
+            span Authorize access to Drive API
+            button#authorize-button(onclick='handleAuthClick(event)') Authorize
+
+        pre#output

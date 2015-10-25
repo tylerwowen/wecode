@@ -1,6 +1,1 @@
-<!--Created by tyler on 10/15/15.
-<<<<<<< HEAD
---><!DOCTYPE html><html lang="en"><head><script src="//www.parsecdn.com/js/parse-1.6.7.min.js"></script><script src="./javascripts/signup.js"></script></head><body><h1>Sign up</h1><h1>Log in</h1></body></html>
-=======
---><!DOCTYPE html><html lang="en"><head><script src="//www.parsecdn.com/js/parse-1.6.7.min.js"></script><script src="../javascripts/signup.js"></script></head><body><h1>Sign up</h1><h1>Log in</h1></body></html>
->>>>>>> 1. Added raw parse signup page
+<!--Created by tyler on 10/15/15.--><!DOCTYPE html><html lang="en"><head><title>Sign Up</title><script src="//www.parsecdn.com/js/parse-1.6.7.min.js"></script><script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script><script src="/javascripts/signup.js"></script><script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script></head><body><div>User Name:<input id="userName" type="text" name="username"><br><br>Password:<input id="password" type="text" name="password"></div><br><div><button onclick="signup()">Sign up</button><button onclick="login()">Log in</button></div><br><div>Status:<p id="status">You are NOT logged in</p></div><br><div><button onclick="getGDriveAuthentication()">Connect Google Drive</button></div><div id="authorizeDiv" style="display: none"><span>Authorize access to Drive API</span><button id="authorize-button" onclick="handleAuthClick(event)">Authorize</button></div><pre id="output"></pre></body></html>
