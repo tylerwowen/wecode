@@ -64,14 +64,27 @@ function showNotLoggedInMessage() {
 }
 
 function getGDriveAuthentication() {
-    if (isGoogleLibLoaded) {
-        checkAuth();
+    //if (isGoogleLibLoaded) {
+    //    checkAuth();
+    //}
+    if (!Parse.User.current()) {
+        alert('You must log in first');
+        //window.location.href='/';
+    } else {
+        Parse.Cloud.run('getGoogleData', {}).then(function(response) {
+            $('#name').text(response.name);
+            $('#email').text(response.email);
+            $('#locale').text(response.locale);
+        }, function(error) {
+            window.location.href = 'http://westudy.parseapp.com/authorize/' + user.id;
+            console.log(error);
+        });
     }
 }
 
 var CLIENT_ID = '315862064112-anadjteqedc54o1tkhg493e0jqntlfve.apps.googleusercontent.com';
 var SCOPES = [
-    'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/drive',
     'email',
     'profile',
     // Add other scopes needed by your application.
@@ -107,6 +120,7 @@ function handleAuthResult(authResult) {
     if (authResult && !authResult.error) {
         // Hide auth UI, then load client library.
         $('#authorizeDiv').css('display', 'none');
+        console.log(authResult.code);
         loadDriveApi(listFiles);
     } else {
         // Show auth UI, allowing the user to initiate authorization by
@@ -121,6 +135,7 @@ function handleAuthResult(authResult) {
  * @param {Event} event Button click event.
  */
 function handleAuthClick(event) {
+
     gapi.auth.authorize(
         {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
         handleAuthResult);
@@ -154,6 +169,29 @@ function listFiles() {
             }
         } else {
             appendPre('No files found.');
+        }
+    });
+}
+
+/**
+ * Print a file's metadata.
+ *
+ * @param {String} fileId ID of the file to print metadata for.
+ */
+function printFile(fileId) {
+    var request = gapi.client.drive.files.get({
+        'fileId': fileId
+    });
+    request.execute(function(resp) {
+        if (!resp.error) {
+            console.log('Title: ' + resp.title);
+            console.log('Description: ' + resp.description);
+            console.log('MIME type: ' + resp.mimeType);
+        } else if (resp.error.code == 401) {
+            // Access token might have expired.
+            checkAuth();
+        } else {
+            console.log('An error occured: ' + resp.error.message);
         }
     });
 }
