@@ -33,19 +33,10 @@
 
 <script>
     var collaborativeString;
-    var collaborativeDocument;
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/javascript");
     editor.getSession().setUseWrapMode(true);
-    editor.getSession().on('change', function(e){
-        console.log("editor text changed.");
-        updateColabrativeString();
-    });
-
-    function updateColabrativeString() {
-        //collaborativeString.setText(editor.getValue());
-    }
 
 
     var clientId = '863094468582-16kemg10hk5ac7i4ud35lrkjd183o725.apps.googleusercontent.com';
@@ -98,32 +89,41 @@
     // to our model at the root.
     function onFileInitialize(model) {
         var string = model.createString();
-        string.setText('Welcome to the Quickstart App!');
+        string.setText(editor.getValue());
         model.getRoot().set('demo_string', string);
     }
 
     // After a file has been initialized and loaded, we can access the
     // document. We will wire up the data model to the UI.
     function onFileLoaded(doc) {
-        gapi.drive.realtime.custom.registerType(Document,'AceDocument');
-        collaborativeDocument = model.create(Document);
-        model.getRoot().set('Document', collaborativeDocument);
 
         collaborativeString = doc.getModel().getRoot().get('demo_string');
-        wireTextBoxes(collaborativeString);
+        editor.setValue(collaborativeString.getText());
+        wireCodeEditor(collaborativeString);
     }
 
-    // Connects the text boxes to the collaborative string
-    function wireTextBoxes(inputString) {
-        var textArea1 = document.getElementById('text_area_1');
+    // Connects the code editor to the collaborative string
+    function wireCodeEditor(inputString) {
+        //var textArea1 = document.getElementById('text_area_1');
         console.log(inputString);
-        //collaborativeString.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, updateCodeEditorString);
+        collaborativeString.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, updateCodeEditorString);
 
     }
 
     var updateCodeEditorString = function(event ){
-        console.log('collaborativeString is changed');
-        editor.setValue(collaborativeString.getText());
+        if (!event.isLocal) {
+            console.log('collaborativeString is changed');
+            editor.getSession().getDocument().setValue(collaborativeString.getText());
+        }
+    }
+
+    editor.getSession().on('change', function(e){
+        console.log("editor text changed.");
+        updateColabrativeString();
+    });
+
+    function updateColabrativeString() {
+        collaborativeString.setText(editor.getSession().getDocument().getValue());
     }
 
 </script>
