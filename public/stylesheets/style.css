@@ -1,8 +1,23 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
 }
+
+#editor {
+    position: absolute;
+    top: 0;
+    right: 20%;
+    left: 20%;
+    bottom: 0;
+    padding: 0px;
+    height: 90%;
+}
+#in_session_table {
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
+}
+
