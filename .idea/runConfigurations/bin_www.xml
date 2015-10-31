@@ -3,7 +3,7 @@
     <envs>
       <env name="DEBUG" value="WeStudy:*" />
     </envs>
-    <browser url="http://localhost:3000/" />
+    <browser start="true" with-js-debugger="true" url="http://localhost:3000/" />
     <method />
   </configuration>
 </component>
