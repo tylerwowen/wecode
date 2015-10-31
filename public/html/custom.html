@@ -110,16 +110,22 @@
 
     }
 
+    var changeFromGoogle = false;
+
     var updateCodeEditorString = function(event ){
         if (!event.isLocal) {
             console.log('collaborativeString is changed');
+            changeFromGoogle = true;
             editor.getSession().getDocument().setValue(collaborativeString.getText());
+            changeFromGoogle = false;
         }
     }
 
     editor.getSession().on('change', function(e){
-        console.log("editor text changed.");
-        updateColabrativeString();
+        if (!changeFromGoogle) {
+            console.log("editor text changed.");
+            updateColabrativeString();
+        }
     });
 
     function updateColabrativeString() {
