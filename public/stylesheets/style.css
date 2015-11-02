@@ -9,11 +9,13 @@ a {
 #editor {
     position: absolute;
     top: 0;
-    right: 20%;
+    right: 0;
     left: 20%;
     bottom: 0;
     padding: 0px;
     height: 90%;
+    min-width: 900px;
+    min-height: 550px;
 }
 #in_session_table {
     padding: 0px;
