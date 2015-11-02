@@ -26,6 +26,17 @@ rtcSockets = function(app) {
             socket.broadcast.emit('message', message);
         });
 
+        socket.on('clicky', function(amount) {
+            log('Number of clicks: ', amount);
+            socket.broadcast.emit('clicky', amount);
+        });
+
+        socket.on('sendText', function(message) {
+            log('Message stuff: ', message);
+            //console.log(message + '\n\n\n\n\n\n\n\n');
+            socket.broadcast.emit('back', message);
+        })
+
         socket.on('create or join', function (room) {
             var numClients = io.sockets.clients(room).length;
 
