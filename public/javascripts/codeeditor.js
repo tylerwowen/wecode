@@ -1,39 +1,37 @@
+var clientId = '315862064112-anadjteqedc54o1tkhg493e0jqntlfve.apps.googleusercontent.com';
 
-
-var editor = ace.edit("editor");
-editor.setTheme("ace/theme/monokai");
-editor.getSession().setMode("ace/mode/javascript");
-editor.getSession().setUseWrapMode(true);
-
-var collaborativeString;
-
-var clientId = '863094468582-16kemg10hk5ac7i4ud35lrkjd183o725.apps.googleusercontent.com';
-
-if (!/^([0-9])$/.test(clientId[0])) {
-    alert('Invalid Client ID - did you forget to insert your application Client ID?');
+window.onload = function() {
+    init();
 }
-// Create a new instance of the realtime utility with your client ID.
-var realtimeUtils = new utils.RealtimeUtils({ clientId: clientId });
 
-authorize();
+var editor;
+var collaborativeString;
+var changeFromGoogle = false;
+var realtimeUtils;
+
+function init() {
+    editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.getSession().setMode("ace/mode/javascript");
+    editor.getSession().setUseWrapMode(true);
+    editor.getSession().on('change', editorChangeHandler);
+
+    // Create a new instance of the realtime utility with your client ID.
+    realtimeUtils = new utils.RealtimeUtils({ clientId: clientId });
+    authorize();
+}
 
 function authorize() {
     // Attempt to authorize
     realtimeUtils.authorize(function(response) {
-        // Commented out the code below since we should not have a button anymore
-        //if(response.error){
-        //    // Authorization failed because this is the first time the user has used your application,
-        //    // show the authorize button to prompt them to authorize manually.
-        //    var button = document.getElementById('auth');
-        //    button.classList.add('visible');
-        //    button.addEventListener('click', function () {
-        //        realtimeUtils.authorize(function(response){
-        //            start();
-        //        }, true);
-        //    });
-        //} else {
-        start();
-        //}
+        if(response.error) {
+            // Authorization failed because this is the first time the user has used your application,
+            realtimeUtils.authorize(function(response) {
+                start();
+            }, true);
+        } else {
+            start();
+        }
     }, false);
 }
 
@@ -46,7 +44,7 @@ function start() {
         realtimeUtils.load(id.replace('/', ''), onFileLoaded, onFileInitialize);
     } else {
         // Create a new document, add it to the URL
-        realtimeUtils.createRealtimeFile('New Quickstart File', function(createResponse) {
+        realtimeUtils.createRealtimeFile('WeStudy File', function(createResponse) {
             window.history.pushState(null, null, '?id=' + createResponse.id);
             realtimeUtils.load(createResponse.id, onFileLoaded, onFileInitialize);
         });
@@ -79,9 +77,7 @@ function wireCodeEditor(inputString) {
 
 }
 
-var changeFromGoogle = false;
-
-var updateCodeEditorString = function(event ){
+function updateCodeEditorString(event ){
     if (!event.isLocal) {
         console.log('collaborativeString is changed');
         changeFromGoogle = true;
@@ -90,12 +86,12 @@ var updateCodeEditorString = function(event ){
     }
 }
 
-editor.getSession().on('change', function(e){
+function editorChangeHandler(e) {
     if (!changeFromGoogle) {
         console.log("editor text changed.");
         updateColabrativeString();
     }
-});
+}
 
 function updateColabrativeString() {
     collaborativeString.setText(editor.getSession().getDocument().getValue());
