@@ -10,14 +10,15 @@
 </head>
 
 <body>
-    <div id="container">
-        <div id="videos">
-            <video id="localVideo" autoplay muted></video>
-            <video id="remoteVideo" autoplay></video>
-        </div>
+    <video id="localVideo" width="320" height="240" autoplay muted></video>
+    <video id="remoteVideo" width="320" height="240" autoplay muted></video>
+    <div>
+        <button id="startButton">Start</button>
+        <button id="callButton">Call</button>
+        <button id="hangupButton">Hangup</button>
     </div>
 
-    <!--<script src="/socket.io/socket.io.js"></script>-->
+    <script src="/socket.io/socket.io.js"></script>
     <script src="javascripts/lib/adapter.js"></script>
     <script src="javascripts/webrtc.js"></script>
 </body>
