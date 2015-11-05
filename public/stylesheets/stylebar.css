@@ -1,33 +1,9 @@
-body {
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
-a {
-  color: #00B7FF;
-}
-
-#editor {
-    position: absolute;
-    top: 0;
-    right: 20%;
-    left: 20%;
-    bottom: 0;
-    padding: 0;
-    height: 90%;
-}
-#in_session_table {
-    padding: 0;
-    margin: 0;
-    width: 100%;
-}
-
 #wrapper {
     position: fixed;
     top: 0;
     right: 6%;
     width: 30%;
     height: 100%;
-    z-index: 101
 }
 
 /*
@@ -42,7 +18,6 @@ a {
     background-color: #4f5b69;
     width: 100%;
     height: 100%;
-    z-index: 101;
 }
 .animate-show {
     display:block!important;
@@ -122,12 +97,11 @@ a {
         width: 40px;
         text-align: center;
     }
+
 }
 @media (min-width: 767px) {
     .sidebar .list .content {
         display: block;
     }
 }
-
-
 
