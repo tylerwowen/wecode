@@ -1,16 +1,7 @@
-var localStream, localPeerConnection, remotePeerConnection;
+var localPeerConnection, remotePeerConnection;
 
 var localVideo = document.getElementById("localVideo");
 var remoteVideo = document.getElementById("remoteVideo");
-
-var startButton = document.getElementById("startButton");
-var callButton = document.getElementById("callButton");
-var hangupButton = document.getElementById("hangupButton");
-
-//Initialize html elements
-startButton.disabled = false;
-callButton.disabled = true;
-hangupButton.disabled = true;
 
 var sendChannel;
 var isChannelReady;
@@ -35,6 +26,11 @@ var pc_constraints = {
 var sdpConstraints = {'mandatory': {
     'OfferToReceiveAudio':true,
     'OfferToReceiveVideo':true }};
+
+// Handle on browser close
+window.onbeforeunload = function(e){
+    sendMessage('bye');
+};
 
 ////////////////////////////////////////////////////////////////////////////////////
 /////////////////////Setting up socket connections/////////////////////
@@ -82,28 +78,28 @@ function sendMessage(message) {
 /**
  * This function receives a message broadcast from the server to perform either of the following actions
  * 1. If it receives get user media then it does
- * 2. If it receives a offer then it will perform an offer to the other client
- * 3. If it receives a answer then the client will respond an offer with an answer sdp
+ * 2. If it receives a offer then it will perform an offer to the other client, also sets the remote sdp
+ * 3. If it receives a answer then the client will respond an offer with an answer sdp, also sets the remote sdp
  * 4. If it receives a candidate then it will send a candidate to the other client
  */
 socket.on('message', function(message) {
-    console.debug('Received message: ', message);
+    //console.debug('Received message: ', message);
     if(message === 'got user media') {
         console.debug('got user media from message');
-        maybeStart();
+        maybeStartPeerConnection();
     } else if(message.type === 'offer'){ //Handle when a user sends an offer
-        console.log('offering from message');
+        console.debug('Received an offer from a peer, setting sdp as the remote');
         if(!isInitiator && !isStarted) {
-            maybeStart();
+            maybeStartPeerConnection();
         }
         console.log(pc);
         pc.setRemoteDescription(new RTCSessionDescription(message));
         doAnswer();
     } else if(message.type === 'answer' && isStarted) {
-        console.log('answering from message');
+        console.debug('Received an answer from a peer, setting sdp as the remote');
         pc.setRemoteDescription(new RTCSessionDescription(message));
     } else if (message.type === 'candidate' && isStarted) {
-        console.log('candidate info from message');
+        console.debug('Received a remote candidate from a peer, adding the ice candidate to the peer connection');
         var candidate = new RTCIceCandidate({sdpMLineIndex:message.label, candidate:message.candidate});
         pc.addIceCandidate(candidate);
     } else if(message === 'bye' && isStarted) {
@@ -124,7 +120,7 @@ function successCallback(stream) {
     attachMediaStream(localVideo, stream);
     sendMessage('got user media');
     if(isInitiator){
-        maybeStart();
+        maybeStartPeerConnection();
     }
 }
 
@@ -137,7 +133,11 @@ function errorCallback(error){
 
 getUserMedia(constraints, successCallback, errorCallback);
 
-function maybeStart() {
+/**
+ * If there are two clients on the same room then we should start
+ * an RTC peer connection and initiate a call
+ */
+function maybeStartPeerConnection() {
     if(!isStarted && localStream && isChannelReady) {
         createPeerConnection();
         pc.addStream(localStream);
@@ -148,14 +148,16 @@ function maybeStart() {
     }
 }
 
+/**
+ * Setup a peer connection
+ */
 function createPeerConnection() {
     try {
-        console.log('Create peer connectoin')
+        console.debug('Create peer connection');
         pc = new RTCPeerConnection(pc_config, pc_constraints);
         pc.onicecandidate = handleIceCandidate;
-        console.log('Created peer connection');
     } catch(e) {
-        console.log('Failed to create a peer connection');
+        console.debug('Failed to create a peer connection');
         alert("Couldn't create a peer connection");
         return;
     }
@@ -163,8 +165,12 @@ function createPeerConnection() {
     pc.onremovestream = handleRemoteStreamRemoved;
 }
 
+/**
+ * Grab the local ice candidate and send it over to the client
+ * that you would like to create a connection with
+ */
 function handleIceCandidate(event) {
-    console.log('Handling ice candidate');
+    console.debug('Handling ice candidate');
     if(event.candidate) {
         sendMessage({
             type: 'candidate',
@@ -176,6 +182,9 @@ function handleIceCandidate(event) {
     }
 }
 
+/**
+ * Perform a call, so start the offer to the other peer from here
+ */
 function doCall() {
     var constraints = {'optional': [], 'mandatory': {'MozDontOfferDataChannel': true}};
     // Removing Moz constraints in Chrome
@@ -187,17 +196,25 @@ function doCall() {
         }
     }
     constraints = mergeConstraints(constraints, sdpConstraints);
-    console.log('Sending offer to peer, with constraints');
-    pc.createOffer(setLocalAndSendMessage, null, sdpConstraints);
+    console.debug('Sending offer to peer');
+    pc.createOffer(setLocalAndSendMessage, null, constraints);
 }
 
+/**
+ * Perform an answer, so we want to set the local sdp and send this sdp
+ * to the remote peer
+ */
 function doAnswer(){
-    console.log('Sending answer to peer');
-    //pc.
-    console.log(pc);
+    console.debug('Sending answer to peer');
     pc.createAnswer(setLocalAndSendMessage, null, sdpConstraints); // not really sure what sdpConstraints is
 }
 
+/**
+ * Merge cons1 and cons2 together
+ * @param cons1 - the first set of constraints that's going to be merged with cons2
+ * @param cons2 - the second set of constraints that's going to be merged with cons1
+ * @returns {}
+ */
 function mergeConstraints(cons1, cons2){
     var merged = cons1;
     for (var name in cons2.mandatory){
@@ -207,8 +224,12 @@ function mergeConstraints(cons1, cons2){
     return merged;
 }
 
+/**
+ *  Setting local sdp and sending the sdp over to the remote
+ *  peer
+ */
 function setLocalAndSendMessage(sessionDescription){
-    console.log('Set Local and send message');
+    console.debug('Set Local and send message');
     sessionDescription.sdp = preferOpus(sessionDescription.sdp);
     pc.setLocalDescription(sessionDescription);
     sendMessage(sessionDescription);
@@ -235,6 +256,7 @@ function handleRemoteHangup(){
     console.log('Session terminated');
     stop();
     isInitiator = false;
+    remoteVideo.src = '';
 }
 
 function stop(){
@@ -243,6 +265,11 @@ function stop(){
     pc = null;
 }
 
+
+/**
+ * Using helper functions from stack overflow to set the default
+ * codec from here on down
+ */
 function preferOpus(sdp){
     var sdpLines = sdp.split('\r\n');
     var mLineIndex;
