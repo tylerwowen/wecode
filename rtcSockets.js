@@ -7,30 +7,25 @@
  *   3. Handle room joining/creating from the client side
  */
 rtcSockets = function(app) {
-    var io = require('socket.io').listen(app);
+    var io = require('socket.io').listen(app, { log: false });
     io.sockets.on('connection', function (socket){
 
-        /**
-         * Socket logging
-         */
-        function log(){
-            var array = [">>> "];
-            for (var i = 0; i < arguments.length; i++) {
-                array.push(arguments[i]);
-            }
-            socket.emit('log', array);
-        }
-
         socket.on('message', function (message) {
-            log('Got message: ', message);
+            console.log(message);
             socket.broadcast.emit('message', message);
         });
 
+        socket.on('clicky', function(amount) {
+            socket.broadcast.emit('clicky', amount);
+        });
+
+        socket.on('sendText', function(message) {
+            socket.broadcast.emit('back', message);
+        })
+
         socket.on('create or join', function (room) {
             var numClients = io.sockets.clients(room).length;
-
-            log('Room ' + room + ' has ' + numClients + ' client(s)');
-            log('Request to create or join room', room);
+            console.log('Joining room ' + room + ' has ' + numClients + ' client(s)');
 
             /**
              * Check whether to create or join a room. Also check whether it is full.

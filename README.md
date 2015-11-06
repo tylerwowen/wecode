@@ -1,5 +1,5 @@
-# WeStudy
-An application that assists untraditional students to study together.
+# WeCode
+An application that allows for collaborative coding with ease.
 
 ## Setup
 - Install [NodeJS](http://nodejs.org/) (this might be available using your package manager)

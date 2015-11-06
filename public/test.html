@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Space Clicker</title>
+</head>
+
+<body>
+
+<button onclick="onClick()">Click me</button>
+<p>Clicks: <a id="clicks">0</a></p>
+
+<textarea id="myTextArea" rows="4" cols="50"></textarea>
+<button onClick="grabText()">Send Text</button>
+
+<p>Message: <a id="newMessage">Nothing</a></p>
+
+<script src='/socket.io/socket.io.js'></script>
+<script type="text/javascript">
+    'use strict';
+    var isInitiator = false;
+    var isChannelReady = false;
+    var clicks = parseInt(document.getElementById("clicks").innerHTML);
+    console.log('loaded javascript');
+
+    function grabText() {
+        var message = document.getElementById("myTextArea").value
+        socket.emit('sendText', message);
+    }
+    function onClick() {
+        clicks += 1;
+        socket.emit('clicky', clicks);
+        document.getElementById("clicks").innerHTML = clicks.toString();
+        socket.emit('clicky', clicks);
+    }
+
+    var room = 'foo';
+    var socket = io.connect();
+    console.log('Joining room ' + room);
+    socket.emit('create or join', room);
+
+    socket.on('created', function (room){
+        console.log('Created room ' + room);
+        isInitiator = true;
+    });
+
+    socket.on('clicky', function(amount) {
+        clicks = amount;
+        document.getElementById("clicks").innerHTML = amount;
+    });
+
+    socket.on('back', function(message) {
+        console.log('testing sending message of :' + message);
+        document.getElementById("newMessage").innerHTML = message;
+    });
+
+    socket.on('full', function (room){
+        console.log('Room ' + room + ' is full');
+    });
+
+    socket.on('join', function (room){
+        console.log('Another peer made a request to join room ' + room);
+        console.log('This peer is the initiator of room ' + room + '!');
+        isChannelReady = true;
+    });
+
+    socket.on('joined', function (room){
+        console.log('This peer has joined room ' + room);
+        isChannelReady = true;
+    });
+
+    socket.on('log', function (array){
+        console.log.apply(console, array);
+    });
+</script>
+</body>
+</html>
