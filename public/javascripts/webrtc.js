@@ -12,11 +12,6 @@ startButton.disabled = false;
 callButton.disabled = true;
 hangupButton.disabled = true;
 
-//Button click event handlers
-//startButton.onclick = start;
-//callButton.onclick = call;
-//hangupButton.onclick = hangup;
-
 var sendChannel;
 var isChannelReady;
 var isInitiator;
@@ -52,6 +47,7 @@ socket.emit('create or join', room);
  * If current user created the room, then he is declared isInitiator
  */
 socket.on('created', function(room) {
+    console.debug('Created room: ' + room);
     isInitiator = true;
 });
 
@@ -59,19 +55,19 @@ socket.on('created', function(room) {
  * Display log message if room is full
  */
 socket.on('full', function(room) {
-     console.log(room + " is full, sorry :'(");
+     console.debug('Room ' + room + ' is full');
 });
 
 /**
  * Second user is ready to call other users
  */
 socket.on('join', function(room) {
-    console.log('Joining room with other clients');
+    console.debug('Another user is join your room');
     isChannelReady = true;
 });
 
 socket.on('joined', function(room) {
-    console.log('Peer joined room');
+    console.debug('I have joined room ' + room);
     isChannelReady = true;
 });
 
@@ -80,7 +76,6 @@ socket.on('joined', function(room) {
  * @param message - message to be sent to clients
  */
 function sendMessage(message) {
-    //console.log('Sending message ', message);
     socket.emit('message', message);
 }
 
@@ -92,9 +87,9 @@ function sendMessage(message) {
  * 4. If it receives a candidate then it will send a candidate to the other client
  */
 socket.on('message', function(message) {
-    console.log('Received message: ', message);
+    console.debug('Received message: ', message);
     if(message === 'got user media') {
-        console.log('got user media from message');
+        console.debug('got user media from message');
         maybeStart();
     } else if(message.type === 'offer'){ //Handle when a user sends an offer
         console.log('offering from message');
@@ -288,8 +283,6 @@ function extractSdp(sdpLine, pattern){
 }
 
 function setDefaultCodec(mLine, payload){
-    //console.log(mLine);
-    //console.log(typeof(mLine));
     var elements = mLine.split(' ');
     var newLine = [];
     var index = 0;
@@ -321,95 +314,3 @@ function removeCN(sdpLines, mLineIndex){
     sdpLines[mLineIndex] = mLineElements.join(' ');
     return sdpLines;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-///**
-// * Start streaming own video
-// */
-//function start() {
-//    console.log('Getting user media');
-//    startButton.disabled = true;
-//    getUserMedia(constraints, successCallback, errorCallback);
-//}
-//
-//function call() {
-//    callButton.disabled = true;
-//    hangupButton.disabled = false;
-//
-//    var servers = null;
-//
-//    //Set up the local peer connection
-//    localPeerConnection = new RTCPeerConnection(servers);
-//    localPeerConnection.onicecandidate = gotLocalIceCandidate;
-//
-//    //Set up remote Peer Connection
-//    remotePeerConnection = new RTCPeerConnection(servers);
-//    remotePeerConnection.onicecandidate = gotRemoteIceCandidate;
-//    remotePeerConnection.onaddstream = gotRemoteStream;
-//
-//    localPeerConnection.addStream(localStream);
-//    localPeerConnection.createOffer(gotLocalDescription, handleError);
-//}
-//
-//function gotLocalDescription(description){
-//    localPeerConnection.setLocalDescription(description); // step 1 set the localDescription to to the local peer connection
-//    sendSignal
-//
-//    remotePeerConnection.setRemoteDescription(description); // ----> step 2 grap
-//    remotePeerConnection.createAnswer(gotRemoteDescription,handleError);
-//}
-//
-//function gotRemoteDescription(description){
-//    remotePeerConnection.setLocalDescription(description);
-//
-//    localPeerConnection.setRemoteDescription(description);
-//}
-//
-//function hangup() {
-//    localPeerConnection.close();
-//    remotePeerConnection.close();
-//    localPeerConnection = null;
-//    remotePeerConnection = null;
-//    hangupButton.disabled = true;
-//    callButton.disabled = false;
-//}
-//
-//function gotRemoteStream(event){
-//    remoteVideo.src = URL.createObjectURL(event.stream);
-//}
-//
-//function gotLocalIceCandidate(event){
-//    if (event.candidate) {
-//        remotePeerConnection.addIceCandidate(new RTCIceCandidate(event.candidate));
-//    }
-//}
-//
-//function gotRemoteIceCandidate(event){
-//    if (event.candidate) {
-//        localPeerConnection.addIceCandidate(new RTCIceCandidate(event.candidate));
-//    }
-//}
-//
-//function handleError(){}
