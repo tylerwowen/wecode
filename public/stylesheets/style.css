@@ -13,9 +13,18 @@ a {
     left: 20%;
     bottom: 0;
     padding: 0;
-    height: 90%;
+    height: 80%;
     min-width: 900px;
-    min-height: 550px;
+    /*min-height: 550px;*/
+}
+#video {
+    position: absolute;
+    top: 80%;
+    right: 0;
+    left: 20%;
+    bottom: 0;
+    padding: 0;
+    height: 20%;
 }
 #in_session_table {
     padding: 0;
