@@ -1,19 +1,13 @@
 doctype html
+
 html
-  head
-    title= title
-    //// Below is Bootstrap stuff, keep it here so far in case we will use it
-    //meta( charset='utf-8' )
-    //meta( http-equiv='X-UA-Compatible', content='IE=edge' )
-    //meta( name='viewport', content='width=device-width, initial-scale=1.0' )
-    //meta( name='description', content='Baking Bootstrap Snippets with Jade' )
-    ////- Bootswatch Theme
-    //link(href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/flatly/bootstrap.min.css", rel="stylesheet")
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    script(data-require='angular.js@*', data-semver='1.2.14', src='http://code.angularjs.org/1.2.14/angular.js')
-      link(rel='stylesheet', href='/stylesheets/stylebar.css')
-      script(src='/javascripts/script.js')
-      link(href='//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css', rel='stylesheet')
-  body
-    block content
-    include sidebar
+    head
+        title= title
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        link(rel='stylesheet', href='/stylesheets/stylebar.css')
+        link(href='//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css', rel='stylesheet')
+        include libraries
+    body
+        block content
+        include sidebar
+
