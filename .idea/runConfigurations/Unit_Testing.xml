@@ -6,6 +6,7 @@
     <envs />
     <ui>tdd</ui>
     <extra-mocha-options />
+    <test-kind>DIRECTORY</test-kind>
     <test-directory>$PROJECT_DIR$/tests</test-directory>
     <recursive>true</recursive>
     <method />
