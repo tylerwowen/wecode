@@ -142,6 +142,7 @@ function updateColabrativeString() {
     collaborativeString.setText(editor.getSession().getDocument().getValue());
 }
 
+// File system
 var WorkSpace = Parse.Object.extend('WorkSpace');
 var File = Parse.Object.extend('File');
 
@@ -151,7 +152,7 @@ function showFiles(wsID) {
     }).then(function(files) {
         files.forEach(function(file){
             $('#files').append(
-                '<li onClick="loadFile(\'' + file.get('driveFileId') + '\')">' +
+                '<li style="color:white" onClick="loadFile(\'' + file.get('driveFileId') + '\')">' +
                     file.get('name') +
                 '</li>');
         })
