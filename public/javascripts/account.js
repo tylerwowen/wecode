@@ -5,13 +5,17 @@
 Parse.initialize('mxwTWgOduKziA6I6YTwQ5ZlqSESu52quHsqX0xId',
     'rCQqACMXvizSE5pnZ9p8efewtz8ONwsVAgm2AHCP');
 
-var user = Parse.User.current();
+var user;
 
-if (user) {
-    showLoggedInMessage();
-} else {
-    user = new Parse.User();
-    showNotLoggedInMessage();
+window.onload = function() {
+    user = Parse.User.current();
+    if (user) {
+        showLoggedInMessage();
+        showWorkSpaceList();
+    } else {
+        user = new Parse.User();
+        showNotLoggedInMessage();
+    }
 }
 
 function setupParseUser() {
@@ -38,7 +42,6 @@ function signup() {
             alert('Error: ' + error.code + ' ' + error.message);
         }
     });
-    console.log('tested');
 }
 
 function login() {
@@ -48,6 +51,7 @@ function login() {
         success: function(user) {
             console.log('logged in with user: ' + user.getUsername());
             showLoggedInMessage();
+            showWorkSpaceList();
         },
         error: function(user, error) {
             console.error(error);
@@ -58,6 +62,7 @@ function login() {
 function showLoggedInMessage() {
     $('#status').text('You are logged in.');
 }
+
 
 function showNotLoggedInMessage() {
     $('#status').text('You are NOT logged in.');
@@ -206,4 +211,62 @@ function appendPre(message) {
     var pre = document.getElementById('output');
     var textContent = document.createTextNode(message + '\n');
     pre.appendChild(textContent);
+}
+
+
+// Experimental
+var WorkSpace = Parse.Object.extend('WorkSpace');
+var File = Parse.Object.extend('File');
+
+function showWorkSpaceList() {
+
+    getWorkSpaceList().then(function(workSpaceList){
+        workSpaceList.forEach(function(workSpace){
+            $('#workSpaceList').append(
+                '<li>' +
+                    '<a href="/main/?workspace=' + workSpace.id +'">' +
+                    workSpace.get('name') + '</a>' +
+                '</li>');
+        })
+    }, function(error){
+        console.error(error);
+    });
+}
+
+function getWorkSpaceList() {
+
+    var successful = new Parse.Promise();
+    var relation = user.relation('workSpaceList');
+    var query = relation.query();
+    query.find().then(function(workSpaceList) {
+        successful.resolve(workSpaceList);
+    }, function(error) {
+        // there was some error.
+        console.error(error);
+    });
+    return successful;
+}
+
+function createWorkSpace() {
+
+    var workSpace = new WorkSpace();
+
+    var relation = workSpace.relation('files');
+
+    var query = new Parse.Query(File);
+    query.get("Zw0gCNNahz", {
+        success: function(fetchedFile) {
+            relation.add(fetchedFile)
+        },
+        error: function(object, error) {
+            // The object was not retrieved successfully.
+            // error is a Parse.Error with an error code and message.
+        }
+    }).then(function(){
+        return workSpace.save();
+    }).then(function() {
+        var userWorkSpaceRelation = user.relation('workSpaceList');
+        userWorkSpaceRelation.add(workSpace);
+        user.save();
+    });
 }
