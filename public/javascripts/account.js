@@ -59,6 +59,11 @@ function login() {
     });
 }
 
+function logout() {
+    Parse.User.logOut();
+    showNotLoggedInMessage();
+}
+
 function showLoggedInMessage() {
     $('#status').text('You are logged in.');
 }
@@ -221,6 +226,7 @@ var File = Parse.Object.extend('File');
 function showWorkSpaceList() {
 
     getWorkSpaceList().then(function(workSpaceList){
+        $('#workSpaceList').empty();
         workSpaceList.forEach(function(workSpace){
             $('#workSpaceList').append(
                 '<li>' +
@@ -247,6 +253,21 @@ function getWorkSpaceList() {
     return successful;
 }
 
+function saveWorkSpace() {
+    var workSpaceId = $('#workSpaceId').val();
+    var query = new Parse.Query(WorkSpace);
+    query.get(workSpaceId).then(function(workSpace) {
+        var relation = user.relation('workSpaceList');
+        relation.add(workSpace);
+        user.save().then(function() {
+            showWorkSpaceList();
+        });
+    }, function(error) {
+        console.error(error);
+        alert('We cannot find the work space id. Please check it.');
+    });
+}
+
 function createWorkSpace() {
 
     var workSpace = new WorkSpace();
@@ -270,3 +291,4 @@ function createWorkSpace() {
         user.save();
     });
 }
+

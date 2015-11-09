@@ -22,6 +22,7 @@ html(lang="en")
         div
             button(onclick='signup()') Sign up
             button(onclick='login()') Log in
+            button(onclick='logout()') Log out
 
         br
         div
@@ -31,15 +32,17 @@ html(lang="en")
         //div
         //    button(onclick='getGDriveAuthentication()') Connect Google Drive
 
-        div#authorizeDiv(style='display: none')
-            span Authorize access to Drive API
-            button#authorize-button(onclick='handleAuthClick(event)') Authorize
-
-        pre#output
-
-        p#name
-        p#email
-        p#locale
+        //div#authorizeDiv(style='display: none')
+        //    span Authorize access to Drive API
+        //    button#authorize-button(onclick='handleAuthClick(event)') Authorize
+        //
+        //pre#output
+        //
+        //p#name
+        //p#email
+        //p#locale
 
         ol#workSpaceList
 
+        input#workSpaceId(type='text' name='workSpaceId' placeholder="Work Space Id")
+        button(onclick='saveWorkSpace()') Save Work Space
