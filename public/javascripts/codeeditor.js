@@ -14,7 +14,8 @@ window.onload = function() {
     init();
     gapi.load('drive-share', init2);
 }
-// Share files in the app. This requires
+
+// Share files in the app. This requires a domain
 init2 = function() {
     s = new gapi.drive.share.ShareClient(clientId);
     s.setOAuthToken(gapi.auth.getToken());
@@ -42,7 +43,7 @@ function authorize() {
         if(response.error) {
             // Authorization failed because this is the first time the user has used your application,
             realtimeUtils.authorize(function(response) {
-                start();
+                loadFileList();
             }, true);
         } else {
             loadFileList();
@@ -66,17 +67,9 @@ function loadFileList() {
 
 function loadFile(id) {
     if (id) {
-        // Load the document id from the URL
         realtimeUtils.load(id, onFileLoaded, onFileInitialize);
     } else {
-        // Create a new document, add it to the URL
-        realtimeUtils.createRealtimeFile('code_weStudy.txt', function(createResponse) {
-            window.history.pushState(null, null, '&id=' + createResponse.id);
-            // Set the file permission to public.
-            // This is only for Demo
-            insertPermission(createResponse.id, '', 'anyone', 'writer');
-            realtimeUtils.load(createResponse.id, onFileLoaded, onFileInitialize);
-        });
+        createDriveFile('untitled');
     }
 }
 
@@ -86,7 +79,6 @@ function loadFile(id) {
 function onFileInitialize(model) {
 
     var string = model.createString();
-    string.setText(editor.getValue());
     model.getRoot().set('demo_string', string);
 }
 
@@ -139,7 +131,9 @@ function editorChangeHandler(e) {
 }
 
 function updateColabrativeString() {
-    collaborativeString.setText(editor.getSession().getDocument().getValue());
+    if (collaborativeString) {
+        collaborativeString.setText(editor.getSession().getDocument().getValue());
+    }
 }
 
 // File system
@@ -150,12 +144,17 @@ function showFiles(wsID) {
     getWorkSpace(wsID).then(function(){
         return getFiles();
     }).then(function(files) {
-        files.forEach(function(file){
-            $('#files').append(
-                '<li style="color:white" onClick="loadFile(\'' + file.get('driveFileId') + '\')">' +
+        if (files.length > 0) {
+            files.forEach(function (file) {
+                $('#files').append(
+                    '<li style="color:white" onClick="loadFile(\'' + file.get('driveFileId') + '\')">' +
                     file.get('name') +
-                '</li>');
-        })
+                    '</li>');
+            })
+        }
+        else {
+            createDriveFile('untitled');
+        }
     }, function(error) {
         console.error(error);
     });
@@ -187,16 +186,51 @@ function getFiles() {
     return successful;
 }
 
-function addFileToWorkSpace(fileObjectId){
-    var relation = workSpace.relation('files');
-    var query = new Parse.Query(File);
-    query.get(fileObjectId, {
-        success: function(fetchedFile) {
-            relation.add(fetchedFile)
-            workSpace.save();
-        },
-        error: function(object, error) {
+function createFile() {
+    var fileName = $('#fileName').val();
+    if (fileName) {
+        createDriveFile(fileName).then(function(driveFileId, fileName){
+            createParseFile(driveFileId, fileName);
+            refreshList(driveFileId, fileName);
+        }, function(error){
             console.error(error);
-        }
-    })
+        });
+    }
+    else {
+        alert('Please input a file name!');
+    }
+}
+
+function createDriveFile(fileName) {
+    var successful = new Parse.Promise();
+    // Create a new document
+    realtimeUtils.createRealtimeFile(fileName, function(createResponse) {
+        // Set the file permission to public.
+        // This is only for Demo
+        insertPermission(createResponse.id, '', 'anyone', 'writer');
+        realtimeUtils.load(createResponse.id, onFileLoaded, onFileInitialize);
+        successful.resolve(createResponse.id, fileName);
+    });
+    return successful;
+}
+
+function createParseFile(driveFileId, fileName) {
+
+    var file = new File();
+    file.set('driveFileId', driveFileId);
+    file.set('name', fileName);
+
+    file.save().then(function() {
+        var relation = workSpace.relation('files');
+        relation.add(file);
+        workSpace.save();
+    });
+}
+
+function refreshList(driveFileId, fileName) {
+    $('#fileName').val('');
+    $('#files').append(
+        '<li style="color:white" onClick="loadFile(\'' + driveFileId + '\')">' +
+        fileName +
+        '</li>');
 }
