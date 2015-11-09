@@ -1,10 +1,13 @@
 extends layout
 
 block content
-    table#in_session_table
-        tr(style='height:90%')
-            td(style='width:80%')
-                include codeeditor
-        tr(style='position:inherit')
-            td
-                //include webrtc
+    //table#in_session_table
+    //    tr(style='height:90%')
+    //        td(style='width:80%')
+    //            include codeeditor
+    //    tr(style='position:inherit')
+    //        td
+    //            //include webrtc
+    include filetab
+    include codeeditor
+    include sidebar

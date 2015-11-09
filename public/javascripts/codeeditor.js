@@ -6,6 +6,7 @@ var changeFromGoogle = false;
 var realtimeUtils;
 var user;
 var workSpace;
+var cursorPosition;
 
 Parse.initialize('mxwTWgOduKziA6I6YTwQ5ZlqSESu52quHsqX0xId',
     'rCQqACMXvizSE5pnZ9p8efewtz8ONwsVAgm2AHCP');
@@ -28,6 +29,7 @@ function init() {
     editor.getSession().setMode("ace/mode/javascript");
     editor.getSession().setUseWrapMode(true);
     editor.getSession().on('change', editorChangeHandler);
+    //editor.setAutoScrollEditorIntoView(false);
 
     // Create a new instance of the realtime utility with Google client ID.
     realtimeUtils = new utils.RealtimeUtils({ clientId: clientId });
@@ -88,6 +90,7 @@ function onFileLoaded(doc) {
 
     collaborativeString = doc.getModel().getRoot().get('demo_string');
     editor.setValue(collaborativeString.getText());
+    editor.navigateFileStart();
     wireCodeEditor(collaborativeString);
 }
 
@@ -112,12 +115,13 @@ function wireCodeEditor(inputString) {
     collaborativeString.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, updateCodeEditorString);
 }
 
-function updateCodeEditorString(event ){
+function updateCodeEditorString(event){
 
     if (!event.isLocal) {
         console.log('collaborativeString is changed');
         changeFromGoogle = true;
         editor.getSession().getDocument().setValue(collaborativeString.getText());
+        editor.navigateTo(cursorPosition.row, cursorPosition.column);
         changeFromGoogle = false;
     }
 }
@@ -125,7 +129,9 @@ function updateCodeEditorString(event ){
 function editorChangeHandler(e) {
 
     if (!changeFromGoogle) {
+        cursorPosition = editor.getCursorPosition();
         console.log("editor text changed.");
+        console.log("Cursor Position: ",cursorPosition);
         updateColabrativeString();
     }
 }
