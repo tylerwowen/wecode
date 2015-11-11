@@ -5,7 +5,8 @@ var collaborativeString;
 var changeFromGoogle = false;
 var realtimeUtils;
 var user;
-var workSpace;
+var fs;
+
 
 Parse.initialize('mxwTWgOduKziA6I6YTwQ5ZlqSESu52quHsqX0xId',
     'rCQqACMXvizSE5pnZ9p8efewtz8ONwsVAgm2AHCP');
@@ -56,7 +57,8 @@ function loadFileList() {
     var wsID = realtimeUtils.getParam('workspace');
     if (wsID) {
         // Get a list of files from work space with wsID
-        showFiles(wsID);
+        fs = new FileSystem(wsID);
+        fs.showFiles();
     } else {
         // Shouldn't see this page without a work space id
         // redirect for now
@@ -137,61 +139,109 @@ function updateColabrativeString() {
 }
 
 // File system
-var WorkSpace = Parse.Object.extend('WorkSpace');
-var File = Parse.Object.extend('File');
-
-function showFiles(wsID) {
-    getWorkSpace(wsID).then(function(){
-        return getFiles();
-    }).then(function(files) {
-        if (files.length > 0) {
-            files.forEach(function (file) {
-                $('#files').append(
-                    '<li style="color:white" onClick="loadFile(\'' + file.get('driveFileId') + '\')">' +
-                    file.get('name') +
-                    '</li>');
-            })
-        }
-        else {
-            createDriveFile('untitled');
-        }
-    }, function(error) {
-        console.error(error);
-    });
+function FileSystem(wsID) {
+    this.wsID = wsID;
+    this.workSpace = null;
 }
 
-function getWorkSpace(wsID) {
+(function() {
 
-    var successful = new Parse.Promise();
-    var query = new Parse.Query(WorkSpace);
-    query.get(wsID).then(function(fetchedWorkSpace) {
-        workSpace = fetchedWorkSpace;
-        successful.resolve();
-    }, function(error) {
-        console.error(error);
-    });
-    return successful;
-}
+    var WorkSpace = Parse.Object.extend('WorkSpace');
+    var File = Parse.Object.extend('File');
 
-function getFiles() {
+    this.showFiles = function() {
 
-    var successful = new Parse.Promise();
-    var relation = workSpace.relation('files');
-    var query = relation.query();
-    query.find().then(function(files) {
-        successful.resolve(files);
-    }, function(error) {
-        console.error(error);
-    });
-    return successful;
-}
+        var that = this;
+
+        this.getWorkSpace().then(function(){
+            return that.getFiles();
+        }).then(function(files) {
+            if (files.length > 0) {
+                files.forEach(function (file) {
+                    $('#files').append(
+                        '<li style="color:white" onClick="loadFile(\'' + file.get('driveFileId') + '\')">' +
+                        file.get('name') +
+                        '</li>');
+                })
+            }
+            else {
+                createDriveFile('untitled');
+            }
+        }, function(error) {
+            console.error(error);
+        });
+    };
+
+    this.getWorkSpace = function() {
+
+        var that = this;
+        var successful = new Parse.Promise();
+        var query = new Parse.Query(WorkSpace);
+        query.get(this.wsID).then(function(fetchedWorkSpace) {
+            that.workSpace = fetchedWorkSpace;
+            successful.resolve();
+        }, function(error) {
+            console.error(error);
+        });
+        return successful;
+    };
+
+    this.getFiles = function() {
+
+        var successful = new Parse.Promise();
+        var relation = this.workSpace.relation('files');
+        var query = relation.query();
+        query.find().then(function(files) {
+            successful.resolve(files);
+        }, function(error) {
+            console.error(error);
+        });
+        return successful;
+    };
+
+    this.createDriveFile = function(fileName) {
+        var successful = new Parse.Promise();
+        // Create a new document
+        realtimeUtils.createRealtimeFile(fileName, function(createResponse) {
+            // Set the file permission to public.
+            // This is only for Demo
+            insertPermission(createResponse.id, '', 'anyone', 'writer');
+            realtimeUtils.load(createResponse.id, onFileLoaded, onFileInitialize);
+            successful.resolve(createResponse.id, fileName);
+        });
+        return successful;
+    };
+
+    this.createParseFile = function(driveFileId, fileName) {
+        var that = this;
+        var file = new File();
+        file.set('driveFileId', driveFileId);
+        file.set('name', fileName);
+
+        file.save().then(function() {
+            var relation = that.workSpace.relation('files');
+            relation.add(file);
+            that.workSpace.save();
+        });
+    };
+
+    this.refreshList = function(driveFileId, fileName) {
+        $('#fileName').val('');
+        $('#files').append(
+            '<li style="color:white" onClick="loadFile(\'' + driveFileId + '\')">' +
+            fileName +
+            '</li>');
+    };
+
+}).call(FileSystem.prototype);
 
 function createFile() {
     var fileName = $('#fileName').val();
+
     if (fileName) {
-        createDriveFile(fileName).then(function(driveFileId, fileName){
-            createParseFile(driveFileId, fileName);
-            refreshList(driveFileId, fileName);
+        fs.createDriveFile(fileName).then(function(driveFileId, fileName){
+            fs.createParseFile(driveFileId, fileName);
+            fs.refreshList(driveFileId, fileName);
         }, function(error){
             console.error(error);
         });
@@ -199,38 +249,4 @@ function createFile() {
     else {
         alert('Please input a file name!');
     }
-}
-
-function createDriveFile(fileName) {
-    var successful = new Parse.Promise();
-    // Create a new document
-    realtimeUtils.createRealtimeFile(fileName, function(createResponse) {
-        // Set the file permission to public.
-        // This is only for Demo
-        insertPermission(createResponse.id, '', 'anyone', 'writer');
-        realtimeUtils.load(createResponse.id, onFileLoaded, onFileInitialize);
-        successful.resolve(createResponse.id, fileName);
-    });
-    return successful;
-}
-
-function createParseFile(driveFileId, fileName) {
-
-    var file = new File();
-    file.set('driveFileId', driveFileId);
-    file.set('name', fileName);
-
-    file.save().then(function() {
-        var relation = workSpace.relation('files');
-        relation.add(file);
-        workSpace.save();
-    });
-}
-
-function refreshList(driveFileId, fileName) {
-    $('#fileName').val('');
-    $('#files').append(
-        '<li style="color:white" onClick="loadFile(\'' + driveFileId + '\')">' +
-        fileName +
-        '</li>');
-}
+};
