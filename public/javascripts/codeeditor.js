@@ -2,11 +2,10 @@ var clientId = '315862064112-anadjteqedc54o1tkhg493e0jqntlfve.apps.googleusercon
 
 var editor;
 var collaborativeString;
-var changeFromGoogle = false;
 var realtimeUtils;
 var user;
-var cursorPosition;
 var fs;
+var adapter;
 
 Parse.initialize('mxwTWgOduKziA6I6YTwQ5ZlqSESu52quHsqX0xId',
     'rCQqACMXvizSE5pnZ9p8efewtz8ONwsVAgm2AHCP');
@@ -28,8 +27,7 @@ function init() {
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/javascript");
     editor.getSession().setUseWrapMode(true);
-    editor.getSession().on('change', editorChangeHandler);
-    //editor.setAutoScrollEditorIntoView(false);
+    editor.$blockScrolling = Infinity;
 
     // Create a new instance of the realtime utility with Google client ID.
     realtimeUtils = new utils.RealtimeUtils({ clientId: clientId });
@@ -37,6 +35,8 @@ function init() {
 
     // Parse
     user = Parse.User.current();
+
+    adapter = new firepad.ACEAdapter(editor);
 }
 
 function authorize() {
@@ -93,6 +93,9 @@ function onFileLoaded(doc) {
     editor.setValue(collaborativeString.getText());
     editor.navigateFileStart();
     wireCodeEditor(collaborativeString);
+
+    var collaborators = doc.getCollaborators();
+    console.log(collaborators[0].userId);
 }
 
 // Sets a file's permission
@@ -114,26 +117,13 @@ function wireCodeEditor(inputString) {
 
     console.log(inputString);
     collaborativeString.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, updateCodeEditorString);
+    collaborativeString.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, updateCodeEditorString);
 }
 
 function updateCodeEditorString(event){
 
     if (!event.isLocal) {
-        console.log('collaborativeString is changed');
-        changeFromGoogle = true;
-        editor.getSession().getDocument().setValue(collaborativeString.getText());
-        editor.navigateTo(cursorPosition.row, cursorPosition.column);
-        changeFromGoogle = false;
-    }
-}
-
-function editorChangeHandler(e) {
-
-    if (!changeFromGoogle) {
-        cursorPosition = editor.getCursorPosition();
-        console.log("editor text changed.");
-        console.log("Cursor Position: ",cursorPosition);
-        updateColabrativeString();
+        adapter.applyOperation(event)
     }
 }
 
