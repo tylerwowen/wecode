@@ -1,12 +1,16 @@
 var clientId = '315862064112-anadjteqedc54o1tkhg493e0jqntlfve.apps.googleusercontent.com';
 
 var editor;
-var collaborativeString;
 var changeFromGoogle = false;
+var collaborativeString;
 var realtimeUtils;
 var user;
 var cursorPosition;
 var fs;
+var editorObject;
+var collabs;
+var currentUserId;
+
 
 Parse.initialize('mxwTWgOduKziA6I6YTwQ5ZlqSESu52quHsqX0xId',
     'rCQqACMXvizSE5pnZ9p8efewtz8ONwsVAgm2AHCP');
@@ -29,6 +33,7 @@ function init() {
     editor.getSession().setMode("ace/mode/javascript");
     editor.getSession().setUseWrapMode(true);
     editor.getSession().on('change', editorChangeHandler);
+    editor.getSession().getSelection().on("changeCursor", cursorChangeHandler);
     //editor.setAutoScrollEditorIntoView(false);
 
     // Create a new instance of the realtime utility with Google client ID.
@@ -82,17 +87,44 @@ function loadFile(id) {
 function onFileInitialize(model) {
 
     var string = model.createString();
-    model.getRoot().set('demo_string', string);
+    model.getRoot().set('text', string);
+
+    var map = model.createMap();
+    model.getRoot().set('cursors', map);
+
 }
 
 // After a file has been initialized and loaded, we can access the
 // document. We will wire up the data model to the UI.
 function onFileLoaded(doc) {
+    editorObject = new EditorObject();
+    collabs = doc.getCollaborators();
 
-    collaborativeString = doc.getModel().getRoot().get('demo_string');
-    editor.setValue(collaborativeString.getText());
+    editorObject.collaborativeString = doc.getModel().getRoot().get('text');
+    editorObject.collaborativeMap = doc.getModel().getRoot().get('cursors');
+
+    editor.setValue(editorObject.collaborativeString.getText());
+
+    currentUserId = getCurrentUserId();
+    var cursor = editorObject.collaborativeMap.get(currentUserId);
+
+    if(cursor != null) {
+        editor.navigateTo(cursor.row, cursor.column);
+    } else {
+        cursor = {row: 0, column: 0};
+        editorObject.collaborativeMap.set(currentUserId, cursor);
+    }
+
     editor.navigateFileStart();
-    wireCodeEditor(collaborativeString);
+    wireCodeEditor();
+}
+
+function getCurrentUserId() {
+    for(var i = 0; i < collabs.length; i++) {
+        if(collabs[i].isMe) {
+            return collabs[i].userId;
+        }
+    }
 }
 
 // Sets a file's permission
@@ -110,36 +142,95 @@ function insertPermission(fileId, value, type, role) {
 }
 
 // Connects the code editor to the collaborative string
-function wireCodeEditor(inputString) {
-
-    console.log(inputString);
-    collaborativeString.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, updateCodeEditorString);
+function wireCodeEditor() {
+    editorObject.collaborativeString.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, updateCodeEditorString);
+    editorObject.collaborativeMap.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, updateCodeEditorCursors);
 }
 
-function updateCodeEditorString(event){
+function updateCodeEditorString(event) {
 
     if (!event.isLocal) {
         console.log('collaborativeString is changed');
         changeFromGoogle = true;
-        editor.getSession().getDocument().setValue(collaborativeString.getText());
-        editor.navigateTo(cursorPosition.row, cursorPosition.column);
+        editor.getSession().getDocument().setValue(editorObject.collaborativeString.getText());
         changeFromGoogle = false;
     }
 }
 
-function editorChangeHandler(e) {
+function updateCodeEditorCursors(event) {
+    if(!event.isLocal) {
+        console.log('cursor changed');
+        changeFromGoogle2 = true;
+        var marker = {};
+        for(var i = 0; i < collabs.length; i++) {
+            if(!collabs[i].isMe) {
+                marker.cursors.push(editorObject.collaborativeMap.get(collabs[i].userId));
+            }
+        }
+        console.log(marker);
+        marker.update = function(html, markerLayer, session, config) {
+            var start = config.firstRow, end = config.lastRow;
+            var cursors = this.cursors;
+            for (var i = 0; i < cursors.length; i++) {
+                var pos = this.cursors[i];
+                if (pos.row < start) {
+                    continue;
+                } else if (pos.row > end) {
+                    break;
+                } else {
+                    // compute cursor position on screen
+                    // this code is based on ace/layer/marker.js
+                    var screenPos = session.documentToScreenPosition(pos);
+
+                    var height = config.lineHeight;
+                    var width = config.characterWidth;
+                    var top = markerLayer.$getTop(screenPos.row, config);
+                    var left = markerLayer.$padding + screenPos.column * width;
+                    // can add any html here
+                    html.push(
+                        "<div class='MyCursorClass' style='",
+                        "height:", height, "px;",
+                        "top:", top, "px;",
+                        "left:", left, "px; width:", width, "px'></div>"
+                    );
+                }
+            }
+        };
+        marker.redraw = function() {
+            this.session.signal("changeFrontMarker");
+        };
+        marker.addCursor = function() {
+            // add to this cursors
+            //....
+            // trigger redraw
+            marker.redraw()
+        };
+        marker.session = editor.getSession();
+        marker.session.addDynamicMarker(marker, true);
+
+        changeFromGoogle2 = false;
+    }
+}
+
+
+function editorChangeHandler(event) {
 
     if (!changeFromGoogle) {
-        cursorPosition = editor.getCursorPosition();
         console.log("editor text changed.");
-        console.log("Cursor Position: ",cursorPosition);
         updateColabrativeString();
     }
 }
 
 function updateColabrativeString() {
-    if (collaborativeString) {
-        collaborativeString.setText(editor.getSession().getDocument().getValue());
+    if (editorObject.collaborativeString) {
+        editorObject.collaborativeString.setText(editor.getSession().getDocument().getValue());
+    }
+}
+
+function cursorChangeHandler() {
+    if (editorObject.collaborativeMap && !changeFromGoogle2) {
+        console.log('Cursor ', editor.getSession().getSelection().getCursor());
+        editorObject.collaborativeMap.set(currentUserId, editor.getSession().getSelection().getCursor());
     }
 }
 
