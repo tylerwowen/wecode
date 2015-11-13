@@ -158,12 +158,12 @@ firepad.ACEAdapter = (function() {
         return this.aceSession.selection.setSelectionRange(new this.aceRange(start.row, start.column, end.row, end.column));
     };
 
-    ACEAdapter.prototype.setOtherCursor = function(cursor, color, clientId) {
+    ACEAdapter.prototype.setOtherCursor = function(cursor, color, userId) {
         var clazz, css, cursorRange, end, justCursor, ref, self, start;
         if (this.otherCursors == null) {
             this.otherCursors = {};
         }
-        cursorRange = this.otherCursors[clientId];
+        cursorRange = this.otherCursors[userId];
         if (cursorRange) {
             cursorRange.start.detach();
             cursorRange.end.detach();
@@ -181,7 +181,7 @@ firepad.ACEAdapter = (function() {
         }
         css = "." + clazz + " {\n  position: absolute;\n  background-color: " + (justCursor ? 'transparent' : color) + ";\n  border-left: 2px solid " + color + ";\n}";
         this.addStyleRule(css);
-        this.otherCursors[clientId] = cursorRange = new this.aceRange(start.row, start.column, end.row, end.column);
+        this.otherCursors[userId] = cursorRange = new this.aceRange(start.row, start.column, end.row, end.column);
         self = this;
         cursorRange.clipRows = function() {
             var range;

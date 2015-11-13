@@ -155,16 +155,29 @@ function updateEditorCursors(event) {
     if(!event.isLocal) {
         var userId = event.property;
         var cursor = event.newValue;
-        adapter.setOtherCursor(cursor, 'red', userId);
-    //    console.log('cursor changed');
-    //    changeFromGoogle2 = true;
-    //    for(var i = 0; i < collaborators.length; i++) {
-    //        if(!collaborators[i].isMe) {
-    //            marker.cursors.push(realtimeData.cursors.get(collaborators[i].userId));
-    //        }
-    //    }
-
+        console.log(getColor(userId));
+        adapter.setOtherCursor(cursor, getColor(userId), userId);
     }
+}
+
+function getColor(string) {
+    return '#' + intToRGB(hashCode(string));
+}
+
+function hashCode(str) {
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return hash;
+}
+
+function intToRGB(i){
+    var c = (i & 0x00FFFFFF)
+        .toString(16)
+        .toUpperCase();
+
+    return "00000".substring(0, 6 - c.length) + c;
 }
 
 function cursorChangeHandler() {
