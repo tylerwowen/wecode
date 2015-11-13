@@ -1,7 +1,13 @@
 extends layout
 
 block content
-    include filebar
-    include codeeditor
-    include webrtc
-    include sidebar
+    .col-md-3 filebar
+        include filebar
+    .col-md-6
+        .row
+            .row_editor
+                include codeeditor
+            .row_video
+                include webrtc
+    .col-md-3 sidebar
+        include sidebar
