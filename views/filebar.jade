@@ -1,0 +1,15 @@
+#filewrapper
+    input#fileName(type='text' name='fileName' placeholder="File Name")
+    button(onclick='createFile()') Create a new file
+
+.filebar
+    .filebar
+        .project Workspace
+        .menu-list
+            ul#menu-content.menu-content.collapse.out
+                li.collapsed(data-toggle='collapse', data-target='#files')
+                    a(href='#')
+                        i.fa.fa-folder.fa-lg
+                        | Files
+                        span.arrow
+                ul#files.elements
