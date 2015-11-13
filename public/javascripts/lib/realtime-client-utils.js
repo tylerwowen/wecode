@@ -65,7 +65,10 @@ utils.RealtimeUtils.prototype = {
    */
   scopes: [
     'https://www.googleapis.com/auth/drive.install',
-    'https://www.googleapis.com/auth/drive.file'
+    'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/drive.appfolder',
+    'email',
+    'profile'
   ],
 
   /**
