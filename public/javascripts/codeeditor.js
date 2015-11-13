@@ -1,11 +1,13 @@
 var clientId = '315862064112-anadjteqedc54o1tkhg493e0jqntlfve.apps.googleusercontent.com';
 
 var editor;
-var collaborativeString;
 var realtimeUtils;
 var user;
 var fs;
 var adapter;
+var realtimeData;
+var collaborators;
+var currentUserId;
 
 Parse.initialize('mxwTWgOduKziA6I6YTwQ5ZlqSESu52quHsqX0xId',
     'rCQqACMXvizSE5pnZ9p8efewtz8ONwsVAgm2AHCP');
@@ -82,20 +84,44 @@ function loadFile(id) {
 function onFileInitialize(model) {
 
     var string = model.createString();
-    model.getRoot().set('demo_string', string);
+    model.getRoot().set('text', string);
+
+    var map = model.createMap();
+    model.getRoot().set('cursors', map);
 }
 
 // After a file has been initialized and loaded, we can access the
 // document. We will wire up the data model to the UI.
 function onFileLoaded(doc) {
+    realtimeData = new RealtimeData();
+    collaborators = doc.getCollaborators();
 
-    collaborativeString = doc.getModel().getRoot().get('demo_string');
-    editor.setValue(collaborativeString.getText());
-    editor.navigateFileStart();
-    wireCodeEditor(collaborativeString);
+    realtimeData.text = doc.getModel().getRoot().get('text');
+    realtimeData.cursors = doc.getModel().getRoot().get('cursors');
 
-    var collaborators = doc.getCollaborators();
-    console.log(collaborators[0].userId);
+    editor.setValue(realtimeData.text.getText());
+
+    currentUserId = getCurrentUserId();
+    var cursor = realtimeData.cursors.get(currentUserId);
+
+    if(cursor != null) {
+        var position = adapter.posFromIndex(cursor.selectionEnd);
+        editor.navigateTo(position.row, position.column);
+    }
+    else {
+        cursor = new firepad.Cursor(0, 0);
+        realtimeData.cursors.set(currentUserId, cursor);
+    }
+
+    addRealTimeDataListeners();
+}
+
+function getCurrentUserId() {
+    for(var i = 0; i < collaborators.length; i++) {
+        if(collaborators[i].isMe) {
+            return collaborators[i].userId;
+        }
+    }
 }
 
 // Sets a file's permission
@@ -113,25 +139,50 @@ function insertPermission(fileId, value, type, role) {
 }
 
 // Connects the code editor to the collaborative string
-function wireCodeEditor(inputString) {
-
-    console.log(inputString);
-    collaborativeString.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, updateCodeEditorString);
-    collaborativeString.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, updateCodeEditorString);
+function addRealTimeDataListeners() {
+    realtimeData.text.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, updateEditorText);
+    realtimeData.text.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, updateEditorText);
+    realtimeData.cursors.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, updateEditorCursors);
 }
 
-function updateCodeEditorString(event){
-
+function updateEditorText(event) {
     if (!event.isLocal) {
         adapter.applyOperation(event)
     }
 }
 
-function updateColabrativeString() {
-    if (collaborativeString) {
-        collaborativeString.setText(editor.getSession().getDocument().getValue());
+function updateEditorCursors(event) {
+    if(!event.isLocal) {
+        var userId = event.property;
+        var cursor = event.newValue;
+        adapter.setOtherCursor(cursor, 'red', userId);
+    //    console.log('cursor changed');
+    //    changeFromGoogle2 = true;
+    //    for(var i = 0; i < collaborators.length; i++) {
+    //        if(!collaborators[i].isMe) {
+    //            marker.cursors.push(realtimeData.cursors.get(collaborators[i].userId));
+    //        }
+    //    }
+
     }
 }
+
+function cursorChangeHandler() {
+    if (realtimeData.cursors && !changeFromGoogle2) {
+        console.log('Cursor ', editor.getSession().getSelection().getCursor());
+        realtimeData.cursors.set(currentUserId, editor.getSession().getSelection().getCursor());
+    }
+}
+
+// Realtime data structure
+function RealtimeData() {
+    this.text = null;
+    this.cursors = null;
+}
+
+(function() {
+
+}).call(RealtimeData.prototype);
 
 // File system
 function FileSystem(wsID) {

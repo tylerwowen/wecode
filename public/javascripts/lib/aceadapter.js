@@ -44,7 +44,7 @@ firepad.ACEAdapter = (function() {
     ACEAdapter.prototype.onChange = function(change) {
         var pair;
         if (!this.ignoreChanges) {
-            updateColabrativeString();
+            this.operationFromACEChange();
             return this.grabDocumentState();
         }
     };
@@ -60,6 +60,10 @@ firepad.ACEAdapter = (function() {
     };
 
     ACEAdapter.prototype.onCursorActivity = function() {
+        if (currentUserId) {
+            console.log('Cursor ', this.getCursor());
+            realtimeData.cursors.set(currentUserId, this.getCursor());
+        }
         return setTimeout((function(_this) {
             return function() {
                 return _this.trigger('cursorActivity');
@@ -70,7 +74,9 @@ firepad.ACEAdapter = (function() {
     // Converts an ACE change object into a TextOperation and its inverse
     // and returns them as a two-element array.
     ACEAdapter.prototype.operationFromACEChange = function(change) {
-        console.log('operation from ace change called');
+        if (realtimeData) {
+            realtimeData.text.setText(editor.getSession().getDocument().getValue());
+        }
     };
 
     // Apply an operation to an ACE instance.
@@ -248,3 +254,59 @@ firepad.ACEAdapter = (function() {
     return ACEAdapter;
 
 })();
+
+firepad.Cursor = (function () {
+    'use strict';
+
+    // A cursor has a `position` and a `selectionEnd`. Both are zero-based indexes
+    // into the document. When nothing is selected, `selectionEnd` is equal to
+    // `position`. When there is a selection, `position` is always the side of the
+    // selection that would move if you pressed an arrow key.
+    function Cursor (position, selectionEnd) {
+        this.position = position;
+        this.selectionEnd = selectionEnd;
+    }
+
+    Cursor.fromJSON = function (obj) {
+        return new Cursor(obj.position, obj.selectionEnd);
+    };
+
+    Cursor.prototype.equals = function (other) {
+        return this.position === other.position &&
+            this.selectionEnd === other.selectionEnd;
+    };
+
+    // Return the more current cursor information.
+    Cursor.prototype.compose = function (other) {
+        return other;
+    };
+
+    // Update the cursor with respect to an operation.
+    Cursor.prototype.transform = function (other) {
+        function transformIndex (index) {
+            var newIndex = index;
+            var ops = other.ops;
+            for (var i = 0, l = other.ops.length; i < l; i++) {
+                if (ops[i].isRetain()) {
+                    index -= ops[i].chars;
+                } else if (ops[i].isInsert()) {
+                    newIndex += ops[i].text.length;
+                } else {
+                    newIndex -= Math.min(index, ops[i].chars);
+                    index -= ops[i].chars;
+                }
+                if (index < 0) { break; }
+            }
+            return newIndex;
+        }
+
+        var newPosition = transformIndex(this.position);
+        if (this.position === this.selectionEnd) {
+            return new Cursor(newPosition, newPosition);
+        }
+        return new Cursor(newPosition, transformIndex(this.selectionEnd));
+    };
+
+    return Cursor;
+
+}());
