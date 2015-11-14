@@ -1,33 +1,27 @@
 #filewrapper {
     position: fixed;
-    top: 0;
-    left: 0;
     width: 20%;
     height: 100%;
-    z-index: -1;
-    /*background-color: #181818;*/
+    z-index: 100;
 }
 
-#chatwrapper {
-    position: fixed;
-    top: 0;
-    right: 6%;
-    width: 30%;
-    height: 100%;
-    z-index: 101;
-    background-color: #181818;
-}
+/*#chatwrapper {*/
+    /*position: fixed;*/
+    /*width: 30%;*/
+    /*height: 100%;*/
+    /*z-index: 101;*/
+/*}*/
 
 #framewrapper {
     position: fixed;
     top: 0;
     right: 6%;
-    width: 30%;
+    width: 25%;
     height: 100%;
     z-index: 101;
 }
 
-.popout{
+.popout{ /* the iframe that comes out*/
     width: 100%;
     height: 100%;
     z-index: 101;
@@ -58,22 +52,22 @@
     opacity:0;
 }
 
-.sidebar {
+.sidebar { /*actual side bar*/
     z-index: 101;
     overflow: auto;
     font-size: 12px;
     font-weight: 200;
     background-color: #181818;
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 6%;
+    position:   absolute;
+    /*top: 0;*/
+    /*right: 0;*/
+    width: 100%;
     height: 100%;
     color: #e1ffff;
 }
 
 .sidebar ul,
-.sidebar li {
+.sidebar li { /* each element in side bar*/
     list-style: none;
     padding: 0;
     margin: 0;
@@ -81,6 +75,11 @@
     text-align: center;
     cursor: pointer;
 }
+
+
+
+
+/*          DO NO NEED TO CARE FOR SIZING             */
 
 .sidebar li {
     padding-left: 0;
@@ -106,7 +105,7 @@
         top: 10px;
         z-index: 10 !important;
         padding: 3px;
-        background-color: #ffffff;
+        background-color: #181818;/*#ffffff;*/
         color: #000;
         width: 40px;
         text-align: center;
