@@ -12,17 +12,17 @@ var currentUserId;
 Parse.initialize('mxwTWgOduKziA6I6YTwQ5ZlqSESu52quHsqX0xId',
     'rCQqACMXvizSE5pnZ9p8efewtz8ONwsVAgm2AHCP');
 
-window.onload = function() {
+window.onload = function () {
     init();
     gapi.load('drive-share', init2);
-}
+};
 
 // Share files in the app. This requires a domain
-init2 = function() {
+init2 = function () {
     s = new gapi.drive.share.ShareClient(clientId);
     s.setOAuthToken(gapi.auth.getToken());
     s.setItemIds([realtimeUtils.getParam('id')]);
-}
+};
 
 function init() {
     editor = ace.edit("editor");
@@ -32,7 +32,7 @@ function init() {
     editor.$blockScrolling = Infinity;
 
     // Create a new instance of the realtime utility with Google client ID.
-    realtimeUtils = new utils.RealtimeUtils({ clientId: clientId });
+    realtimeUtils = new utils.RealtimeUtils({clientId: clientId});
     authorize();
 
     // Parse
@@ -43,10 +43,10 @@ function init() {
 
 function authorize() {
     // Attempt to authorize
-    realtimeUtils.authorize(function(response) {
-        if(response.error) {
+    realtimeUtils.authorize(function (response) {
+        if (response.error) {
             // Authorization failed because this is the first time the user has used your application,
-            realtimeUtils.authorize(function(response) {
+            realtimeUtils.authorize(function () {
                 loadFileList();
             }, true);
         } else {
@@ -67,14 +67,6 @@ function loadFileList() {
         // redirect for now
         alert("You should log in");
         window.location = "/users";
-    }
-}
-
-function loadFile(id) {
-    if (id) {
-        realtimeUtils.load(id, onFileLoaded, onFileInitialize);
-    } else {
-        createDriveFile('untitled');
     }
 }
 
@@ -104,7 +96,7 @@ function onFileLoaded(doc) {
     currentUserId = getCurrentUserId();
     var cursor = realtimeData.cursors.get(currentUserId);
 
-    if(cursor != null) {
+    if (cursor != null) {
         var position = adapter.posFromIndex(cursor.selectionEnd);
         editor.navigateTo(position.row, position.column);
     }
@@ -117,8 +109,8 @@ function onFileLoaded(doc) {
 }
 
 function getCurrentUserId() {
-    for(var i = 0; i < collaborators.length; i++) {
-        if(collaborators[i].isMe) {
+    for (var i = 0; i < collaborators.length; i++) {
+        if (collaborators[i].isMe) {
             return collaborators[i].userId;
         }
     }
@@ -135,7 +127,8 @@ function insertPermission(fileId, value, type, role) {
         'fileId': fileId,
         'resource': body
     });
-    request.execute(function(resp) { });
+    request.execute(function (resp) {
+    });
 }
 
 // Connects the code editor to the collaborative string
@@ -152,7 +145,7 @@ function updateEditorText(event) {
 }
 
 function updateEditorCursors(event) {
-    if(!event.isLocal) {
+    if (!event.isLocal) {
         var userId = event.property;
         var cursor = event.newValue;
         console.log(getColor(userId));
@@ -172,19 +165,12 @@ function hashCode(str) {
     return hash;
 }
 
-function intToRGB(i){
+function intToRGB(i) {
     var c = (i & 0x00FFFFFF)
         .toString(16)
         .toUpperCase();
 
     return "00000".substring(0, 6 - c.length) + c;
-}
-
-function cursorChangeHandler() {
-    if (realtimeData.cursors && !changeFromGoogle2) {
-        console.log('Cursor ', editor.getSession().getSelection().getCursor());
-        realtimeData.cursors.set(currentUserId, editor.getSession().getSelection().getCursor());
-    }
 }
 
 // Realtime data structure
@@ -193,7 +179,7 @@ function RealtimeData() {
     this.cursors = null;
 }
 
-(function() {
+(function () {
 
 }).call(RealtimeData.prototype);
 
@@ -203,18 +189,18 @@ function FileSystem(wsID) {
     this.workSpace = null;
 }
 
-(function() {
+(function () {
 
     var WorkSpace = Parse.Object.extend('WorkSpace');
     var File = Parse.Object.extend('File');
 
-    this.showFiles = function() {
+    this.showFiles = function () {
 
         var that = this;
 
-        this.getWorkSpace().then(function(){
+        this.getWorkSpace().then(function () {
             return that.getFiles();
-        }).then(function(files) {
+        }).then(function (files) {
             if (files.length > 0) {
                 files.forEach(function (file) {
                     $('#files').append(
@@ -226,42 +212,42 @@ function FileSystem(wsID) {
             else {
                 createDriveFile('untitled');
             }
-        }, function(error) {
+        }, function (error) {
             console.error(error);
         });
     };
 
-    this.getWorkSpace = function() {
+    this.getWorkSpace = function () {
 
         var that = this;
         var successful = new Parse.Promise();
         var query = new Parse.Query(WorkSpace);
-        query.get(this.wsID).then(function(fetchedWorkSpace) {
+        query.get(this.wsID).then(function (fetchedWorkSpace) {
             that.workSpace = fetchedWorkSpace;
             successful.resolve();
-        }, function(error) {
+        }, function (error) {
             console.error(error);
         });
         return successful;
     };
 
-    this.getFiles = function() {
+    this.getFiles = function () {
 
         var successful = new Parse.Promise();
         var relation = this.workSpace.relation('files');
         var query = relation.query();
-        query.find().then(function(files) {
+        query.find().then(function (files) {
             successful.resolve(files);
-        }, function(error) {
+        }, function (error) {
             console.error(error);
         });
         return successful;
     };
 
-    this.createDriveFile = function(fileName) {
+    this.createDriveFile = function (fileName) {
         var successful = new Parse.Promise();
         // Create a new document
-        realtimeUtils.createRealtimeFile(fileName, function(createResponse) {
+        realtimeUtils.createRealtimeFile(fileName, function (createResponse) {
             // Set the file permission to public.
             // This is only for Demo
             insertPermission(createResponse.id, '', 'anyone', 'writer');
@@ -271,20 +257,20 @@ function FileSystem(wsID) {
         return successful;
     };
 
-    this.createParseFile = function(driveFileId, fileName) {
+    this.createParseFile = function (driveFileId, fileName) {
         var that = this;
         var file = new File();
         file.set('driveFileId', driveFileId);
         file.set('name', fileName);
 
-        file.save().then(function() {
+        file.save().then(function () {
             var relation = that.workSpace.relation('files');
             relation.add(file);
             that.workSpace.save();
         });
     };
 
-    this.refreshList = function(driveFileId, fileName) {
+    this.refreshList = function (driveFileId, fileName) {
         $('#fileName').val('');
         $('#files').append(
             '<li style="color:white" onClick="loadFile(\'' + driveFileId + '\')">' +
@@ -298,14 +284,14 @@ function createFile() {
     var fileName = $('#fileName').val();
 
     if (fileName) {
-        fs.createDriveFile(fileName).then(function(driveFileId, fileName){
+        fs.createDriveFile(fileName).then(function (driveFileId, fileName) {
             fs.createParseFile(driveFileId, fileName);
             fs.refreshList(driveFileId, fileName);
-        }, function(error){
+        }, function (error) {
             console.error(error);
         });
     }
     else {
         alert('Please input a file name!');
     }
-};
+}
