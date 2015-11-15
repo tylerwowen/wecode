@@ -70,6 +70,14 @@ function loadFileList() {
     }
 }
 
+function loadFile(id) {
+    if (id) {
+        realtimeUtils.load(id, onFileLoaded, onFileInitialize);
+    } else {
+        createDriveFile('untitled');
+    }
+}
+
 // The first time a file is opened, it must be initialized with the
 // document structure. This function will add a collaborative string
 // to our model at the root.
