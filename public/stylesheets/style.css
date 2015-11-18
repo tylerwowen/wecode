@@ -10,7 +10,7 @@ a {
     position:   absolute;
     z-index:    90;
     height:     80%;
-    width:      100%;
+    width:      107%;
 }
 
 #localVideo,
@@ -45,6 +45,7 @@ a {
 }
 .row_video{
     height: 20%;
+    width: 107%;
     display: table;
     margin: 0 auto;
 }
