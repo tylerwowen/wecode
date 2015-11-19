@@ -7,24 +7,25 @@ a {
 }
 
 #editor {
-    position:   absolute;
-    z-index:    90;
-    height:     80%;
+    /*position:   absolute;*/
+    z-index:    50;
+    height:     100%;
     width:      107%;
 }
 
 #localVideo,
 #remoteVideo{
+    position: absolute;
+    bottom: 0%;
     height:     20vh;
     width:      auto;
+    z-index: 100;
     float:      left;
     
 }
 
-.col-md-2,
-.col-md-3{
+.col-md-2{
     height: 100vh;
-    /*background-color: #181818;*/
     padding: 0 !important;
     margin: 0 !important;
 }
