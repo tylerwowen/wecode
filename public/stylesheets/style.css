@@ -15,8 +15,8 @@ a {
 
 #localVideo,
 #remoteVideo{
-    width:      20%;
-    height:     20%;
+    height:     20vh;
+    width:      auto;
     float:      left;
     
 }
@@ -44,7 +44,7 @@ a {
     height: 80%;
 }
 .row_video{
-    height: 20%;
+    height: 20% !important;
     width: 107%;
     display: table;
     margin: 0 auto;
