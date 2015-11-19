@@ -7,19 +7,19 @@ a {
 }
 
 #editor {
-    /*position:   absolute;*/
-    z-index:    50;
+    position:   absolute;
+    /*z-index:    50;*/
     height:     100%;
     width:      107%;
 }
 
 #localVideo,
 #remoteVideo{
-    position: absolute;
-    bottom: 0%;
+    position:   relative;
+    /*bottom:     0%;*/
     height:     20vh;
     width:      auto;
-    z-index: 100;
+    z-index:    100;
     float:      left;
     
 }
