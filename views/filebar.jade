@@ -1,9 +1,11 @@
 //#filewrapper
-
+//(type='text' name='fileName' placeholder="File Name")
 
 .filebar
-    input#fileName(type='text' name='fileName' placeholder="File Name")
-    button(onclick='createFile()') Create a new file
+    .fileName
+        input#fileName.form-control(placeholder="File Name")
+    .fileButton
+        button#fileButton.btn-default(type='button') Create File
     .filebar
         .project Workspace
         .menu-list

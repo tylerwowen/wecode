@@ -8,7 +8,7 @@ a {
 
 #editor {
     position:   absolute;
-    /*z-index:    50;*/
+    z-index:    50;
     height:     100%;
     width:      107%;
 }
@@ -16,7 +16,6 @@ a {
 #localVideo,
 #remoteVideo{
     position:   relative;
-    /*bottom:     0%;*/
     height:     20vh;
     width:      auto;
     z-index:    100;

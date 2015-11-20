@@ -17,6 +17,17 @@
     color: #e1ffff;
 }
 
+.fileName{
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    padding-right: 5px;
+}
+
+.fileButton{
+    padding-left: 5px;
+}
+
 .filebar .project {
     background-color: #181818;
     line-height: 50px;
