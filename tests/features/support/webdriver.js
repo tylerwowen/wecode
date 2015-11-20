@@ -18,7 +18,7 @@ var baseUrl      = '';
 baseUrl = 'http://localhost:3000';
 
 /**
- * Adds selenium webdriver functionality to be used during testing
+ * Adds selenium webdriver functionality to be used during features
  * @param driver - driver is a selenium webdriver object
  */
 var addDriverFunctionality = function(driver) {

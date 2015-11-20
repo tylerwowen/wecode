@@ -2,7 +2,7 @@ module.exports = function (grunt) {
     'use strict';
     grunt.initConfig({
         cucumberjs: {
-            features: ['features/test.feature', 'features'],
+            features: ['tests/features/test.feature', 'tests/features'],
             options: {
                 format: 'pretty'
             }

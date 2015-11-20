@@ -16,7 +16,7 @@ module.exports = function() {
     this.setDefaultTimeout(20 * 1000);
 
     /**
-     * Before the feature testing starts, import all functions and vars
+     * Before the feature features starts, import all functions and vars
      * into the world variable
      */
     this.Before(function() {

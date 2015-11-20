@@ -4,7 +4,7 @@
  */
 
 module.exports = function () {
-    var server = require('../../bin/www');
+    var server = require('../../../bin/www');
 
     this.registerHandler('AfterFeatures', function (event, callback) {
         server.close();
