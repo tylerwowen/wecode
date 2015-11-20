@@ -2,35 +2,15 @@
     .list
         ul.content
             li
-                i.fa.fa-dashboard.fa-lg
-                br
-                | Dashboard
-            li
-                a(href='#')
-                    i.fa.fa-inbox.fa-lg
-                    br
-                    | Messages
-            li
                 i.fa.fa-keyboard-o.fa-lg
                 br
                 | Chat
-            li#search(ng-click='show = !show')
+            li#search
                 i.fa.fa-search.fa-lg
                 br
                 | Search
-            li
-                a(href='#')
-                    i.fa.fa-microphone-slash.fa-lg
-                    br
-                    | Mute
 #framewrapper
-    // Google Custom Search:  http://www.google.com/custom?q=&btnG=Search
-    //
-      <form>
-      <input type="text" id="link"/>
-      <input type="button" value="Load URL" onclick="loadUrl()" />
-      </form>
-    iframe#page.popout.animate-show(ng-show='show', src='http://www.bing.com')
+    iframe#frame(src='http://www.bing.com')
     script.
         angular.element(document).ready(function(){
             var app=angular.module("app",[]);
@@ -39,6 +19,22 @@
             });
             angular.bootstrap(document,["app"]);
         });
+    script.
+        $(document).ready(function () {
+            $("#framewrapper").animate({
+                right: "-=10",
+                width: "toggle"
+            }, 1000, function () {
+            });
+            $("#search").click(function () {
+                $("#framewrapper").animate({
+                    right: "-=10",
+                    width: "toggle"
+                }, 1000, function () {
+                });
+            });
+        });
+
 //script.
 //   $('#search').click(function(){
 //      $('#editor').css('width', '44%');
