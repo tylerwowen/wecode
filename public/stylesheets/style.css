@@ -8,32 +8,48 @@ a {
 
 #editor {
     position:   absolute;
-    top:        0%;
-    left:       20%;
-    padding:    0%;
-    z-index:    90;
-    height:     80%;
-    width:      74%;
+    z-index:    50;
+    height:     100%;
+    width:      107%;
+    min-width: ;
 }
 
-
-#localVideo {
-    position:   absolute;
-    top:        80%;
-    left:       30%;
-    z-index:    100;
-    height:     20%;
-    width:      20%;
-}
-
+#localVideo,
 #remoteVideo{
-    position:   absolute;
-    top:        80%;
-    left:       45%;
+    position:   relative;
+    height:     20vh;
+    width:      auto;
     z-index:    100;
-    height:     20%;
-    width:      20%;
-
+    float:      left;
+    
 }
 
+.col-md-2{ /* filebar */
+    height: 100vh;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 16.66%;
+}
+
+.col-md-6, /* used for halve of col-md-1*/
+.col-md-1, /* side bar */
+.col-md-9{ /* code editor */
+    height: 100vh;
+    background-color: black;
+    /*-webkit-transform: translateZ(0.00001px);*/
+}
+
+.row{
+    height: 100vh;
+}
+
+.row_editor{
+    height: 80%;
+}
+.row_video{
+    height: 20% !important;
+    width: 107%;
+    display: table;
+    margin: 0 auto;
+}
 
