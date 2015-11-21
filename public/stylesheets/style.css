@@ -11,6 +11,7 @@ a {
     z-index:    50;
     height:     100%;
     width:      107%;
+    min-width: ;
 }
 
 #localVideo,
@@ -23,17 +24,19 @@ a {
     
 }
 
-.col-md-2{
+.col-md-2{ /* filebar */
     height: 100vh;
     padding: 0 !important;
     margin: 0 !important;
+    max-width: 16.66%;
 }
 
-.col-md-6,
-.col-md-1,
-.col-md-9{
+.col-md-6, /* used for halve of col-md-1*/
+.col-md-1, /* side bar */
+.col-md-9{ /* code editor */
     height: 100vh;
     background-color: black;
+    /*-webkit-transform: translateZ(0.00001px);*/
 }
 
 .row{
