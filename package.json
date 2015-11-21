@@ -26,6 +26,6 @@
     "url" : "https://github.ucsb.edu/CitrixNChill/WeStudy.git"
   },
   "engines": {
-    "node": "4.1.2"
+    "node": "4.2.2"
   }
 }
