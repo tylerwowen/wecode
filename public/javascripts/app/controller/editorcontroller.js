@@ -1,4 +1,4 @@
-define(function(require) {
+define(function (require) {
     "use strict";
 
     var $ = require('jquery'),
@@ -7,8 +7,8 @@ define(function(require) {
         GoogleAdapter = require('app/model/googleadapter'),
         RealtimeDataManager = require('app/model/realtimedatamanager');
 
-    ace.config.set("packaged", true)
-    ace.config.set("basePath", require.toUrl("ace"))
+    ace.config.set("packaged", true);
+    ace.config.set("basePath", require.toUrl("ace"));
 
     var fs,
         editor = ace.edit('editor'),
@@ -21,7 +21,7 @@ define(function(require) {
         if (wsID) {
             // Get a list of files from work space with wsID
             fs = new FileSystem(wsID);
-            fs.getFileList().then(function(files) {
+            fs.getFileList().then(function (files) {
                 showList(files);
             });
         } else {
@@ -56,7 +56,7 @@ define(function(require) {
 
     function createFile(fileName) {
         if (fileName) {
-            $.when(googleAdapter.createDriveFile(fileName)).then(function(driveFileId, fileName) {
+            $.when(googleAdapter.createDriveFile(fileName)).then(function (driveFileId, fileName) {
                 fs.createParseFile(driveFileId, fileName);
                 refreshList(driveFileId, fileName);
             });
@@ -68,15 +68,15 @@ define(function(require) {
 
     function Controller() {
 
-        $.when(googleAdapter.authorize()).done(function() {
+        $.when(googleAdapter.authorize()).done(function () {
             loadFileSystem();
         });
 
-        $('#fileButton').click(function(){
+        $('#fileButton').click(function () {
             createFile($('#fileName').val());
         });
 
-        $('#files').on('click', 'li.file', function() {
+        $('#files').on('click', 'li.file', function () {
             var id = $(this).attr('id');
             googleAdapter.loadDriveFile(id);
         });
@@ -87,7 +87,7 @@ define(function(require) {
         editor.$blockScrolling = Infinity;
     }
 
-    (function() {
+    (function () {
 
         this.constructor = Controller;
 

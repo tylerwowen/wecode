@@ -1,4 +1,4 @@
-define(function(require) {
+define(function (require) {
     "use strict";
 
     var $ = require('jquery'),
@@ -34,9 +34,9 @@ define(function(require) {
 
     function showWorkSpaceList() {
 
-        WorkSpaceManager.getWorkSpaceList().then(function(workSpaceList) {
+        WorkSpaceManager.getWorkSpaceList().then(function (workSpaceList) {
             $('#workSpaceList').empty();
-            workSpaceList.forEach(function(workSpace) {
+            workSpaceList.forEach(function (workSpace) {
                 $('#workSpaceList').append(
                     '<li>' +
                     '<a href="/main?workspace=' + workSpace.id + '">' +
@@ -50,41 +50,41 @@ define(function(require) {
 
     function Controller() {
 
-        $('#signup').click(function() {
+        $('#signup').click(function () {
             var userInput = getUserInput();
-            UserManager.signup(userInput).then(function() {
+            UserManager.signup(userInput).then(function () {
                 updateStatus();
             }, function (error) {
                 console.error(error);
             });
         });
 
-        $('#login').click(function() {
+        $('#login').click(function () {
             var userInput = getUserInput();
-            UserManager.login(userInput).then(function() {
+            UserManager.login(userInput).then(function () {
                 updateStatus();
             }, function (error) {
                 console.error(error);
             });
         });
 
-        $('#logout').click(function() {
+        $('#logout').click(function () {
             UserManager.logout();
             updateStatus();
         });
 
-        $('#saveWorkSpaceBtn').click(function() {
+        $('#saveWorkSpaceBtn').click(function () {
             var id = $('#workSpaceId').val();
-            WorkSpaceManager.saveWorkSpace(id).then(function() {
+            WorkSpaceManager.saveWorkSpace(id).then(function () {
                 showWorkSpaceList();
             });
         });
     }
 
-    (function() {
+    (function () {
         this.constructor = Controller;
 
-        this.updateStatus = function() {
+        this.updateStatus = function () {
             updateStatus();
         };
 

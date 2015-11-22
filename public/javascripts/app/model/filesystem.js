@@ -1,4 +1,9 @@
-define(function(require) {
+// For testing purposes
+if (typeof define !== 'function') {
+    var define = require('amdefine')(module);
+}
+
+define(function (require) {
     "use strict";
 
     var Parse = require('parse');
@@ -14,17 +19,17 @@ define(function(require) {
         this.workSpace = null;
     }
 
-    (function() {
+    (function () {
 
         this.constructor = FileSystem;
 
-        this.getFileList = function() {
+        this.getFileList = function () {
 
             var successful = new Parse.Promise();
             var that = this;
 
             var query = new Parse.Query(WorkSpace);
-            query.get(this.wsID).then(function(fetchedWorkSpace) {
+            query.get(this.wsID).then(function (fetchedWorkSpace) {
                 that.workSpace = fetchedWorkSpace;
                 var relation = fetchedWorkSpace.relation('files');
                 var query = relation.query();
@@ -37,7 +42,7 @@ define(function(require) {
             return successful;
         };
 
-        this.createParseFile = function(driveFileId, fileName) {
+        this.createParseFile = function (driveFileId, fileName) {
             var that = this;
             var file = new File();
             file.set('driveFileId', driveFileId);
