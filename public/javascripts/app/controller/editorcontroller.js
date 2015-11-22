@@ -69,7 +69,7 @@ define(function(require) {
             loadFileSystem();
         });
 
-        $('#createFile').click(function(){
+        $('#fileButton').click(function(){
             createFile($('#fileName').val());
         });
 
