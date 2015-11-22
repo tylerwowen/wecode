@@ -7,6 +7,9 @@ define(function(require) {
         GoogleAdapter = require('app/model/googleadapter'),
         RealtimeDataManager = require('app/model/realtimedatamanager');
 
+    ace.config.set("packaged", true)
+    ace.config.set("basePath", require.toUrl("ace"))
+
     var fs,
         editor = ace.edit('editor'),
         realtimeDataManager = new RealtimeDataManager(editor),
