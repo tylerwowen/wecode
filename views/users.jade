@@ -4,10 +4,7 @@ doctype html
 html(lang="en")
     head
         title Account
-        script(src='//www.parsecdn.com/js/parse-1.6.7.min.js')
-        script(src='//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js')
-        script(src='/javascripts/account.js')
-        script(src='https://apis.google.com/js/client.js?onload=handleClientLoad')
+        script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.min.js', data-main='javascripts/users')
 
     body
         div
@@ -20,9 +17,9 @@ html(lang="en")
 
         br
         div
-            button#signup(onclick='signup()') Sign up
-            button#login(onclick='login()') Log in
-            button#logout(onclick='logout()') Log out
+            button#signup Sign up
+            button#login Log in
+            button#logout Log out
 
         br
         div
@@ -33,6 +30,5 @@ html(lang="en")
         ol#workSpaceList
 
         input#workSpaceId(type='text' name='workSpaceId' placeholder="Work Space Id")
-        button(onclick='saveWorkSpace()') Save Work Space
-
+        button#saveWorkSpaceBtn Save Work Space
 
