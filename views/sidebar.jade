@@ -4,19 +4,9 @@
             li
                 i.fa.fa-keyboard-o.fa-lg
                 br
-            li#search(ng-click='show = !show')
+            li#search
                 i.fa.fa-search.fa-lg
                 br
 #framewrapper
-    // Google Custom Search:  http://www.google.com/custom?q=&btnG=Search
-    //
-      <form>
-      <input type="text" id="link"/>
-      <input type="button" value="Load URL" onclick="loadUrl()" />
-      </form>
-    iframe#page.popout.animate-show(ng-show='show', src='http://www.bing.com')
+    iframe#frame(src='https://www.bing.com')
 
-//script.
-//   $('#search').click(function(){
-//      $('#editor').css('width', '44%');
-//   });
