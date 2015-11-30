@@ -50,26 +50,12 @@
     vertical-align: middle;
     float: right;
 }
-.filebar ul .active,
-.filebar li .active {
-    /*border-left: 3px solid #33bbff;*/
-    background-color: #404040;
-    font-style: italic;
-}
-.filebar ul .elements li.active,
-.filebar li .elements li.active {
-    /*color: #33bbff;*/
-}
-.filebar ul .elements li.active a,
-.filebar li .elements li.active a {
-    /*color: #33bbff;*/
-}
+
 .filebar ul .elements li,
 .filebar li .elements li {
     background-color: #1c1c1c;
     border: none;
     line-height: 28px;
-    /*border-bottom: 1px solid #23282e;*/
     padding-left: 20px;
 }
 .filebar ul .elements li:hover,
@@ -87,7 +73,6 @@
 }
 .filebar li {
     padding-left: 0;
-    /*border-bottom: 1px solid #23282e;*/
 }
 .filebar li a {
     text-decoration: none;

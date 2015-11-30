@@ -1,0 +1,21 @@
+#workwrapper
+    .workspaces
+        .brand Workspaces
+        .worklist
+            ul#menu-content.menu-content.collapse.out
+                li.collapsed(data-target='#ws1')
+                    a(href='#')
+                        i.fa.fa-folder.fa-lg
+                        a(href='http://wecode.cs.ucsb.edu/') Workspace 1
+                        span.arrow(data-target='#ws1', data-toggle='collapse')
+                ul#ws1.sub-menu.collapse
+                    li test
+                    li cursor1
+                    li joinThis
+                li.collapsed(data-target='#ws2')
+                    a(href='#')
+                        i.fa.fa-folder.fa-lg
+                        a(href='http://wecode.cs.ucsb.edu/') Workspace 2
+                        span.arrow(data-target='#ws2', data-toggle='collapse')
+                ul#ws2.sub-menu.collapse
+                    li Name

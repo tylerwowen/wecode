@@ -24,4 +24,22 @@ define(function(require) {
         }, 1000, function () {
         });
     });
+
+    $("#workwrapper").animate({
+        right: "4%",
+        width: "toggle"
+    }, 1000, function () {
+    });
+
+    $("#workspace").click(function () {
+        $("#workwrapper").animate({
+            right: "4%",
+            width: "toggle"
+        }, 1000, function () {
+        });
+    });
+
+    $("#back").click(function(){
+        document.getElementById('frame').contentWindow.history.back(-1);
+    });
 });
