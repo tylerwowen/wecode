@@ -1,5 +1,5 @@
 requirejs.config({
-    baseUrl: 'javascripts',
+    baseUrl: '',
     paths: {
         'jquery': '//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min',
         'parse': '//www.parsecdn.com/js/parse-1.6.7.min',
@@ -8,8 +8,9 @@ requirejs.config({
         'socketio': '/socket.io/socket.io',
         'jqueryui': '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min',
         'angular': '//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min',
+        'bootstrap': '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min',
         'chai': '//chaijs.com/chai',
-        'bootstrap': '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min'
+        'mocha': '//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha'
     },
     shim: {
         'gapi': {
@@ -18,7 +19,7 @@ requirejs.config({
         'webrtc': {
             deps: [
                 'jquery',
-                'lib/adapter',
+                'public/javascripts/lib/adapter',
                 'socketio'
             ]
         },
@@ -30,6 +31,28 @@ requirejs.config({
         },
         'angular': {
             exports: 'angular'
+        },
+        'mocha': {
+            exports: 'mocha'
         }
     }
 });
+
+define(function(require) {
+    var $ = require('jquery');
+    var chai = require('chai');
+    var mocha = require('mocha');
+    //requirejs(['public/javascripts/webrtc','public/javascripts/draggableObjects', 'public/javascripts/searchwindow', 'bootstrap']);
+
+
+    //chai.use(chaiJquery);
+
+    mocha.setup('bdd');
+
+    require([
+        'tests/frontendtests/filesystem.test'
+    ], function(require) {
+        mocha.run();
+    });
+});
+

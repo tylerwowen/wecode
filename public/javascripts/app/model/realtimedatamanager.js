@@ -49,12 +49,10 @@ define(function(require) {
         return "00000".substring(0, 6 - c.length) + c;
     }
 
-
-
     function RealtimeDataManager(editor) {
         this.editor = editor;
         this.adapter = new ACEAdapter(editor);
-        this.currentData;
+        this.currentData = null;
         this.updateEditorText = bind(this.updateEditorText, this);
         this.updateEditorCursors = bind(this.updateEditorCursors, this);
     }

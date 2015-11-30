@@ -5,64 +5,23 @@ define(function (require) {
         UserManager = require('app/model/usermanager'),
         WorkSpaceManager = require('app/model/workspacemanager');
 
-    function getUserInput() {
-        var userName = $('#userName').val();
-        var password = $('#password').val();
-
-        return {
-            userName: userName,
-            password: password
-        };
-    }
-
-    function updateStatus() {
-        if (UserManager.isLoggedIn()) {
-            showLoggedInMessage();
-            showWorkSpaceList();
-        } else {
-            showNotLoggedInMessage();
-        }
-    }
-
-    function showLoggedInMessage() {
-        $('#status').text('You are logged in.');
-    }
-
-    function showNotLoggedInMessage() {
-        $('#status').text('You are NOT logged in.');
-    }
-
-    function showWorkSpaceList() {
-
-        WorkSpaceManager.getWorkSpaceList().then(function (workSpaceList) {
-            $('#workSpaceList').empty();
-            workSpaceList.forEach(function (workSpace) {
-                $('#workSpaceList').append(
-                    '<li>' +
-                    '<a href="/main?workspace=' + workSpace.id + '">' +
-                    workSpace.get('name') + '</a>' +
-                    '</li>');
-            })
-        }, function (error) {
-            console.error(error);
-        });
-    }
-
     function Controller() {
 
+        var that = this;
+
         $('#signup').click(function () {
-            var userInput = getUserInput();
+            var userInput = that.getUserInput();
             UserManager.signup(userInput).then(function () {
-                updateStatus();
+                that.updateStatus();
             }, function (error) {
                 console.error(error);
             });
         });
 
         $('#login').click(function () {
-            var userInput = getUserInput();
+            var userInput = that.getUserInput();
             UserManager.login(userInput).then(function () {
-                updateStatus();
+                that.updateStatus();
             }, function (error) {
                 console.error(error);
             });
@@ -70,13 +29,13 @@ define(function (require) {
 
         $('#logout').click(function () {
             UserManager.logout();
-            updateStatus();
+            that.updateStatus();
         });
 
         $('#saveWorkSpaceBtn').click(function () {
             var id = $('#workSpaceId').val();
             WorkSpaceManager.saveWorkSpace(id).then(function () {
-                showWorkSpaceList();
+                that.showWorkSpaceList();
             });
         });
     }
@@ -85,8 +44,51 @@ define(function (require) {
         this.constructor = Controller;
 
         this.updateStatus = function () {
-            updateStatus();
+            this.updateStatus();
         };
+
+        this.getUserInput = function() {
+            var userName = $('#userName').val();
+            var password = $('#password').val();
+
+            return {
+                userName: userName,
+                password: password
+            };
+        };
+
+        this.updateStatus = function() {
+            if (UserManager.isLoggedIn()) {
+                this.showLoggedInMessage();
+                this.showWorkSpaceList();
+            } else {
+                this.showNotLoggedInMessage();
+            }
+        };
+
+        this.showLoggedInMessage = function() {
+            $('#status').text('You are logged in.');
+        };
+
+        this.showNotLoggedInMessage = function() {
+            $('#status').text('You are NOT logged in.');
+        };
+
+        this.showWorkSpaceList = function() {
+
+            WorkSpaceManager.getWorkSpaceList().then(function (workSpaceList) {
+                $('#workSpaceList').empty();
+                workSpaceList.forEach(function (workSpace) {
+                    $('#workSpaceList').append(
+                        '<li>' +
+                        '<a href="/main?workspace=' + workSpace.id + '">' +
+                        workSpace.get('name') + '</a>' +
+                        '</li>');
+                })
+            }, function (error) {
+                console.error(error);
+            });
+        }
 
     }).call(Controller.prototype);
 
