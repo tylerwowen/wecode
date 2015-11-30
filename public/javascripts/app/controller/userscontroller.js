@@ -19,9 +19,14 @@ define(function (require) {
         if (UserManager.isLoggedIn()) {
             showLoggedInMessage();
             showWorkSpaceList();
+            hideLogin();
         } else {
             showNotLoggedInMessage();
         }
+    }
+
+    function hideLogin() {
+        $('#form-login').hide();
     }
 
     function showLoggedInMessage() {
