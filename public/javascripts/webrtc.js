@@ -108,7 +108,6 @@ define(function(require) {
          * 4. If it receives a candidate then it will send a candidate to the other client
          */
         socket.on('message', function (message) {
-            //console.debug('Received message: ', message);
             if (message === 'got user media') {
                 console.debug('got user media from message');
                 maybeStartPeerConnection();
@@ -233,7 +232,7 @@ define(function(require) {
          */
         function doAnswer() {
             console.debug('Sending answer to peer');
-            pc.createAnswer(setLocalAndSendMessage, null, sdpConstraints); // not really sure what sdpConstraints is
+            pc.createAnswer(setLocalAndSendMessage, null, sdpConstraints);
         }
 
         /**
@@ -273,12 +272,6 @@ define(function(require) {
             console.log('Remote stream ')
         }
 
-        //function hangup(){
-        //    console.log('Hanging up');
-        //    stop();
-        //    sendMessage('bye')
-        //}
-
         function handleRemoteHangup() {
             console.log('Session terminated');
             stop();
@@ -317,14 +310,11 @@ define(function(require) {
             if (mLineIndex === null) {
                 return sdp;
             }
-            //console.log(sdpLines);
+
             for (i = 0; i < sdpLines.length; i++) {
                 if (sdpLines[i].search('opus/48000') !== -1) {
                     var opusPayLoad = extractSdp(sdpLines[i], /:(\d+) opus\/48000/i);
                     if (opusPayLoad) {
-                        //console.log('MlineIndex');
-                        //console.log(mLineIndex);
-                        //console.log(sdpLines[mLineIndex]);
                         sdpLines[mLineIndex] = setDefaultCodec(sdpLines[mLineIndex], opusPayLoad);
                     }
                     break;
