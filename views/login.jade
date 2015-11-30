@@ -1,17 +1,16 @@
 //Created by jessicahuang2 on 11/29/15.
-.wrapper
-   .form-login
-      h4 Login
-      input.form-control.input-sm.chat-input#userName(type='text' name='username' placeholder='Username')
-      input.form-control.input-sm.chat-input#password(type='text' name='password' placeholder='Password')
-      .wrapper
-         button.btn.btn-primary.btn-sm#login Log In
-         button.btn.btn-primary.btn-sm#logout Log Out
-         button.btn.btn-primary.btn-sm#signup Sign Up
-      .status
-         | Status:
-         p#status You are NOT logged in
-      .workspace
-         input.form-control.input-sm.chat-input#workSpaceId(type='text' name='workSpaceId' placeholder="Work Space Id")
-         button.btn.btn-primary.btn-sm#saveWorkSpaceBtn Save Work Space
-         #workSpaceList Save Work Space
+.form-login
+  h4 Login
+  input.form-control.input-sm.chat-input#userName(type='text' name='username' placeholder='Username')
+  input.form-control.input-sm.chat-input#password(type='text' name='password' placeholder='Password')
+  .button
+     button.btn.btn-primary.btn-sm#login Log In
+     button.btn.btn-primary.btn-sm#logout Log Out
+     button.btn.btn-primary.btn-sm#signup Sign Up
+  .status
+     | Status:
+     p#status You are NOT logged in
+  .workspace
+     input.form-control.input-sm.chat-input#workSpaceId(type='text' name='workSpaceId' placeholder="Work Space Id")
+     button.btn.btn-primary.btn-sm#saveWorkSpaceBtn Save Work Space
+     #workSpaceList Save Work Space
