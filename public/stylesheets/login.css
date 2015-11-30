@@ -1,0 +1,37 @@
+/*@import url(http://fonts.googleapis.com/css?family=Roboto:400);*/
+
+.form-login {
+    position: absolute;
+    z-index: 1000;
+    display: inline;
+    margin:0 auto;
+    background-color: #EDEDED;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 15px;
+    border-color:#d2d2d2;
+    border-width: 5px;
+    box-shadow:0 1px 0 #cfcfcf;
+}
+
+h4 {
+    border:0 solid #fff;
+    border-bottom-width:1px;
+    padding-bottom:10px;
+    text-align: center;
+}
+
+.wrapper {
+    text-align: center;
+    opacity: 30;
+}
+
+button{
+    margin: 2px !important;
+}
+
+input{
+    margin-bottom: 5px !important;
+}
