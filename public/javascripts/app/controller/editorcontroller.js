@@ -50,7 +50,7 @@ define(function (require) {
         $('#fileName').val('');
         $('#files').append(
             '<li style="color:white" class="file" id="' + driveFileId + '">' +
-            file.get('name') +
+            fileName +
             '</li>');
     }
 
