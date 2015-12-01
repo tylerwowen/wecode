@@ -19,20 +19,9 @@ define(function (require) {
         if (UserManager.isLoggedIn()) {
             showLoggedInMessage();
             showWorkSpaceList();
-            //hideLogin();
-            //showVideo();
         } else {
             showNotLoggedInMessage();
         }
-    }
-
-    function hideLogin() {
-        $('#page').hide();
-        $('#form-login').hide();
-    }
-
-    function showVideo() {
-        $('#vidwrapper').show();
     }
 
     function showLoggedInMessage() {
@@ -61,6 +50,8 @@ define(function (require) {
 
     function Controller() {
 
+        var that = this;
+
         $('#signup').click(function () {
             var userInput = getUserInput();
             UserManager.signup(userInput).then(function () {
@@ -73,7 +64,8 @@ define(function (require) {
         $('#login').click(function () {
             var userInput = getUserInput();
             UserManager.login(userInput).then(function () {
-                updateStatus();
+                $('#login-hovering').hide();
+                that.callback();
             }, function (error) {
                 console.error(error);
             });
@@ -97,6 +89,11 @@ define(function (require) {
 
         this.updateStatus = function () {
             updateStatus();
+        };
+
+        this.loginRequest = function (init) {
+            $('#login-hovering').show();
+            this.callback = init;
         };
 
     }).call(Controller.prototype);

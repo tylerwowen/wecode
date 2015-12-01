@@ -1,10 +1,13 @@
+#login-hovering {
+    display: none;
+}
 #page {
     position: absolute;
     z-index: 999;
     background-color: white;
     height: 100vh;
     width: 100vw;
-    /*opacity: .4;*/
+    opacity: .4;
 }
 #form-login {
     position: absolute;
@@ -21,11 +24,6 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-}
-
-.status,
-.workspace{
-    text-align: center;
 }
 
 h4 {
