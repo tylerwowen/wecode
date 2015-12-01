@@ -18,18 +18,18 @@ define(function (require) {
 
     function loadFileSystem() {
         var wsID = realtimeUtils.getParam('workspace');
-        if (wsID) {
+        //if (wsID) {
             // Get a list of files from work space with wsID
             fs = new FileSystem(wsID);
             fs.getFileList().then(function (files) {
                 showList(files);
             });
-        } else {
-            // Shouldn't see this page without a work space id
-            // redirect for now
-            alert("You should log in");
-            window.location = "/users";
-        }
+        //} else {
+        //    // Shouldn't see this page without a work space id
+        //    // redirect for now
+        //    alert("You should log in");
+        //    window.location = "/users";
+        //}
     }
 
     function showList(files) {

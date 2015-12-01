@@ -26,6 +26,7 @@ $(document).ready(function() {
         function(data, status) {
             pc_config = data.d;
         })
+    //$('#vidwrapper').hide();
 });
 
 var pc_constraints = {

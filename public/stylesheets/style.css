@@ -25,7 +25,12 @@ a {
     width:      107%;
 }
 
-#vidwrapper,
+#vidwrapper{
+    height:     100% !important;
+    width:      100%;
+    z-index:    100;
+    /*float:      left;*/
+}
 #localVideo,
 #remoteVideo{
     height:     100% !important;
