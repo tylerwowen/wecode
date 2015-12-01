@@ -1,9 +1,10 @@
 define(function(require) {
     var RealtimeUtils = require('lib/realtimeutils');
+    var $ = require('jquery');
     var localPeerConnection, remotePeerConnection;
 
-    var localVideo = document.getElementById("localVideo");
-    var remoteVideo = document.getElementById("remoteVideo");
+    var localVideo = $('#localVideo')[0];
+    var remoteVideo = $('#remoteVideo')[0];
 
     var sendChannel;
     var isChannelReady;
