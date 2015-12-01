@@ -70,6 +70,11 @@ define(function (require) {
             googleAdapter.loadDriveFile(id);
         });
 
+        $('#refreshButton').click(function () {
+            $('#files').empty();
+            loadFileSystem();
+        });
+
         editor.setTheme("ace/theme/monokai");
         editor.getSession().setMode("ace/mode/javascript");
         editor.getSession().setUseWrapMode(true);
