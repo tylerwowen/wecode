@@ -21,7 +21,7 @@
     z-index: 105;
     border-right: 1px #404040 solid;
 }
-.workspaces .brand {
+.workspaces .select {
     background-color: #181818;
     line-height: 50px;
     display: block;
@@ -29,9 +29,7 @@
     font-size: 14px;
     border-bottom: 1px solid #23282e;
 }
-.workspaces .toggle-btn {
-    display: none;
-}
+
 .workspaces li{
     list-style: none;
     margin: 0;
@@ -40,17 +38,6 @@
     padding-left: 15px;
 }
 
-.workspaces ul .sub-menu ul:hover,
-.workspaces li .sub-menu li:hover {
-    background-color: #404040;
-}
-.workspaces ul .sub-menu ul:before,
-.workspaces li .sub-menu li:before {
-    font-family: FontAwesome;
-    content: "\f105";
-    display: inline-block;
-    vertical-align: middle;
-}
 .workspaces ul {
     padding-left: 0;
 }
