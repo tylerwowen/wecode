@@ -12,28 +12,28 @@ define(function(require) {
     });
 
     $("#framewrapper").animate({
-        right: "4%",
+        right: "3%",
         width: "toggle"
     }, 1000, function () {
     });
 
     $("#search").click(function () {
         $("#framewrapper").animate({
-            right: "4%",
+            right: "3%",
             width: "toggle"
         }, 1000, function () {
         });
     });
 
     $("#workwrapper").animate({
-        right: "4%",
+        right: "3%",
         width: "toggle"
     }, 1000, function () {
     });
 
     $("#workspace").click(function () {
         $("#workwrapper").animate({
-            right: "4%",
+            right: "3%",
             width: "toggle"
         }, 1000, function () {
         });

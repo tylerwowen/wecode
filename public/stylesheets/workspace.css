@@ -1,3 +1,12 @@
+#workwrapper {
+    position: fixed;
+    top: 0;
+    right: 3%;
+    width: 25%;
+    height: 100%;
+    z-index: 103;
+}
+
 .workspaces {
     overflow: auto;
     font-size: 12px;
@@ -5,11 +14,12 @@
     background-color: #181818;
     position: fixed;
     top: 0;
-    right: 4%;
-    width: 300px;
+    right: 3%;
+    width: 25%;
     height: 100%;
     color: #e1ffff;
-    z-index: 101;
+    z-index: 105;
+    border-right: 1px #404040 solid;
 }
 .workspaces .brand {
     background-color: #181818;
@@ -22,56 +32,34 @@
 .workspaces .toggle-btn {
     display: none;
 }
-.workspaces ul,
-.workspaces li {
+.workspaces li{
     list-style: none;
-    padding: 0;
     margin: 0;
     line-height: 35px;
     cursor: pointer;
-}
-.workspaces ul :not(collapsed) .arrow:before,
-.workspaces li :not(collapsed) .arrow:before {
-    font-family: FontAwesome;
-    content: "\f078";
-    display: inline-block;
-    padding-left: 10px;
-    padding-right: 10px;
-    vertical-align: middle;
-    float: right;
+    padding-left: 15px;
 }
 
-.workspaces ul .sub-menu li,
-.workspaces li .sub-menu li {
-    background-color: #1c1c1c;
-    border: none;
-    line-height: 28px;
-    padding-left: 20px;
-}
-.workspaces ul .sub-menu li:hover,
+.workspaces ul .sub-menu ul:hover,
 .workspaces li .sub-menu li:hover {
     background-color: #404040;
 }
-.workspaces ul .sub-menu li:before,
+.workspaces ul .sub-menu ul:before,
 .workspaces li .sub-menu li:before {
     font-family: FontAwesome;
     content: "\f105";
     display: inline-block;
-    padding-left: 10px;
-    padding-right: 10px;
     vertical-align: middle;
 }
-.workspaces li {
+.workspaces ul {
     padding-left: 0;
 }
-.workspaces li a {
+.workspaces ul a {
     text-decoration: none;
     color: #e1ffff;
 }
-.workspaces li a i {
-    padding-left: 10px;
+.workspaces ul a i {
     width: 20px;
-    padding-right: 20px;
 }
 .workspaces li:hover {
     background-color: #4f5b69;
@@ -80,34 +68,7 @@
     -o-transition: all 1s ease;
     transition: all 1s ease;
 }
-@media (max-width: 767px) {
-    .workspaces {
-        position: relative;
-        width: 100%;
-        margin-bottom: 10px;
-    }
-    .workspaces .toggle-btn {
-        display: block;
-        cursor: pointer;
-        position: absolute;
-        right: 10px;
-        top: 10px;
-        z-index: 10 !important;
-        padding: 3px;
-        background-color: #ffffff;
-        color: #000;
-        width: 40px;
-        text-align: center;
-    }
-    .brand {
-        text-align: left !important;
-        font-size: 22px;
-        padding-left: 20px;
-        line-height: 50px !important;
-    }
-}
-@media (min-width: 767px) {
-    .workspaces .worklist .menu-content {
-        display: block;
-    }
+
+.worklist .menu-content {
+    display: block;
 }
