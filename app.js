@@ -1,15 +1,21 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+var express         = require('express');
+var path            = require('path');
+var favicon         = require('serve-favicon');
+var logger          = require('morgan');
+var cookieParser    = require('cookie-parser');
+var bodyParser      = require('body-parser');
+var fs              = require('fs');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var main = require('./routes/main');
+var routes          = require('./routes/index');
+var users           = require('./routes/users');
+var main            = require('./routes/main');
 
-var app = express();
+var options = {
+    key: fs.readFileSync('key.pem').toString(),
+    cert: fs.readFileSync('key-cert.pem').toString()
+};
+
+var app = express(options);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
