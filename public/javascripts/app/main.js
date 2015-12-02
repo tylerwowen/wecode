@@ -4,7 +4,7 @@ define(function(require) {
         UserController = require('app/controller/userscontroller'),
         UserManager = require('app/model/usermanager');
 
-    require(['draggableObjects', 'searchwindow', 'bootstrap', 'users']);
+    require(['draggableObjects', 'widgets', 'bootstrap']);
     var editorController = new EditorController(),
         userController = new UserController();
 

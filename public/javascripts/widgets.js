@@ -1,7 +1,8 @@
 define(function(require) {
 
     var angular = require('angular'),
-        $ = require('jquery');
+        $ = require('jquery'),
+        WorkSpaceManager = require('app/model/workspacemanager');
 
     angular.element(document).ready(function () {
         var app = angular.module("app", []);
@@ -11,8 +12,27 @@ define(function(require) {
         angular.bootstrap(document, ["app"]);
     });
 
+    function showWorkSpaceList() {
+
+        WorkSpaceManager.getWorkSpaceList().then(function (workSpaceList) {
+            $('#workSpaceList').empty();
+            workSpaceList.forEach(function (workSpace) {
+                $('#workSpaceList').append(
+                    '<li>' +
+                    '<a href="/main?workspace=' + workSpace.id + '">' +
+                    workSpace.get('name') + '</a>' +
+                    '</li>');
+            })
+        }, function (error) {
+            console.error(error);
+        });
+    }
+
     var browser = false;
     var workspace = false;
+
+    showWorkSpaceList();
+
     $("#framewrapper").animate({
         right: "3%",
         width: "toggle"
@@ -60,6 +80,6 @@ define(function(require) {
     });
 
     $("#back").click(function(){
-        document.getElementById('frame').contentWindow.history.back(-1);
+        $('#frame').contentWindow.history.back(-1);
     });
 });
