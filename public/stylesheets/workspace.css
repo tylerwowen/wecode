@@ -1,7 +1,7 @@
 #workwrapper {
     position: fixed;
     top: 0;
-    right: 3%;
+    right: 4%;
     width: 25%;
     height: 100%;
     z-index: 103;
@@ -14,7 +14,7 @@
     background-color: #181818;
     position: fixed;
     top: 0;
-    right: 3%;
+    right: 4%;
     width: 25%;
     height: 100%;
     color: #e1ffff;

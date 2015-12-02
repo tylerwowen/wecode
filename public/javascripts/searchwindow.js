@@ -11,6 +11,8 @@ define(function(require) {
         angular.bootstrap(document, ["app"]);
     });
 
+    var browser = false;
+    var workspace = false;
     $("#framewrapper").animate({
         right: "3%",
         width: "toggle"
@@ -23,6 +25,15 @@ define(function(require) {
             width: "toggle"
         }, 1000, function () {
         });
+        browser = !browser;
+        if(workspace==true){
+            $("#workwrapper").animate({
+                right: "3%",
+                width: "toggle"
+            }, 1000, function () {
+            });
+            workspace = false;
+        }
     });
 
     $("#workwrapper").animate({
@@ -37,6 +48,15 @@ define(function(require) {
             width: "toggle"
         }, 1000, function () {
         });
+        workspace = !workspace;
+        if(browser==true){
+            $("#framewrapper").animate({
+                right: "3%",
+                width: "toggle"
+            }, 1000, function () {
+            });
+            browser = false;
+        }
     });
 
     $("#back").click(function(){
