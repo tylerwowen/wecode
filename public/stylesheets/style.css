@@ -1,9 +1,21 @@
+.container,
+.row,
+html,
 body {
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    height: 100vh;
+    width: 100vw;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 a {
     color: #00B7FF;
+}
+
+.container{
+    position: absolute;
+    z-index: 100;
 }
 
 #editor {
@@ -13,42 +25,42 @@ a {
     width:      107%;
 }
 
+#vidwrapper{
+    height:     100% !important;
+    width:      100%;
+    z-index:    100;
+    /*float:      left;*/
+}
 #localVideo,
 #remoteVideo{
-    position:   relative;
-    height:     20vh;
+    height:     100% !important;
     width:      auto;
     z-index:    100;
     float:      left;
-    
+}
+
+.row_video{
+    position: absolute;
+    bottom: 0%;
+    height: 20% !important;
+    width: 107%;
+}
+
+.col-md-2, /* file bar */
+.col-md-6, /* used for halve of col-md-1*/
+.col-md-1, /* side bar */
+.col-md-9{ /* code editor & videos */
+    position: absolute;
+    height: 100%;
+    padding: 0 !important;
 }
 
 .col-md-2{ /* filebar */
-    height: 100vh;
-    padding: 0 !important;
-    margin: 0 !important;
     max-width: 16.66%;
 }
 
-.col-md-6, /* used for halve of col-md-1*/
-.col-md-1, /* side bar */
-.col-md-9{ /* code editor */
-    height: 100vh;
-    background-color: black;
-    /*-webkit-transform: translateZ(0.00001px);*/
+.col-md-9{ /* code editor & videos */
+    max-width: 75%;
 }
 
-.row{
-    height: 100vh;
-}
-
-.row_editor{
-    height: 80%;
-}
-.row_video{
-    height: 20% !important;
-    width: 107%;
-    display: table;
-    margin: 0 auto;
-}
 

@@ -10,9 +10,9 @@ rtcSockets = function(app) {
     var io = require('socket.io').listen(app, { log: false });
     io.sockets.on('connection', function (socket){
 
-        socket.on('message', function (message) {
+        socket.on('message', function (message, room) {
             console.log(message);
-            socket.broadcast.emit('message', message);
+            socket.broadcast.to(room).emit('message', message);
         });
 
         socket.on('clicky', function(amount) {
@@ -21,7 +21,7 @@ rtcSockets = function(app) {
 
         socket.on('sendText', function(message) {
             socket.broadcast.emit('back', message);
-        })
+        });
 
         socket.on('create or join', function (room) {
             var numClients = io.sockets.clients(room).length;
@@ -32,6 +32,9 @@ rtcSockets = function(app) {
              */
             if (numClients == 0){
                 socket.join(room);
+
+                console.log(socket.manager.rooms);
+                //socket.room = room;
                 socket.emit('created', room);
             } else if (numClients == 1) {
                 io.sockets.in(room).emit('join', room);
@@ -44,6 +47,6 @@ rtcSockets = function(app) {
             socket.broadcast.emit('broadcast(): client ' + socket.id + ' joined room ' + room);
         });
     });
-}
+};
 
 module.exports = rtcSockets;
