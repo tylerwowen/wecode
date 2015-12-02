@@ -18,6 +18,7 @@
 
 .filebar_row{
     height: 10vh;
+    max-height: 34px;
 }
 
 .refreshButton,
