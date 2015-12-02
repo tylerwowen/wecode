@@ -30,7 +30,7 @@ define(function(require) {
             },
             function (data, status) {
                 pc_config = data.d;
-            })
+            });
     });
 
     var pc_constraints = {

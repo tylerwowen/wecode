@@ -16,8 +16,15 @@
     padding-right: 5px;
 }
 
+.filebar_row{
+    height: 10vh;
+    max-height: 34px;
+}
+
+.refreshButton,
 .fileButton{
     padding-left: 5px;
+    float: left;
 }
 
 .filebar .project {

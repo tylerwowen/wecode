@@ -1,15 +1,16 @@
 extends layout
 
 block content
-    .col-md-2
-        include filebar
-    .col-md-9
+    include login
+    .container
         .row
-            .row_editor
+            .col-md-2
+                include filebar
+            .col-md-9
                 include codeeditor
-            .row_video
-                include webrtc
-    .col-md-1
-        .col-md-6
-        .col-md-6
-            include sidebar
+                .row_video
+                    include webrtc
+            .col-md-1
+                .col-md-6
+                .col-md-6
+                    include sidebar
