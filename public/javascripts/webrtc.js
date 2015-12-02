@@ -1,6 +1,11 @@
 define(function(require) {
     var RealtimeUtils = require('lib/realtimeutils');
     var $ = require('jquery');
+    var adapter = require('lib/adapter');
+    var socketio = require('socketio');
+
+    var getUserMedia = adapter.getUserMedia;
+    var RTCPeerConnection = adapter.RTCPeerConnection;
     var localPeerConnection, remotePeerConnection;
 
     var localVideo = $('#localVideo')[0];
