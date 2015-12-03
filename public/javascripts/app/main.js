@@ -4,12 +4,12 @@ define(function(require) {
         UserController = require('app/controller/userscontroller'),
         UserManager = require('app/model/usermanager');
 
-    require(['draggableObjects', 'widgets', 'bootstrap']);
+    require(['draggableObjects', 'bootstrap']);
     var editorController = new EditorController(),
         userController = new UserController();
 
     function init() {
-        requirejs(['webrtc']);
+        requirejs(['webrtc', 'widgets']);
         editorController.init();
     }
     if (UserManager.isLoggedIn()) {
