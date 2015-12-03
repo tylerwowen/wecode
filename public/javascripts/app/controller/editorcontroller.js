@@ -35,7 +35,7 @@ define(function (require) {
             })
         }
         else {
-            fs.createDriveFile('untitled');
+            createFile('Demo');
         }
     }
 
