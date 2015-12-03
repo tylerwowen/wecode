@@ -1,2 +1,11 @@
-block content
-    h1 Welcome to weCode
+doctype html
+html
+    head
+        title= title
+        link(rel='stylesheet', href='/stylesheets/indexpage.css')
+        link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
+        link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css')
+    body
+        div#page
+            h1(style='font-size: 65px; color: #fff;') WeCode
+            a.btn.btn-success.btn-xl.page-scroll(href='/main?workspace=HEO0hKQSEA') Start Now
