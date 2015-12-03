@@ -1,4 +1,34 @@
-extends layout
-
-block content
-    h1 Welcome to weCode
+doctype html
+html
+    head
+        title= title
+        link(rel='stylesheet', href='/stylesheets/indexpage.css')
+        link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
+        link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css')
+    body
+        header
+            .header-content
+                .header-content-inner
+                    h1(style='font-size: 65px; color: #fff;') WeCode
+                    hr
+                    p
+                        | Simple code editor just in your browser
+                    a.btn.btn-success.btn-xl.page-scroll(href='/main?workspace=HEO0hKQSEA') Start Now
+        section.demo
+            .container
+                .row
+                    iframe(width='960', height='720', src='https://www.youtube.com/embed/yT52FlXfeG0',
+                        frameborder='0', allowfullscreen='')
+        section#contact
+            .container
+                .row
+                    .col-lg-8.col-lg-offset-2.text-center
+                        h2.section-heading Let's Get In Touch!
+                        hr.primary
+                    .col-lg-4.col-lg-offset-2.text-center
+                        i.fa.fa-phone.fa-3x.wow.bounceIn
+                        p 123-456-6789
+                    .col-lg-4.text-center
+                        i.fa.fa-envelope-o.fa-3x.wow.bounceIn(data-wow-delay='.1s')
+                        p
+                            a(href='mailto:your-email@your-domain.com') westudycode@gmail.com
