@@ -4,17 +4,12 @@ define(function(require) {
     require('lib/adapter');
     require('socketio');
 
-    var localVideo = $('#localVideo')[0];
-    var remoteVideo = $('#remoteVideo')[0];
-
-    var sendChannel;
-    var isChannelReady;
-    var isInitiator;
-    var isStarted;
+    var videoButton = document.getElementById('video');
+    var videoList = document.getElementById('vidwrapper');
     var localStream;
-    var pc;
-    var remoteStream;
+    var pcs = new Map();
     var room;
+    var myId;
 
     // Give pc_config stun and turn servers to use for RTCPeerConnection
     var pc_config = null;
@@ -48,31 +43,63 @@ define(function(require) {
         }
     };
 
+    // WebRtc constraints
+    var constraints = {
+        video: true, 
+        audio: true
+    };
+
+    /**
+     * Success callback for getUserMedia: If successful, stream video on the browser
+     */
+    function successCallback(stream) {
+        // Create a video element for the DOM
+        myId = socket.socket.sessionid;
+        var myVideo = document.createElement('video');
+        myVideo.autoplay = true;
+        myVideo.muted = true;
+        myVideo.id = myId;
+        // Get the vidlist to append on to it
+        var videoList = document.getElementById('vidwrapper');
+        videoList.appendChild(myVideo);
+        localStream = stream;
+        attachMediaStream(myVideo, stream);
+        // Save my session Id for identification
+        
+        socket.emit('gotUserMedia', true);
+    }
+
+    /**
+     * Error handler for getUserMedia for when things go wrong
+     */
+    function errorCallback(error) {
+        console.log("getUserMedia error: ", error);
+    }
+
     // Handle on browser close
     window.onbeforeunload = function (e) {
         sendMessage('bye');
     };
 
-    ////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////Setting up socket connections/////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
+    // Start the WebRTC-ness when you detect the correct browser
     if (webrtcDetectedBrowser === 'chrome' || webrtcDetectedBrowser === 'firefox') {
         var socket = io.connect();
         var realtimeUtils = new RealtimeUtils();
+        var joined = false;
         room = realtimeUtils.getParam('workspace');
         if(!room){
-            room = 'foo';
+            room = 'theUltimatePlayground';
         }
-        console.debug(room);
+
         socket.emit('create or join', room);
 
-        /**
-         * If current user created the room, then he is declared isInitiator
-         */
-        socket.on('created', function (room) {
-            console.debug('Created room: ' + room);
-            isInitiator = true;
-        });
+        // Button to connect or disconnect from users, using video.
+        videoButton.onclick = function() {  
+            // if(!joined) // Should disable button until peer connections are finished *** Not Implemented in this run
+                // socket.emit('create or join', room);
+            // else    // Should be allowed to disconnect when everyone is connected *** Not Implemented in this run
+                // sendMessage('bye');
+        }
 
         /**
          * Display log message if room is full
@@ -81,26 +108,25 @@ define(function(require) {
             console.debug('Room ' + room + ' is full');
         });
 
-        /**
-         * Second user is ready to call other users
-         */
-        socket.on('join', function (room) {
-            console.debug('Another user is join your room');
-            isChannelReady = true;
+        socket.on('joined', function (IdArray) {
+            var promise = new Promise(function(resolve, reject) {
+                getUserMedia(constraints, successCallback, errorCallback);
+                socket.on('gotUserMedia', function(message) {
+                    resolve(message);
+                })
+            }).then(function(result) {
+                for(var i = 0; i < IdArray.length; i++) {
+                    var remoteId = IdArray[i];
+                    if(myId === remoteId){
+                        continue;
+                    }
+                    else{
+                        createPeerConnection(remoteId);
+                        doCall(remoteId);
+                    }
+                }
+            })
         });
-
-        socket.on('joined', function (room) {
-            console.debug('I have joined room ' + room);
-            isChannelReady = true;
-        });
-
-        /**
-         * Sends message to the server to send to the other clients
-         * @param message - message to be sent to clients
-         */
-        function sendMessage(message) {
-            socket.emit('message', message, room);
-        }
 
         /**
          * This function receives a message broadcast from the server to perform either of the following actions
@@ -109,79 +135,48 @@ define(function(require) {
          * 3. If it receives a answer then the client will respond an offer with an answer sdp, also sets the remote sdp
          * 4. If it receives a candidate then it will send a candidate to the other client
          */
-        socket.on('message', function (message) {
+        socket.on('message', function (message, remoteId) {
             if (message === 'got user media') {
                 console.debug('got user media from message');
                 maybeStartPeerConnection();
             } else if (message.type === 'offer') { //Handle when a user sends an offer
                 console.debug('Received an offer from a peer, setting sdp as the remote');
-                if (!isInitiator && !isStarted) {
-                    maybeStartPeerConnection();
-                }
-                console.log(pc);
-                pc.setRemoteDescription(new RTCSessionDescription(message));
-                doAnswer();
-            } else if (message.type === 'answer' && isStarted) {
+                createPeerConnection(remoteId);
+                pcs[remoteId].setRemoteDescription(new RTCSessionDescription(message));
+                doAnswer(remoteId);
+            } else if (message.type === 'answer') {
                 console.debug('Received an answer from a peer, setting sdp as the remote');
-                pc.setRemoteDescription(new RTCSessionDescription(message));
-            } else if (message.type === 'candidate' && isStarted) {
+                pcs[remoteId].setRemoteDescription(new RTCSessionDescription(message));
+            } else if (message.type === 'candidate') {
                 console.debug('Received a remote candidate from a peer, adding the ice candidate to the peer connection');
                 var candidate = new RTCIceCandidate({sdpMLineIndex: message.label, candidate: message.candidate});
-                pc.addIceCandidate(candidate);
-            } else if (message === 'bye' && isStarted) {
-                handleRemoteHangup();
+                pcs[remoteId].addIceCandidate(candidate);
+            } else if (message === 'bye') {
+                handleRemoteHangup(remoteId);
             } else if (message === 'room')
                 console.log('room');
         });
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /////////////////////Setting up user media on a client//////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        var constraints = {video: true, audio: true};
+        
 
         /**
-         * Success callback for getUserMedia: If successful, stream video on the browser
+         * Sends message to the server to send to the other clients
+         * @param message - message to be sent to clients
          */
-        function successCallback(stream) {
-            localStream = stream;
-            attachMediaStream(localVideo, stream);
-            sendMessage('got user media');
-            if (isInitiator) {
-                maybeStartPeerConnection();
-            }
-        }
-
-        /**
-         * Error handler for getUserMedia for when things go wrong
-         */
-        function errorCallback(error) {
-            console.log("getUserMedia error: ", error);
-        }
-
-        getUserMedia(constraints, successCallback, errorCallback);
-
-        /**
-         * If there are two clients on the same room then we should start
-         * an RTC peer connection and initiate a call
-         */
-        function maybeStartPeerConnection() {
-            if (!isStarted && localStream && isChannelReady) {
-                createPeerConnection();
-                pc.addStream(localStream);
-                isStarted = true;
-                if (isInitiator) {
-                    doCall();
-                }
-            }
+        function sendMessage(message, remoteId) {
+            var size = arguments.length;
+            if(size === 1)
+                socket.emit('message', message, room);
+            else if(size === 2)
+                socket.emit('message', message, room, remoteId);
         }
 
         /**
          * Setup a peer connection
          */
-        function createPeerConnection() {
+        function createPeerConnection(remoteId) {
             try {
                 console.debug('Create peer connection');
-                pc = new RTCPeerConnection(pc_config, pc_constraints);
+                var pc = new RTCPeerConnection(pc_config, pc_constraints);
                 pc.onicecandidate = handleIceCandidate;
             } catch (e) {
                 console.debug('Failed to create a peer connection');
@@ -190,6 +185,10 @@ define(function(require) {
             }
             pc.onaddstream = handleRemoteStreamAdded;
             pc.onremovestream = handleRemoteStreamRemoved;
+            pc.addStream(localStream);
+            pc.remoteConnectionId = remoteId;
+            pc.localConnectionId = myId;
+            pcs[remoteId] = pc;
         }
 
         /**
@@ -197,6 +196,7 @@ define(function(require) {
          * that you would like to create a connection with
          */
         function handleIceCandidate(event) {
+
             console.debug('Handling ice candidate');
             if (event.candidate) {
                 sendMessage({
@@ -204,7 +204,7 @@ define(function(require) {
                     label: event.candidate.sdpMLineIndex,
                     id: event.candidate.sdpMid,
                     candidate: event.candidate.candidate
-                });
+                }, event.srcElement.remoteConnectionId);
             } else {
                 console.log('End of candidates');
             }
@@ -213,7 +213,7 @@ define(function(require) {
         /**
          * Perform a call, so start the offer to the other peer from here
          */
-        function doCall() {
+        function doCall(remoteId) {
             var constraints = {'optional': [], 'mandatory': {'MozDontOfferDataChannel': true}};
             // Removing Moz constraints in Chrome
             if (webrtcDetectedBrowser === 'chrome') {
@@ -225,16 +225,28 @@ define(function(require) {
             }
             constraints = mergeConstraints(constraints, sdpConstraints);
             console.debug('Sending offer to peer');
-            pc.createOffer(setLocalAndSendMessage, null, constraints);
+            function setLocalAndSendMessage(sessionDescription) {
+                console.debug('Set Local and send message');
+                sessionDescription.sdp = preferOpus(sessionDescription.sdp);
+                pcs[remoteId].setLocalDescription(sessionDescription);
+                sendMessage(sessionDescription, remoteId);
+            }
+            pcs[remoteId].createOffer(setLocalAndSendMessage, null, constraints);
         }
 
         /**
          * Perform an answer, so we want to set the local sdp and send this sdp
          * to the remote peer
          */
-        function doAnswer() {
+        function doAnswer(remoteId) {
             console.debug('Sending answer to peer');
-            pc.createAnswer(setLocalAndSendMessage, null, sdpConstraints);
+            function setLocalAndSendMessage(sessionDescription) {
+                console.debug('Set Local and send message');
+                sessionDescription.sdp = preferOpus(sessionDescription.sdp);
+                pcs[remoteId].setLocalDescription(sessionDescription);
+                sendMessage(sessionDescription, remoteId);
+            }
+            pcs[remoteId].createAnswer(setLocalAndSendMessage, null, sdpConstraints);
         }
 
         /**
@@ -252,47 +264,31 @@ define(function(require) {
             return merged;
         }
 
-        /**
-         *  Setting local sdp and sending the sdp over to the remote
-         *  peer
-         */
-        function setLocalAndSendMessage(sessionDescription) {
-            console.debug('Set Local and send message');
-            sessionDescription.sdp = preferOpus(sessionDescription.sdp);
-            pc.setLocalDescription(sessionDescription);
-            sendMessage(sessionDescription);
-        }
-
         function handleRemoteStreamAdded(event) {
+            var myVideo = document.createElement('video');
+            myVideo.autoplay = true; 
+            myVideo.muted = false;
+            myVideo.id = event.srcElement.remoteConnectionId;
+            // Get the vidlist to append on to it
+            var videoList = document.getElementById('vidwrapper');
+            videoList.appendChild(myVideo);
+            attachMediaStream(myVideo, event.stream);
             console.log('Remote stream added');
 
-            attachMediaStream(remoteVideo, event.stream);
-            remoteStream = event.stream;
         }
 
         function handleRemoteStreamRemoved(event) {
             console.log('Remote stream ')
         }
 
-        function handleRemoteHangup() {
+        function handleRemoteHangup(remoteId) {
+            var remoteVideo = document.getElementById(remoteId)
+            pcs[remoteId].close();
+            pcs.delete(remoteId);
             console.log('Session terminated');
-            stop();
-            isInitiator = false;
             remoteVideo.src = '';
-            remoteStream = null;
-            sendChannel = false;
-            isChannelReady = false;
-            isInitiator = true;
-            isStarted = false;
-            pc = null;
+            videoList.removeChild(remoteVideo);  
         }
-
-        function stop() {
-            isStarted = false;
-            pc.close();
-            pc = null;
-        }
-
 
         /**
          * Using helper functions from stack overflow to set the default

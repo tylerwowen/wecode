@@ -10,41 +10,65 @@ rtcSockets = function(app) {
     var io = require('socket.io').listen(app, { log: false });
     io.sockets.on('connection', function (socket){
 
-        socket.on('message', function (message, room) {
-            console.log(message);
-            socket.broadcast.to(room).emit('message', message);
+        /**
+         * Listens to a message from a client to handle peer connections, the different steps
+         * it performs are:
+         * 1. Listens to a offer and delivers it to the remote client with id remoteId
+         * 2. Listens to a answer and delivers it to the remote client with id remoteId
+         * 3. Listens to a message type of candidate and deliverse it to the remote client with id remoteId
+         * 4. Listens to a message bye and delivers it to all the clients connected to the room
+         */
+        socket.on('message', function (message, room, remoteId) {
+            var newRemoteId = socket.store.id;
+            var findAndSendMessageToMatchingClient = function(message, remoteId, newRemoteId) {
+                var clients = io.sockets.clients(room);
+                for(var i = 0; i < clients.length; i++){
+                    if(clients[i].id === remoteId){
+                        clients[i].emit('message', message, newRemoteId);
+                    }
+                }
+            }
+            
+            if(message.type === 'offer') {
+                findAndSendMessageToMatchingClient(message, remoteId, newRemoteId);
+            }
+            else if(message.type === 'answer') {
+                findAndSendMessageToMatchingClient(message, remoteId, newRemoteId);
+            }
+            else if(message.type === 'candidate') {
+                findAndSendMessageToMatchingClient(message, remoteId, newRemoteId);  
+            }
+            else if(message === 'bye') {
+                socket.broadcast.to(room).emit('message', message, newRemoteId);
+            }
         });
 
-        socket.on('clicky', function(amount) {
-            socket.broadcast.emit('clicky', amount);
-        });
+        /**
+         *  gotUserMedia sends a signal that the userMedia has been activated
+         */
+        socket.on('gotUserMedia', function(message) {
+            socket.emit('gotUserMedia', true);
+        })
 
-        socket.on('sendText', function(message) {
-            socket.broadcast.emit('back', message);
-        });
-
+        /**
+         *  Deals with clients joining the room for video chat
+         */
         socket.on('create or join', function (room) {
-            var numClients = io.sockets.clients(room).length;
-            console.log('Joining room ' + room + ' has ' + numClients + ' client(s)');
+            var getCurrentConnectedUsers = function() {
+                var currentlyConnected = [];
+                var clients = io.sockets.clients(room);
+                for(var i = 0; i < clients.length; i++)
+                    currentlyConnected.push(clients[i].id);
+                return currentlyConnected;
+            }
 
-            /**
-             * Check whether to create or join a room. Also check whether it is full.
-             */
-            if (numClients == 0){
+            var clientsInRoom = io.sockets.clients(room).length;
+            if (clientsInRoom < 5) {
                 socket.join(room);
-
-                console.log(socket.manager.rooms);
-                //socket.room = room;
-                socket.emit('created', room);
-            } else if (numClients == 1) {
-                io.sockets.in(room).emit('join', room);
-                socket.join(room);
-                socket.emit('joined', room);
+                socket.emit('joined', getCurrentConnectedUsers());
             } else {
                 socket.emit('full', room);
             }
-            socket.emit('emit(): client ' + socket.id + ' joined room ' + room);
-            socket.broadcast.emit('broadcast(): client ' + socket.id + ' joined room ' + room);
         });
     });
 };
