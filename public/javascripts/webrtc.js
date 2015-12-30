@@ -54,17 +54,18 @@ define(function(require) {
      */
     function successCallback(stream) {
         // Create a video element for the DOM
+        myId = socket.socket.sessionid;
         var myVideo = document.createElement('video');
-        myVideo.autoplay = true; 
-        myVideo.muted = false; 
-        myVideo.height = 97.1875;
+        myVideo.autoplay = true;
+        myVideo.muted = false;
+        myVideo.id = myId;
         // Get the vidlist to append on to it
         var videoList = document.getElementById('vidwrapper');
         videoList.appendChild(myVideo);
         localStream = stream;
         attachMediaStream(myVideo, stream);
         // Save my session Id for identification
-        myId = socket.socket.sessionid;
+        
         socket.emit('gotUserMedia', true);
     }
 
@@ -80,94 +81,81 @@ define(function(require) {
         sendMessage('bye');
     };
 
-    ////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////Setting up socket connections/////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////
+    // Start the WebRTC-ness when you detect the correct browser
     if (webrtcDetectedBrowser === 'chrome' || webrtcDetectedBrowser === 'firefox') {
-        var socket;
+        var socket = io.connect();
         var realtimeUtils = new RealtimeUtils();
+        var joined = false;
         room = realtimeUtils.getParam('workspace');
         if(!room){
             room = 'theUltimatePlayground';
         }
-        videoButton.onclick = function() {
-            socket = io.connect();
-            socket.emit('create or join', room);
 
-            /**
-             * If current user created the room, then he is declared isInitiator
-             */
-            socket.on('created', function (room) {
-                console.debug('Created room: ' + room);
-                getUserMedia(constraints, successCallback, errorCallback);
-            });
+        socket.emit('create or join', room);
 
-            /**
-             * Display log message if room is full
-             */
-            socket.on('full', function (room) {
-                console.debug('Room ' + room + ' is full');
-            });
-
-            /**
-             * Second user is ready to call other users
-             */
-            socket.on('join', function (room) {
-                console.debug('Another user is join your room');
-            });
-
-            socket.on('joined', function (IdArray) {
-                console.debug('I have joined room ' + room);
-                console.debug(IdArray);
-                var promise = new Promise(function(resolve, reject) {
-                    getUserMedia(constraints, successCallback, errorCallback);
-                    socket.on('gotUserMedia', function(message) {
-                        resolve(message);
-                    })
-                }).then(function(result) {
-                    // console.log('resolved');
-                    for(var i = 0; i < IdArray.length; i++) {
-                        var remoteId = IdArray[i];
-                        if(myId === remoteId){
-                            // console.log('same Id!')
-                            continue;
-                        }
-                        else{
-                            createPeerConnectionAndCall(remoteId);
-                        }
-                    }
-                })
-            });
-
-            /**
-             * This function receives a message broadcast from the server to perform either of the following actions
-             * 1. If it receives get user media then it does
-             * 2. If it receives a offer then it will perform an offer to the other client, also sets the remote sdp
-             * 3. If it receives a answer then the client will respond an offer with an answer sdp, also sets the remote sdp
-             * 4. If it receives a candidate then it will send a candidate to the other client
-             */
-            socket.on('message', function (message, remoteId) {
-                if (message === 'got user media') {
-                    console.debug('got user media from message');
-                    maybeStartPeerConnection();
-                } else if (message.type === 'offer') { //Handle when a user sends an offer
-                    console.debug('Received an offer from a peer, setting sdp as the remote');
-                    createPeerConnection(remoteId);
-                    pcs[remoteId].setRemoteDescription(new RTCSessionDescription(message));
-                    doAnswer(remoteId);
-                } else if (message.type === 'answer') {
-                    console.debug('Received an answer from a peer, setting sdp as the remote');
-                    pcs[remoteId].setRemoteDescription(new RTCSessionDescription(message));
-                } else if (message.type === 'candidate') {
-                    console.debug('Received a remote candidate from a peer, adding the ice candidate to the peer connection');
-                    var candidate = new RTCIceCandidate({sdpMLineIndex: message.label, candidate: message.candidate});
-                    pcs[remoteId].addIceCandidate(candidate);
-                } else if (message === 'bye') {
-                    handleRemoteHangup(remoteId);
-                } else if (message === 'room')
-                    console.log('room');
-            });
+        // Button to connect or disconnect from users, using video.
+        videoButton.onclick = function() {  
+            // if(!joined) // Should disable button until peer connections are finished *** Not Implemented in this run
+                // socket.emit('create or join', room);
+            // else    // Should be allowed to disconnect when everyone is connected *** Not Implemented in this run
+                // sendMessage('bye');
         }
+
+        /**
+         * Display log message if room is full
+         */
+        socket.on('full', function (room) {
+            console.debug('Room ' + room + ' is full');
+        });
+
+        socket.on('joined', function (IdArray) {
+            var promise = new Promise(function(resolve, reject) {
+                getUserMedia(constraints, successCallback, errorCallback);
+                socket.on('gotUserMedia', function(message) {
+                    resolve(message);
+                })
+            }).then(function(result) {
+                for(var i = 0; i < IdArray.length; i++) {
+                    var remoteId = IdArray[i];
+                    if(myId === remoteId){
+                        continue;
+                    }
+                    else{
+                        createPeerConnection(remoteId);
+                        doCall(remoteId);
+                    }
+                }
+            })
+        });
+
+        /**
+         * This function receives a message broadcast from the server to perform either of the following actions
+         * 1. If it receives get user media then it does
+         * 2. If it receives a offer then it will perform an offer to the other client, also sets the remote sdp
+         * 3. If it receives a answer then the client will respond an offer with an answer sdp, also sets the remote sdp
+         * 4. If it receives a candidate then it will send a candidate to the other client
+         */
+        socket.on('message', function (message, remoteId) {
+            if (message === 'got user media') {
+                console.debug('got user media from message');
+                maybeStartPeerConnection();
+            } else if (message.type === 'offer') { //Handle when a user sends an offer
+                console.debug('Received an offer from a peer, setting sdp as the remote');
+                createPeerConnection(remoteId);
+                pcs[remoteId].setRemoteDescription(new RTCSessionDescription(message));
+                doAnswer(remoteId);
+            } else if (message.type === 'answer') {
+                console.debug('Received an answer from a peer, setting sdp as the remote');
+                pcs[remoteId].setRemoteDescription(new RTCSessionDescription(message));
+            } else if (message.type === 'candidate') {
+                console.debug('Received a remote candidate from a peer, adding the ice candidate to the peer connection');
+                var candidate = new RTCIceCandidate({sdpMLineIndex: message.label, candidate: message.candidate});
+                pcs[remoteId].addIceCandidate(candidate);
+            } else if (message === 'bye') {
+                handleRemoteHangup(remoteId);
+            } else if (message === 'room')
+                console.log('room');
+        });
         
 
         /**
@@ -180,21 +168,6 @@ define(function(require) {
                 socket.emit('message', message, room);
             else if(size === 2)
                 socket.emit('message', message, room, remoteId);
-        }
-
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /////////////////////Setting up user media on a client//////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        /**
-         * If there are two clients on the same room then we should start
-         * an RTC peer connection and initiate a call
-         */
-        function createPeerConnectionAndCall(remoteId) {
-            createPeerConnection(remoteId);
-            doCall(remoteId);
         }
 
         /**
@@ -294,8 +267,7 @@ define(function(require) {
         function handleRemoteStreamAdded(event) {
             var myVideo = document.createElement('video');
             myVideo.autoplay = true; 
-            myVideo.muted = false; 
-            myVideo.height = 97.1875;
+            myVideo.muted = false;
             myVideo.id = event.srcElement.remoteConnectionId;
             // Get the vidlist to append on to it
             var videoList = document.getElementById('vidwrapper');

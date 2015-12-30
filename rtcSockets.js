@@ -10,54 +10,50 @@ rtcSockets = function(app) {
     var io = require('socket.io').listen(app, { log: false });
     io.sockets.on('connection', function (socket){
 
+        /**
+         * Listens to a message from a client to handle peer connections, the different steps
+         * it performs are:
+         * 1. Listens to a offer and delivers it to the remote client with id remoteId
+         * 2. Listens to a answer and delivers it to the remote client with id remoteId
+         * 3. Listens to a message type of candidate and deliverse it to the remote client with id remoteId
+         * 4. Listens to a message bye and delivers it to all the clients connected to the room
+         */
         socket.on('message', function (message, room, remoteId) {
             var newRemoteId = socket.store.id;
-            var clients = io.sockets.clients(room);
-            console.log('this is remote id ' + remoteId);
-            console.log('this is current id ' + socket.store.id);
-            if(message.type === 'offer') {
-                for(var i = 0; i < clients.length; i++) {
-                    if(clients[i].id === remoteId) {
-                        console.log('found the matching id');
-                        console.log('Sending Id from ' + newRemoteId + '----------> ' + remoteId);
-                        clients[i].emit('message', message, newRemoteId);
-                    }
-                }
-            }
-            else if(message.type === 'answer') {
-                console.log('dealing with an answer');
+            var findAndSendMessageToMatchingClient = function(message, remoteId, newRemoteId) {
+                var clients = io.sockets.clients(room);
                 for(var i = 0; i < clients.length; i++){
                     if(clients[i].id === remoteId){
-                        console.log('Sending Id from ' + newRemoteId + '----------> ' + remoteId);
                         clients[i].emit('message', message, newRemoteId);
                     }
                 }
+            }
+            
+            if(message.type === 'offer') {
+                findAndSendMessageToMatchingClient(message, remoteId, newRemoteId);
+            }
+            else if(message.type === 'answer') {
+                findAndSendMessageToMatchingClient(message, remoteId, newRemoteId);
             }
             else if(message.type === 'candidate') {
-                console.log('dealing with a candidate');
-                for(var i = 0; i < clients.length; i++) {
-                    if(clients[i].id === remoteId){
-                        console.log('Sending Id from ' + newRemoteId + '----------> ' + remoteId);
-                        clients[i].emit('message', message, newRemoteId);
-                    }
-                }
+                findAndSendMessageToMatchingClient(message, remoteId, newRemoteId);  
             }
             else if(message === 'bye') {
-                console.log('bye');
                 socket.broadcast.to(room).emit('message', message, newRemoteId);
             }
         });
 
+        /**
+         *  gotUserMedia sends a signal that the userMedia has been activated
+         */
         socket.on('gotUserMedia', function(message) {
-            console.log('got user media');
             socket.emit('gotUserMedia', true);
         })
 
+        /**
+         *  Deals with clients joining the room for video chat
+         */
         socket.on('create or join', function (room) {
-            var clients = io.sockets.clients(room);
-            var numClients = io.sockets.clients(room).length;
-            console.log('Joining room ' + room + ' has ' + numClients + ' client(s)');
-
             var getCurrentConnectedUsers = function() {
                 var currentlyConnected = [];
                 var clients = io.sockets.clients(room);
@@ -65,16 +61,9 @@ rtcSockets = function(app) {
                     currentlyConnected.push(clients[i].id);
                 return currentlyConnected;
             }
-            
-            /**
-             * Check whether to create or join a room. Also check whether it is full.
-             */
-            if (numClients == 0){
-                socket.join(room);
-                socket.emit('created', room);
-                console.log(io.sockets.clients(room));
-            } else if (numClients > 0) {
-                io.sockets.in(room).emit('join', room);
+
+            var clientsInRoom = io.sockets.clients(room).length;
+            if (clientsInRoom < 5) {
                 socket.join(room);
                 socket.emit('joined', getCurrentConnectedUsers());
             } else {
