@@ -57,7 +57,7 @@ define(function(require) {
         myId = socket.socket.sessionid;
         var myVideo = document.createElement('video');
         myVideo.autoplay = true;
-        myVideo.muted = false;
+        myVideo.muted = true;
         myVideo.id = myId;
         // Get the vidlist to append on to it
         var videoList = document.getElementById('vidwrapper');
