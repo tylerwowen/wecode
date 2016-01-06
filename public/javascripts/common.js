@@ -15,13 +15,6 @@ requirejs.config({
         'gapi': {
             exports: 'gapi'
         },
-        'webrtc': {
-            deps: [
-                'jquery',
-                'lib/adapter',
-                'socketio'
-            ]
-        },
         'draggableObjects': {
             deps: [
                 'jquery',

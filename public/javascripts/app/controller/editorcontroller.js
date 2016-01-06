@@ -15,21 +15,15 @@ define(function (require) {
         realtimeDataManager = new RealtimeDataManager(editor),
         googleAdapter = new GoogleAdapter(realtimeDataManager),
         realtimeUtils = googleAdapter.realtimeUtils;
+    editor.setOption("highlightActiveLine", false)
 
     function loadFileSystem() {
         var wsID = realtimeUtils.getParam('workspace');
-        if (wsID) {
-            // Get a list of files from work space with wsID
-            fs = new FileSystem(wsID);
-            fs.getFileList().then(function (files) {
-                showList(files);
-            });
-        } else {
-            // Shouldn't see this page without a work space id
-            // redirect for now
-            alert("You should log in");
-            window.location = "/users";
-        }
+        // Get a list of files from work space with wsID
+        fs = new FileSystem(wsID);
+        fs.getFileList().then(function (files) {
+            showList(files);
+        });
     }
 
     function showList(files) {
@@ -42,7 +36,7 @@ define(function (require) {
             })
         }
         else {
-            fs.createDriveFile('untitled');
+            createFile('Demo');
         }
     }
 
@@ -50,7 +44,7 @@ define(function (require) {
         $('#fileName').val('');
         $('#files').append(
             '<li style="color:white" class="file" id="' + driveFileId + '">' +
-            file.get('name') +
+            fileName +
             '</li>');
     }
 
@@ -68,10 +62,6 @@ define(function (require) {
 
     function Controller() {
 
-        $.when(googleAdapter.authorize()).done(function () {
-            loadFileSystem();
-        });
-
         $('#fileButton').click(function () {
             createFile($('#fileName').val());
         });
@@ -79,6 +69,11 @@ define(function (require) {
         $('#files').on('click', 'li.file', function () {
             var id = $(this).attr('id');
             googleAdapter.loadDriveFile(id);
+        });
+
+        $('#refreshButton').click(function () {
+            $('#files').empty();
+            loadFileSystem();
         });
 
         editor.setTheme("ace/theme/monokai");
@@ -90,6 +85,12 @@ define(function (require) {
     (function () {
 
         this.constructor = Controller;
+
+        this.init = function() {
+            $.when(googleAdapter.authorize()).done(function () {
+                loadFileSystem();
+            });
+        }
 
     }).call(Controller.prototype);
 

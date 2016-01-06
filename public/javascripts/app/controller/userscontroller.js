@@ -21,7 +21,7 @@ define(function (require) {
         $('#login').click(function () {
             var userInput = that.getUserInput();
             UserManager.login(userInput).then(function () {
-                that.updateStatus();
+                $('#login-hovering').hide();
             }, function (error) {
                 console.error(error);
             });
@@ -88,8 +88,12 @@ define(function (require) {
             }, function (error) {
                 console.error(error);
             });
-        }
+        };
 
+        this.loginRequest = function (init) {
+            $('#login-hovering').show();
+            this.callback = init;
+        };
     }).call(Controller.prototype);
 
 

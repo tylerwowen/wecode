@@ -1,3 +1,5 @@
 $(function() {
-    $( "#vidwrapper" ).draggable();
+    $( '#vidwrapper' ).draggable({
+  		containment: '.col-md-9'
+	});
 });
