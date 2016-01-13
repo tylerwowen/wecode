@@ -39,7 +39,6 @@ a {
     height: 100%;
     position: relative;
     bottom: 0%;
-    float: left;
 }
 
 .col-md-2, /* file bar */

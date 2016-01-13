@@ -4,7 +4,6 @@ define(function(require) {
     require('lib/adapter');
     require('socketio');
 
-    var videoButton = document.getElementById('video');
     var videoList = document.getElementById('vidwrapper');
     var localStream;
     var pcs = new Map();
@@ -93,13 +92,17 @@ define(function(require) {
 
         socket.emit('create or join', room);
 
-        // Button to connect or disconnect from users, using video.
-        videoButton.onclick = function() {  
-            // if(!joined) // Should disable button until peer connections are finished *** Not Implemented in this run
-                // socket.emit('create or join', room);
-            // else    // Should be allowed to disconnect when everyone is connected *** Not Implemented in this run
-                // sendMessage('bye');
-        }
+        $('#microphone').click(function() {
+            $(this).find('i').toggleClass('fa-microphone fa-microphone-slash');
+            localStream.getAudioTracks()[0].enabled =
+                !(localStream.getAudioTracks()[0].enabled);
+
+        });
+
+        $('#videoButton').click(function() {
+            localStream.getVideoTracks()[0].enabled =
+                !(localStream.getVideoTracks()[0].enabled);
+        });
 
         /**
          * Display log message if room is full
