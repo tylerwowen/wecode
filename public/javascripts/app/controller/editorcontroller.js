@@ -15,7 +15,6 @@ define(function (require) {
         realtimeDataManager = new RealtimeDataManager(editor),
         googleAdapter = new GoogleAdapter(realtimeDataManager),
         realtimeUtils = googleAdapter.realtimeUtils;
-    editor.setOption("highlightActiveLine", false)
 
     function loadFileSystem() {
         var wsID = realtimeUtils.getParam('workspace');

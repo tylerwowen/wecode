@@ -35,7 +35,7 @@ define(function(require) {
      */
     function RealtimeUtils(options) {
         this.init(options);
-    };
+    }
 
     RealtimeUtils.prototype = {
 
@@ -64,7 +64,8 @@ define(function(require) {
         scopes: [
             'https://www.googleapis.com/auth/drive.install',
             'https://www.googleapis.com/auth/drive.file',
-            'https://www.googleapis.com/auth/drive.appfolder',
+            'https://www.googleapis.com/auth/drive.appdata',
+            'https://www.googleapis.com/auth/drive.metadata',
             'email',
             'profile'
         ],
@@ -127,7 +128,7 @@ define(function(require) {
          */
         createRealtimeFile: function(title, callback) {
             var that = this;
-            gapi.client.load('drive', 'v2', function() {
+            gapi.client.load('drive', 'v3', function() {
                 var insertHash = {
                     'resource': {
                         mimeType: that.mimeType,
