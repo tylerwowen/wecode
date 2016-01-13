@@ -1,6 +1,6 @@
 // For testing purposes
 if (typeof define !== 'function') {
-    var define = require('amdefine')(module);
+    var define = require('define')(module);
 }
 
 define(function (require) {
@@ -23,7 +23,7 @@ define(function (require) {
 
         this.constructor = FileSystem;
 
-        this.getFileList = function () {
+        this.getContentsList = function () {
 
             var successful = new Parse.Promise();
             var that = this;

@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 
+
 /**
  * @fileoverview Common utility functionality for the Google Drive Realtime API,
  * including authorization and file loading.

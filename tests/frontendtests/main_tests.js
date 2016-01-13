@@ -1,5 +1,5 @@
 requirejs.config({
-    baseUrl: '',
+    baseUrl: 'public/javascripts',
     paths: {
         'jquery': '//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min',
         'parse': '//www.parsecdn.com/js/parse-1.6.7.min',
@@ -50,7 +50,7 @@ define(function(require) {
     mocha.setup('bdd');
 
     require([
-        'tests/frontendtests/filesystem.test'
+        '../../tests/frontendtests/gworkspaceadapter.test'
     ], function(require) {
         mocha.run();
     });

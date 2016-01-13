@@ -20,7 +20,7 @@ define(function (require) {
         var wsID = realtimeUtils.getParam('workspace');
         // Get a list of files from work space with wsID
         fs = new FileSystem(wsID);
-        fs.getFileList().then(function (files) {
+        fs.getContentsList().then(function (files) {
             showList(files);
         });
     }
