@@ -87,3 +87,15 @@ iframe {
     display: block;
     margin: 0 auto;
 }
+
+#mainNav {
+    background: transparent;
+}
+
+
+#signUpButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    margin: 5px;
+}

@@ -1,13 +1,26 @@
 //Created by tyler on 10/15/15.
-
 doctype html
 html(lang="en")
     head
         title Account
+        meta(charset='utf-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1')
+        link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
+        script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js')
+        script(src='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
         script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.min.js', data-main='javascripts/users')
-
     body
         div
+            .col-md-6
+            #logbox
+                form#signup(method='post', action='/signup')
+                    h1 Create an Account
+                    input#userName.input.pass(name='username', type='text', placeholder='Username')
+                    input.input.pass(name='user[password]', type='password', placeholder='Choose a password', required='required')
+                    input.input.pass(name='user[password2]', type='password', placeholder='Confirm password', required='required')
+                    input.inputButton(type='submit', value='Sign me up!')
+
+
             | User Name:
             input#userName(type='text' name='username')
             br
