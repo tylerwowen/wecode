@@ -42,12 +42,16 @@ define(function(require) {
     var $ = require('jquery');
     var chai = require('chai');
     var mocha = require('mocha');
+    var chaiAsPromised = require("../../tests/frontendtests/lib/chaiaspromised");
     //requirejs(['public/javascripts/webrtc','public/javascripts/draggableObjects', 'public/javascripts/searchwindow', 'bootstrap']);
 
+    chai.use(chaiAsPromised);
 
     //chai.use(chaiJquery);
 
-    mocha.setup('bdd');
+    mocha.setup({
+        ui:'bdd'
+    });
 
     require([
         '../../tests/frontendtests/gworkspaceadapter.test'

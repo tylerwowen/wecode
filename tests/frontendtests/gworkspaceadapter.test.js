@@ -1,22 +1,25 @@
 define(function(require) {
 
-    var chai = require('chai');
-    var chaiAsPromised = require("../../tests/frontendtests/lib/chaiaspromised");
+    var expect = require('chai').expect;
     var WorkspaceAdapter = require('app/adapters/googleworkspaceadapter');
     var RealtimeUtils = require('lib/realtimeutils');
-
-    var expect = chai.expect;
-    chai.use(chaiAsPromised);
 
     var clientId = '315862064112-anadjteqedc54o1tkhg493e0jqntlfve.apps.googleusercontent.com';
     var realtimeUtils = new RealtimeUtils({clientId: clientId});
 
-
     describe("Google Workspace Adapter tests ", function () {
 
+        var adapter = null;
+        var createdFileId = '';
+        this.timeout(5000);
+
         before(function(done) {
+            // Authorize first. This should be replace by our own implementation later.
             realtimeUtils.authorize(function(response) {
-                done();
+                adapter = new WorkspaceAdapter();
+                adapter.load().then(function() {
+                    done();
+                });
             }, false);
         });
 
@@ -24,18 +27,41 @@ define(function(require) {
             expect(1).to.be.equal(1);
         });
 
-        it('filesystem sets the correct workspace Id', function () {
-            var adapter = new WorkspaceAdapter();
-            var id = '0B8WWHHPFdW35dTlKX1ZWczV6R1U';
-            var name = 'mochaTest.txt' + Date.now();
+        describe("Adapter creates a file", function () {
+            it('Successfully creates a file', function (done) {
+                var id = '0B8WWHHPFdW35dTlKX1ZWczV6R1U';
+                var name = 'mochaTest' + Date.now() + '.txt';
 
-            //adapter.createFile(id, name).then(function(response) {
-            //
-            //}, function(reason) {
-            //    console.error(name, 'was not created:', reason.result.error.message);
-            //});
+                adapter.createFile(id, name).then(function(response) {
+                    //console.log(response, response.result);
+                    expect(response.status).to.be.equal(200);
+                    createdFileId = response.result.id;
+                    done();
+                });
+            });
+        });
 
-            return expect(adapter.createFile(id, name)).to.eventually.exist;
+        describe("Adapter deletes a file", function () {
+            it('Successfully deletes a file', function (done) {
+                adapter.deleteFile(createdFileId).then(function(response) {
+                    console.log(response);
+                    done();
+                });
+            });
+        });
+
+        describe("Folder operations", function () {
+            it('Adapter creates a folder', function (done) {
+                var id = '0B8WWHHPFdW35dTlKX1ZWczV6R1U';
+                var name = 'mochaTestFolder' + Date.now();
+
+                adapter.createFolder(id, name).then(function(response) {
+                    //console.log(response, response.result);
+                    createdFileId = response.result.id;
+                    expect(response.status).to.be.equal(200);
+                    done();
+                });
+            });
         });
     });
 
