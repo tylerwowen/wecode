@@ -11,7 +11,8 @@ requirejs.config({
         'bootstrap': '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min',
         'chai': '//chaijs.com/chai',
         'mocha': '//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha',
-        'q': 'https://cdnjs.cloudflare.com/ajax/libs/q.js/1.4.1/q.min'
+        'q': 'https://cdnjs.cloudflare.com/ajax/libs/q.js/1.4.1/q.min',
+        'sinon': '//cdnjs.cloudflare.com/ajax/libs/sinon.js/1.15.4/sinon.min'
     },
     shim: {
         'gapi': {
@@ -55,6 +56,7 @@ define(function(require) {
     });
 
     require([
+        '../../tests/frontendtests/gfileadapter.test',
         '../../tests/frontendtests/gworkspaceadapter.test'
     ], function(require) {
         mocha.run();
