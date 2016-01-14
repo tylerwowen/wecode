@@ -1,38 +1,20 @@
 define(function(require) {
     "use strict";
 
-    var Parse = require('parse');
+    var WorkSpace = require('app/model/file'),
+        Adapter = require('app/adapters/googleworkspaceadapter');
 
-    Parse.initialize('mxwTWgOduKziA6I6YTwQ5ZlqSESu52quHsqX0xId',
-        'rCQqACMXvizSE5pnZ9p8efewtz8ONwsVAgm2AHCP');
+    function WorkspaceManager() {
 
-    var WorkSpace = Parse.Object.extend('WorkSpace');
-    var File = Parse.Object.extend('File');
+        this.workspaceList = [];
 
-
-    function createWorkSpace() {
-
-        var workSpace = new WorkSpace();
-        var relation = workSpace.relation('files');
-        var user = Parse.User.current();
-
-        var query = new Parse.Query(File);
-        query.get("Zw0gCNNahz").then(function(fetchedFile) {
-            relation.add(fetchedFile)
-        }).then(function(){
-            return workSpace.save();
-        }).then(function() {
-            var userWorkSpaceRelation = user.relation('workSpaceList');
-            userWorkSpaceRelation.add(workSpace);
-            user.save();
-        }, function(error) {
-            console.error(error);
-        });
     }
 
-    return {
+    (function(){
 
-        getWorkSpaceList: function() {
+        this.constructor = WorkspaceManager;
+
+        this.getWorkSpaceList = function() {
 
             var successful = new Parse.Promise();
             var relation = Parse.User.current().relation('workSpaceList');
@@ -44,9 +26,9 @@ define(function(require) {
                 console.error(error);
             });
             return successful;
-        },
+        };
 
-        saveWorkSpace: function(workSpaceId) {
+        this.saveWorkSpace = function(workSpaceId) {
 
             var successful = new Parse.Promise();
             var user = Parse.User.current();
@@ -63,6 +45,9 @@ define(function(require) {
                 alert('We cannot find the work space id. Please check it.');
             });
             return successful;
-        }
-    }
+        };
+
+    }).call(WorkspaceManager.prototype);
+
+    return WorkspaceManager;
 });

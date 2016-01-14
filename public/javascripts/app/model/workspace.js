@@ -5,7 +5,8 @@ define(function (require) {
         Folder = require('app/model/folder'),
         Adapter = require('app/adapters/googleworkspaceadapter');
 
-    function Workspace() {
+    function Workspace(id) {
+        this.id = id;
         this.contentList = {};
         this.isShared = false;
         this.adapter = new Adapter();
@@ -21,13 +22,13 @@ define(function (require) {
             if (this.contentList.length > 0) {
                 return this.contentList;
             }
-            var contents = this.adapter.getContentsList();
+            var contents = this.adapter.getContentsList(this.id);
             this.contentList = this.makeContentList(contents);
             return this.contentList;
         };
 
         this.refreshFileList = function() {
-            var contents = this.adapter.getContentsList();
+            var contents = this.adapter.getContentsList(this.id);
             this.contentList = this.makeContentList(contents);
         };
 
@@ -45,19 +46,21 @@ define(function (require) {
         this.createFile = function(parentId, fileName) {
             var file;
             return this.adapter.createFile(parentId, fileName).then(function(response) {
-                file = File(fileName, response.result.name.id);
-                this.contentList.push(file);
+                var id = response.result.name.id;
+                file = File(fileName, id);
+                this.contentList[id] = file;
             }, function(reason) {
                 console.error(name, 'was not created:', reason.result.error.message);
             });
         };
 
         this.loadFile = function(fileId) {
-            this.getObjectWithId(folderId).load();
+            this.contentList[fileId].load();
         };
 
         this.deleteFile = function(fileId) {
             this.adapter.deleteFile(fileId);
+            delete this.contentList[fileId];
         };
 
         // Folder operations
@@ -74,21 +77,13 @@ define(function (require) {
         };
 
         this.loadFolderContents = function(folderId) {
-            this.getObjectWithId(folderId).load()
+            this.contentList[folderId].load()
         };
 
         this.deleteFolder = function(folderId) {
             this.adapter.deleteFolder(folderId);
+            delete this.contentList[folderId];
         };
-
-        // Helpers
-        this.getObjectWithId = function(id) {
-            for (var i = 0; i < this.contentList.length; i++) {
-                if (this.contentList[i].id == id) {
-                    return this.contentList[i];
-                }
-            }
-        }
 
     }).call(Workspace.prototype);
 

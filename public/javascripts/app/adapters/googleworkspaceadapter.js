@@ -25,6 +25,20 @@ define(function (require) {
         this.realtimeMimeType = 'application/vnd.google-apps.drive-sdk';
         this.folderMimeType = 'application/vnd.google-apps.folder';
 
+
+        /**
+         * Fetches all the files(folders as well) under a folder
+         * @param {!string} parentID is the ID of the folder.
+         * @return {!promise} returns a promise
+         * @export
+         */
+        this.getContentsList = function(parentID) {
+            var request = {
+                q: "'"+ parentID + "'" + ' in parents'
+            };
+            return gapi.client.drive.files.list(request);
+        };
+
         /**
          * Creates a new realtime file.
          * @param {!string} parentID is the ID of the file's parent folder.
@@ -33,14 +47,14 @@ define(function (require) {
          * @export
          */
         this.createFile = function(parentID, fileName) {
-            var insertHash = {
+            var request = {
                 'resource': {
                     mimeType: this.realtimeMimeType,
                     name: fileName,
                     parents: [parentID]
                 }
             };
-            return gapi.client.drive.files.create(insertHash);
+            return gapi.client.drive.files.create(request);
         };
 
         /**
@@ -65,18 +79,14 @@ define(function (require) {
          * @export
          */
         this.createFolder = function(parentID, folderName) {
-            return gapi.client.load('drive', 'v3').then(function() {
-                var insertHash = {
-                    'resource': {
-                        mimeType: this.folderMimeType,
-                        name: folderName,
-                        parents: [parentID]
-                    }
-                };
-                return gapi.client.drive.files.create(insertHash);
-            }, function(reason) {
-                console.error('drive api was not loaded:', reason.result.error.message);
-            }, this);
+            var request = {
+                'resource': {
+                    mimeType: this.folderMimeType,
+                    name: folderName,
+                    parents: [parentID]
+                }
+            };
+            return gapi.client.drive.files.create(request);
         };
 
         /**
@@ -86,7 +96,7 @@ define(function (require) {
          * @export
          */
         this.deleteFolder = function(folderId) {
-            this.deleteFile(folderId);
+            return this.deleteFile(folderId);
         };
 
     }).call(WorkspaceAdapter.prototype);
