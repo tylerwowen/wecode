@@ -3,11 +3,14 @@ define(function (require) {
 
     var File = require('app/model/file'),
         Folder = require('app/model/folder'),
+        Q = require('q'),
         Adapter = require('app/adapters/googleworkspaceadapter');
 
-    function Workspace(id) {
+    function Workspace(id, name) {
         this.id = id;
-        this.contentList = {};
+        this.name = name;
+        this.contentList = null;
+        this.rootFolder = new Folder(id, name);
         this.isShared = false;
         this.adapter = new Adapter();
     }
@@ -16,73 +19,59 @@ define(function (require) {
 
         this.constructor = Workspace;
 
-        // List operations
+        // Init operations
 
-        this.getContentsList = function() {
-            if (this.contentList.length > 0) {
-                return this.contentList;
-            }
-            var contents = this.adapter.getContentsList(this.id);
-            this.contentList = this.makeContentList(contents);
-            return this.contentList;
+        this.init = function() {
+            var that = this;
+            return this.rootFolder.load().then(function(){
+                that.contentList = that.rootFolder.contentList;
+            });
         };
 
         this.refreshFileList = function() {
-            var contents = this.adapter.getContentsList(this.id);
-            this.contentList = this.makeContentList(contents);
-        };
 
-        this.makeContentList = function(contents) {
-            var list = {};
-            for (var i = 0; i < contents.length; i++) {
-                var id = contents[i].id;
-                list[id] = contents[i];
-            }
-            return list;
         };
 
         // File operations
 
         this.createFile = function(parentId, fileName) {
-            var file;
-            return this.adapter.createFile(parentId, fileName).then(function(response) {
-                var id = response.result.name.id;
-                file = File(fileName, id);
-                this.contentList[id] = file;
-            }, function(reason) {
-                console.error(name, 'was not created:', reason.result.error.message);
+            var that = this;
+            return this.adapter.createFile(parentId, fileName).then(function(file) {
+                that.contentList[id] = file;
+                return file;
             });
         };
 
         this.loadFile = function(fileId) {
-            this.contentList[fileId].load();
+            return this.contentList[fileId].load();
         };
 
         this.deleteFile = function(fileId) {
-            this.adapter.deleteFile(fileId);
-            delete this.contentList[fileId];
+            var that = this;
+            return this.adapter.deleteFile(fileId).then(function() {
+                delete that.contentList[fileId];
+            });
         };
 
         // Folder operations
 
         this.createFolder = function(parentId, folderName) {
-            var folder;
-            return this.adapter.createFolder(parentId, folderName).then(function(response) {
-                var id = response.result.name.id;
-                folder = Folder(folderName, id);
-                this.contentList[id] = folder;
-            }, function(reason) {
-                console.error(name, 'was not created:', reason.result.error.message);
+            var that = this;
+            return this.adapter.createFolder(parentId, folderName).then(function(folder) {
+                that.contentList[folder.id] = folder;
+                return folder;
             });
         };
 
         this.loadFolderContents = function(folderId) {
-            this.contentList[folderId].load()
+            return this.contentList[folderId].load()
         };
 
         this.deleteFolder = function(folderId) {
-            this.adapter.deleteFolder(folderId);
-            delete this.contentList[folderId];
+            var that = this;
+            return this.adapter.deleteFolder(folderId).then(function() {
+                delete that.contentList[folderId];
+            });
         };
 
     }).call(Workspace.prototype);

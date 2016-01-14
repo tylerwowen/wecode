@@ -10,7 +10,8 @@ requirejs.config({
         'angular': '//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min',
         'bootstrap': '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min',
         'chai': '//chaijs.com/chai',
-        'mocha': '//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha'
+        'mocha': '//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha',
+        'q': 'https://cdnjs.cloudflare.com/ajax/libs/q.js/1.4.1/q.min'
     },
     shim: {
         'gapi': {

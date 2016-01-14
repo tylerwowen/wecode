@@ -1,8 +1,9 @@
 define(function(require) {
 
-    var expect = require('chai').expect;
-    var WorkspaceAdapter = require('app/adapters/googleworkspaceadapter');
-    var RealtimeUtils = require('lib/realtimeutils');
+    var expect = require('chai').expect,
+        WorkspaceAdapter = require('app/adapters/googleworkspaceadapter'),
+        Q = require('q'),
+        RealtimeUtils = require('lib/realtimeutils');
 
     var clientId = '315862064112-anadjteqedc54o1tkhg493e0jqntlfve.apps.googleusercontent.com';
     var realtimeUtils = new RealtimeUtils({clientId: clientId});
@@ -16,7 +17,6 @@ define(function(require) {
             createdFolderId = '';
         var id = '0B8WWHHPFdW35Z2t2eXU1S0RaMFE';
 
-
         before(function(done) {
             // Authorize first. This should be replace by our own implementation later.
             realtimeUtils.authorize(function(response) {
@@ -24,7 +24,7 @@ define(function(require) {
                 adapter.load().then(function() {
                     done();
                 });
-            }, false);
+            }, true);
         });
 
         it('testing 1 is equal to 1', function () {
@@ -33,9 +33,9 @@ define(function(require) {
 
         describe("Adapter returns a list", function () {
             it('Successfully returns a list', function (done) {
-                adapter.getContentsList(id).then(function(response) {
-                    console.log(response, response.result);
-                    expect(response.result.files.length).to.be.equal(2);
+                adapter.getContentsList(id).then(function(list) {
+                    console.log(list);
+                    expect(list).to.exist;
                     done();
                 });
             });
@@ -45,10 +45,10 @@ define(function(require) {
             it('Successfully creates a file', function (done) {
                 var name = 'mochaTest' + Date.now() + '.txt';
 
-                adapter.createFile(id, name).then(function(response) {
+                adapter.createFile(id, name).then(function(file) {
                     // console.log(response, response.result);
-                    expect(response.status).to.be.equal(200);
-                    createdFileId = response.result.id;
+                    expect(file.name).to.equal(name);
+                    createdFileId = file.id;
                     done();
                 });
             });
@@ -58,19 +58,29 @@ define(function(require) {
             it('Successfully deletes a file', function (done) {
                 adapter.deleteFile(createdFileId).then(function(response) {
                     // console.log(response);
-                    expect(response.status).to.be.equal(204);
+                    expect(response.status).to.equal(204);
                     done();
                 });
             });
         });
 
         describe("Adapter creates a folder", function () {
-            it('Adapter creates a folder', function (done) {
+            it('Adapter creates a folder with a right ID', function (done) {
                 var name = 'mochaTestFolder' + Date.now();
 
-                adapter.createFolder(id, name).then(function(response) {
-                    expect(response.status).to.be.equal(200);
-                    createdFolderId = response.result.id;
+                adapter.createFolder(id, name).then(function(folder) {
+                    expect(folder.name).to.equal(name);
+                    createdFolderId = folder.id;
+                    done();
+                });
+            });
+
+            it('Adapter creates a folder with a wrong ID', function (done) {
+                var name = 'mochaTestFolder' + Date.now();
+
+                adapter.createFolder('foo', name).then(function() {
+                }, function(error) {
+                    expect(error).to.exist;
                     done();
                 });
             });
@@ -79,7 +89,7 @@ define(function(require) {
         describe("Adapter deletes a folder", function () {
             it('Successfully deletes a folder', function (done) {
                 adapter.deleteFolder(createdFolderId).then(function(response) {
-                    expect(response.status).to.be.equal(204);
+                    expect(response.status).to.equal(204);
                     done();
                 });
             });

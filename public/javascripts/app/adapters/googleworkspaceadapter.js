@@ -1,10 +1,9 @@
-
 define(function (require) {
     "use strict";
 
-    var gapi = require('gapi');//,
-    //File = require('app/model/file'),
-    //Folder = require('app/model/folder');
+    var gapi = require('gapi'),
+        File = require('app/model/file'),
+        Folder = require('app/model/folder');
 
     function WorkspaceAdapter() {
 
@@ -33,10 +32,23 @@ define(function (require) {
          * @export
          */
         this.getContentsList = function(parentID) {
+            var that = this;
             var request = {
-                q: "'"+ parentID + "'" + ' in parents'
+                q: "'" + parentID + "'" + ' in parents'
             };
-            return gapi.client.drive.files.list(request);
+            return gapi.client.drive.files.list(request).then(function(response) {
+                var files = response.result.files;
+                var contentList = [];
+                for (var i = 0; i < files.length; i++) {
+                    if (files[i].mimeType.includes(that.realtimeMimeType)) {
+                        //contentList[i] = new File(files[i].name);
+                    }
+                    else if (files[i].mimeType == that.folderMimeType) {
+                        contentList[i] = new Folder(files[i].id, files[i].name, that);
+                    }
+                }
+                return contentList;
+            });
         };
 
         /**
@@ -54,7 +66,9 @@ define(function (require) {
                     parents: [parentID]
                 }
             };
-            return gapi.client.drive.files.create(request);
+            return gapi.client.drive.files.create(request).then(function(response) {
+                return new File(response.result.name.id, fileName);
+            });
         };
 
         /**
@@ -68,7 +82,6 @@ define(function (require) {
                 'fileId': fileId
             };
             return gapi.client.drive.files.delete(request);
-
         };
 
         /**
@@ -86,7 +99,12 @@ define(function (require) {
                     parents: [parentID]
                 }
             };
-            return gapi.client.drive.files.create(request);
+            var that = this;
+            return gapi.client.drive.files.create(request)
+                .then(function(response) {
+                    var id = response.result.id;
+                    return new Folder(id, folderName, that);
+                });
         };
 
         /**

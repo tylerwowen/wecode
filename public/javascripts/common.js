@@ -8,9 +8,8 @@ requirejs.config({
         'socketio': '/socket.io/socket.io',
         'jqueryui': '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min',
         'angular': '//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min',
-        'chai': '//chaijs.com/chai',
         'bootstrap': '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min',
-        'q': '//cdnjs.cloudflare.com/ajax/libs/q.js/2.0.3/q.min.js'
+        'q': '//cdnjs.cloudflare.com/ajax/libs/q.js/1.4.1/q.min'
     },
     shim: {
         'gapi': {

@@ -6,8 +6,8 @@ define(function(require) {
     var GoogleFileAdapter = require('app/adapters/googlefileadapter');
 
 
-    function File(fileName) {
-        this.id = null;
+    function File(id, fileName) {
+        this.id = id;
         this.name = fileName;
         this.realTimeUtils = new RealTimeUtils();
         this.realTimeData = new RealTimeData();

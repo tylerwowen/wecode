@@ -2,7 +2,7 @@ define(function(require) {
     "use strict";
 
     var WorkSpace = require('app/model/file'),
-        Adapter = require('app/adapters/googleworkspaceadapter');
+        Adapter = require('app/adapters/googlefolderadapter');
 
     function WorkspaceManager() {
 
