@@ -55,7 +55,8 @@ define(function (require) {
         };
 
         this.loadFile = function(fileId) {
-            this.contentList[fileId].load();
+            if(!this.contentList[fileId].load())
+                this.createFile(this.id,"Untitled");
         };
 
         this.deleteFile = function(fileId) {

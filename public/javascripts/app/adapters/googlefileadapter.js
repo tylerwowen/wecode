@@ -2,34 +2,43 @@ define(function(require) {
     "use strict";
 
     var $ = require('jquery'),
-        gapi = require('gapi'),
-        RealTimeUtils = require('lib/realtimeutils');
+        gapi = require('gapi');
 
-    var clientId = '315862064112-anadjteqedc54o1tkhg493e0jqntlfve.apps.googleusercontent.com';
-    var realtimeUtils = new RealTimeUtils({clientId: clientId});
-
-    function GoogleFileAdapter(realTimeData) {
-        this.realtimeUtils = realtimeUtils;
-        this.realTimeData = realTimeData;
+    function GoogleFileAdapter(file) {
+        this.file = file;
     }
 
     (function() {
 
         this.constructor = GoogleFileAdapter;
 
+        /**
+         * Loads an existing realtime file.
+         * @param {!string} id for the document to load.
+         * @export
+         */
+
+        // Function from RealtimeUtils:
+        // load: function(documentId, onFileLoaded, initializeModel) {
+        //    var that = this;
+        //    gapi.drive.realtime.load(documentId, function(doc) {
+        //        window.doc = doc;  // Debugging purposes
+        //        onFileLoaded(doc);
+        //    }, initializeModel, this.onError);
+        // },
+
         this.loadDriveFile = function(id) {
             var that = this;
             if (id) {
-                var isDataCached = this.realTimeData.connectWithEditor(id);
+                var isDataCached = this.file.connectWithEditor(id);
                 if(!isDataCached) {
-                    realtimeUtils.load(id,
-                        function (doc) {
-                            that.realTimeData.onFileLoaded(doc, id);
-                        },
-                        this.realTimeData.onFileInitialize);
+                    gapi.drive.realtime.load(id, function(doc) {
+                        that.file.onFileLoaded(doc, id);
+                    }, this.file.onFileInitialize. this.onError);
                 }
+                return true;
             } else {
-                this.createDriveFile('untitled');
+                return false;
             }
         };
 

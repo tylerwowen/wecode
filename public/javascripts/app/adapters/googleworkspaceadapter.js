@@ -68,7 +68,6 @@ define(function (require) {
                 'fileId': fileId
             };
             return gapi.client.drive.files.delete(request);
-
         };
 
         /**
