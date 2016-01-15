@@ -5,43 +5,51 @@ html(lang="en")
         title Account
         meta(charset='utf-8')
         meta(name='viewport', content='width=device-width, initial-scale=1')
-        link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
-        script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js')
-        script(src='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
+        meta(name='google-signin-client_id', content='1042745425132-p5qbajv7ffnlncha7naua3bpss13a178.apps.googleusercontent.com')
+        link(rel='stylesheet', href='/stylesheets/users.css')
+        link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
         script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.min.js', data-main='javascripts/users')
+        script(src='https://apis.google.com/js/platform.js', async='', defer='')
+
     body
-        div
-            .col-md-6
-            #logbox
-                form#signup(method='post', action='/signup')
-                    h1 Create an Account
-                    input#userName.input.pass(name='username', type='text', placeholder='Username')
-                    input.input.pass(name='user[password]', type='password', placeholder='Choose a password', required='required')
-                    input.input.pass(name='user[password2]', type='password', placeholder='Confirm password', required='required')
-                    input.inputButton(type='submit', value='Sign me up!')
+        .g-signin2(data-onsuccess='onSignIn')
 
 
-            | User Name:
-            input#userName(type='text' name='username')
-            br
-            br
-            | Password:
-            input#password(type='text' name='password')
 
-        br
-        div
-            button#signup Sign up
-            button#login Log in
-            button#logout Log out
 
-        br
-        div
-            | Status:
-            p#status You are NOT logged in
-        br
+        //div#wrapper
+        //    div#logbox
+        //        h1 Login
+        //        input#userName.input.pass(name='username', type='text', placeholder='Username')
+        //        input#password.input.pass(name='password', type='password', placeholder='Password', required='required')
+        //        button#login.btn.btn-success.btn-sm(href='/main') Login
+        //    div#logbox
+        //        h1 Sign Up
+        //        input#userName.input.pass(name='username', type='text', placeholder='Username')
+        //        input#password.input.pass(name='password', type='password', placeholder='Password', required='required')
+        //        //input.input.pass(name='', type='password', placeholder='Confirm password', required='required')
+        //        button#signup.btn.btn-success.btn-sm Sign Up
 
-        ul#workSpaceList
 
-        input#workSpaceId(type='text' name='workSpaceId' placeholder="Work Space Id")
-        button#saveWorkSpaceBtn Save Work Space
 
+
+        //div
+        //    | User Name:
+        //    input#userName(type='text' name='username')
+        //    br
+        //    br
+        //    | Password:
+        //    input#password(type='text' name='password')
+        //br
+        //div
+        //    button#signup Sign up
+        //    button#login Log in
+        //    button#logout Log out
+        //br
+        //div
+        //    | Status:
+        //    p#status You are NOT logged in
+        //br
+        //ul#workSpaceList
+        //input#workSpaceId(type='text' name='workSpaceId' placeholder="Work Space Id")
+        //button#saveWorkSpaceBtn Save Work Space
