@@ -152,6 +152,27 @@
             });
         }
 
+        function loadConfiguration() {
+            var request = {
+                spaces: 'appDataFolder',
+                q: 'name = "config.json"'
+            };
+            return gapi.client.drive.files.list(request)
+                    .then(function(response) {
+                        if (response.result.files.length < 1) {
+                            return null;
+                        }
+                        if (response.result.files[0].name == 'config.json') {
+                            return gapi.client.drive.files.get({
+                                fileId: response.result.files[0].id,
+                                alt: 'media'
+                            }).then(function(json) {
+                                return JSON.parse(json.body).rootFolderId;
+                            });
+                        }
+                    });
+        }
+
         /**
          * Append a pre element to the body containing the given message
          * as its text node.

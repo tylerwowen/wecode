@@ -3,7 +3,7 @@ define(function(require) {
 
     var RealTimeData = require('app/model/realtimedata');
     var GoogleFileAdapter = require('app/adapters/googlefileadapter');
-    var ACEAdapter = require('app/model/aceadapter');
+    var ACEAdapter = require('app/adapters/aceadapter');
     var gapi = require('gapi');
 
 

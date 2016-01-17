@@ -2,7 +2,6 @@ define(function (require) {
     "use strict";
 
     var Q = require('q');
-
     /**
      *
      * @param id
@@ -22,21 +21,21 @@ define(function (require) {
         this.constructor = Folder;
 
         this.load = function () {
-            if (this.contentList != null) {
-                return this.contentList;
-            }
             var that = this;
-            return this.adapter.getContentsList(this.id).then(function(contents) {
-                that.contentList = that.makeContentList(contents);
+            if (this.contentList != null) {
                 return Q.fcall(function () {
                     return that.contentList;
                 });
+            }
+            return this.adapter.getContentsList(this.id).then(function(contents) {
+                that.contentList = that.makeContentList(contents);
+                return that.contentList;
             });
         };
 
-        this.refreshFileList = function() {
+        this.reload = function() {
             this.contentList = null;
-            return this.getContentsList();
+            return this.load();
         };
 
         this.makeContentList = function(contents) {

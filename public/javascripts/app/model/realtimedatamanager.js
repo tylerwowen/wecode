@@ -1,7 +1,7 @@
 define(function(require) {
     "use strict";
 
-    var ACEAdapter = require('app/model/aceadapter'),
+    var ACEAdapter = require('app/adapters/aceadapter'),
         Cursor = require('app/model/cursor'),
         gapi = require('gapi');
 

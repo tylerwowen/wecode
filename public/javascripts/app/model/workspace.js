@@ -2,17 +2,15 @@ define(function (require) {
     "use strict";
 
     var File = require('app/model/file'),
-        Folder = require('app/model/folder'),
-        Q = require('q'),
-        Adapter = require('app/adapters/googleworkspaceadapter');
+        Folder = require('app/model/folder');
 
-    function Workspace(id, name) {
+    function Workspace(id, name, adapter) {
         this.id = id;
         this.name = name;
-        this.contentList = null;
         this.rootFolder = new Folder(id, name);
+        this.contentList = this.rootFolder.contentList;
         this.isShared = false;
-        this.adapter = new Adapter();
+        this.adapter = adapter;
     }
 
     (function () {
@@ -22,14 +20,15 @@ define(function (require) {
         // Init operations
 
         this.init = function() {
-            var that = this;
-            return this.rootFolder.load().then(function(){
-                that.contentList = that.rootFolder.contentList;
-            });
+            return this.getContentsList();
         };
 
-        this.refreshFileList = function() {
+        this.getContentsList = function() {
+          return this.rootFolder.load();
+        };
 
+        this.refreshContentList = function() {
+            return this.rootFolder.reload();
         };
 
         // File operations

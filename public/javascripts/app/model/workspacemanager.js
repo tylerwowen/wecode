@@ -1,50 +1,63 @@
 define(function(require) {
     "use strict";
 
-    var WorkSpace = require('app/model/file'),
-        Adapter = require('app/adapters/googlefolderadapter');
+    var WorkSpace = require('app/model/workspace'),
+        Q = require('q'),
+        Adapter = require('app/adapters/googleworkspaceadapter');
 
     function WorkspaceManager() {
-
+        this.rootFolderId = null;
         this.workspaceList = [];
-
+        this.adapter = new Adapter();
     }
 
     (function(){
 
         this.constructor = WorkspaceManager;
 
-        this.getWorkSpaceList = function() {
-
-            var successful = new Parse.Promise();
-            var relation = Parse.User.current().relation('workSpaceList');
-            var query = relation.query();
-
-            query.find().then(function(workSpaceList) {
-                successful.resolve(workSpaceList);
-            }, function(error) {
-                console.error(error);
+        // Init operations
+        this.init = function() {
+            var that = this;
+            return this.loadConfiguration().then(function(rootFolderId) {
+                that.rootFolderId = rootFolderId;
+                return that.getWorkspaceList();
             });
-            return successful;
         };
 
-        this.saveWorkSpace = function(workSpaceId) {
-
-            var successful = new Parse.Promise();
-            var user = Parse.User.current();
-            var query = new Parse.Query(WorkSpace);
-
-            query.get(workSpaceId).then(function(workSpace) {
-                var relation = user.relation('workSpaceList');
-                relation.add(workSpace);
-                user.save().then(function() {
-                    successful.resolve();
+        this.loadConfiguration = function() {
+            var that = this;
+            this.adapter.loadConfiguration().then(function(rootFolderId) {
+                if (rootFolderId != null) {
+                    return rootFolderId;
+                }
+                // first time, create rootFolder and configuration
+                return that.adapter.createRootFolder().then(function(rootFolderId) {
+                    that.adapter.createConfigurationFile(rootFolderId);
+                    return rootFolderId;
                 });
-            }, function(error) {
-                console.error(error);
-                alert('We cannot find the work space id. Please check it.');
             });
-            return successful;
+        };
+
+        this.getWorkspaceList = function() {
+            var that = this;
+            if (this.workspaceList.length != 0) {
+                return Q.fcall(function () {
+                    return that.workspaceList;
+                });
+            }
+            return this.adapter.getWorkspaceList(this.rootFolderId).then(function(contents) {
+                that.workspaceList = contents;
+                return that.workspaceList;
+            });
+        };
+
+        this.refreshWrokspaceList = function() {
+            this.workspaceList = [];
+            return this.getWorkspaceList();
+        };
+
+        this.createWorkSpace = function(workSpaceId) {
+
         };
 
     }).call(WorkspaceManager.prototype);
