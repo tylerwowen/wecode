@@ -2,14 +2,14 @@ body {
     /*background: #3CC;*/
 }
 
-.container {
-    display: -webkit-flex;
-    display: flex;
-    height: 100%;
-}
+/*.container {*/
+    /*display: -webkit-flex;*/
+    /*display: flex;*/
+    /*height: 100%;*/
+/*}*/
 
 #wrapper {
-
+    background-color: #ffffff !important;
     margin: 0 auto;
     display: table;
 }
