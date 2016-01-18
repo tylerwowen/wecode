@@ -41,6 +41,7 @@ define(function(require) {
                     scope: scopes
                 });
                 that.attauchClickHandler();
+                that.authorize();
                 deferred.resolve();
             });
             if (this.authTimer) {

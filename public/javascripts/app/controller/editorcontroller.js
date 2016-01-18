@@ -4,21 +4,23 @@ define(function (require) {
     var $ = require('jquery'),
         ace = require('ace/ace'),
         Workspace = require('app/model/workspace'),
-        WorkspaceAdapter = require('app/adapters/googleworkspaceadapter');
+        WorkspaceAdapter = require('app/adapters/googleworkspaceadapter'),
+        FileAdapter = require('app/adapters/googlefileadapter');
 
     ace.config.set("packaged", true);
     ace.config.set("basePath", require.toUrl("ace"));
 
-    var editor = ace.edit('editor');
 
     function Controller() {
 
         this.workspaceAdapter = new WorkspaceAdapter();
+        this.fileAdapter = new FileAdapter();
 
-        editor.setTheme("ace/theme/monokai");
-        editor.getSession().setMode("ace/mode/javascript");
-        editor.getSession().setUseWrapMode(true);
-        editor.$blockScrolling = Infinity;
+        this.editor = ace.edit('editor');
+        this.editor.setTheme("ace/theme/monokai");
+        this.editor.getSession().setMode("ace/mode/javascript");
+        this.editor.getSession().setUseWrapMode(true);
+        this.editor.$blockScrolling = Infinity;
     }
 
     (function () {
@@ -29,8 +31,10 @@ define(function (require) {
 
         this.init = function() {
             var that = this;
+            this.fileAdapter.load();
             this.workspaceAdapter.load().then(function() {
                 that.loadWorkspace();
+                that.connectToView();
             });
         };
 
@@ -39,8 +43,8 @@ define(function (require) {
             var wsID = this.getParam('id');
             var wsName = this.getParam('name');
             // Get a list of files from work space with wsID
-            var ws = new Workspace(wsID, wsName, this.workspaceAdapter);
-            ws.getContentsList().then(function (contents) {
+            this.workspace = new Workspace(wsID, wsName, this.workspaceAdapter);
+            this.workspace.getContentsList().then(function (contents) {
                 that.showList(contents);
             });
         };
@@ -48,12 +52,17 @@ define(function (require) {
         this.connectToView = function() {
             var that = this;
             $('#fileButton').click(function () {
-                that.createFile($('#fileName').val());
+                that.workspace.createFile(that.workspace.id, $('#fileName').val());
             });
 
             $('#files').on('click', 'li.file', function () {
                 var id = $(this).attr('id');
-                googleAdapter.loadDriveFile(id);
+                that.workspace.loadFile(id, that.editor, that.fileAdapter);
+            });
+
+            $('#files').on('click', 'li.folder', function () {
+                var id = $(this).attr('id');
+                that.workspace.loadFolderContents(id);
             });
 
             $('#refreshButton').click(function () {
@@ -79,10 +88,18 @@ define(function (require) {
             if (contents != null) {
                 for (var id in contents) {
                     if (contents.hasOwnProperty(id)) {
-                        $('#files').append(
-                            '<li style="color:white" class="file" id="' + id + '">' +
-                            contents[id].name +
-                            '</li>');
+                        if (contents[id].constructor.name == 'File') {
+                            $('#files').append(
+                                '<li style="color:white" class="file" id="' + id + '">' +
+                                contents[id].name +
+                                '</li>');
+                        }
+                        if (contents[id].constructor.name == 'Folder') {
+                            $('#files').append(
+                                '<li style="color:white" class="folder" id="' + id + '">' +
+                                contents[id].name +
+                                '</li>');
+                        }
                     }
                 }
             }

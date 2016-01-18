@@ -57,6 +57,7 @@ define(function (require) {
                 'body': body
             }).then(function(response) {
                 console.log(response);
+                return response;
             }, function(error) {
                 console.error(error);
             });
@@ -109,7 +110,6 @@ define(function (require) {
             });
         };
 
-
         this.createRootFolder = function() {
             var folderName = this.rootFolderName;
             var request = {
@@ -122,6 +122,13 @@ define(function (require) {
                 .then(function(response) {
                     return response.result.id;
                 });
+        };
+
+        this.deleteFile = function(fileId) {
+            var request = {
+                'fileId': fileId
+            };
+            return gapi.client.drive.files.delete(request);
         };
     }).call(SetupAdapter.prototype);
 

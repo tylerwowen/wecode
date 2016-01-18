@@ -7,14 +7,16 @@ define(function (require) {
         this.id = id;
         this.name = name;
         this.rootFolder = new Folder(id, name, adapter);
-        this.contentList = this.rootFolder.contentList;
-        this.isShared = false;
         this.adapter = adapter;
     }
 
     (function () {
 
         this.constructor = Workspace;
+
+        this.contentList = null;
+        this.isShared = false;
+
 
         // Init operations
 
@@ -23,7 +25,11 @@ define(function (require) {
         };
 
         this.getContentsList = function() {
-          return this.rootFolder.load();
+            var that = this;
+            return this.rootFolder.load().then(function() {
+                that.contentList = that.rootFolder.contentList;
+                return that.contentList;
+            });
         };
 
         this.refreshContentList = function() {
@@ -35,13 +41,13 @@ define(function (require) {
         this.createFile = function(parentId, fileName) {
             var that = this;
             return this.adapter.createFile(parentId, fileName).then(function(file) {
-                that.contentList[id] = file;
+                that.contentList[file.id] = file;
                 return file;
             });
         };
 
-        this.loadFile = function(fileId) {
-            return this.contentList[fileId].load();
+        this.loadFile = function(fileId, editor, fileAdapter) {
+            return this.contentList[fileId].load(editor, fileAdapter);
         };
 
         this.deleteFile = function(fileId) {

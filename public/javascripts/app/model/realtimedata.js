@@ -3,21 +3,24 @@ define(function(require) {
     
     // Realtime data structure
     function RealTimeData() {
+
+    }
+    (function () {
+
         this.text = null;
         this.cursors = null;
         this.collaborators = null;
-    }
-    (function () {
-        this.getCurrentUserId = function(collaborators) {
-            for (var i = 0; i < collaborators.length; i++) {
-                if (collaborators[i].isMe) {
-                    return collaborators[i].userId;
+
+        this.getCurrentUserId = function() {
+            for (var i = 0; i < this.collaborators.length; i++) {
+                if (this.collaborators[i].isMe) {
+                    return this.collaborators[i].userId;
                 }
             }
         };
 
         this.getColor = function(string) {
-            return '#' + intToRGB(hashCode(string));
+            return '#' + this.intToRGB(this.hashCode(string));
         };
 
         this.hashCode = function(str) {

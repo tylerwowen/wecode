@@ -47,7 +47,7 @@ define(function (require) {
                 var contentList = [];
                 for (var i = 0; i < files.length; i++) {
                     if (files[i].mimeType.includes(that.realtimeMimeType)) {
-                        contentList[i] = new File(response.result.name.id, fileName);
+                        contentList[i] = new File(files[i].id, files[i].name);
                     }
                     else if (files[i].mimeType == that.folderMimeType) {
                         contentList[i] = new Folder(files[i].id, files[i].name, that);
@@ -73,7 +73,7 @@ define(function (require) {
                 }
             };
             return gapi.client.drive.files.create(request).then(function(response) {
-                return new File(response.result.name.id, fileName);
+                return new File(response.result.id, fileName);
             });
         };
 
