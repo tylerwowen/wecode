@@ -33,11 +33,7 @@ define(function(require) {
 
     showWorkSpaceList();
 
-    $("#framewrapper").animate({
-        right: "3%",
-        width: "toggle"
-    }, 1000, function () {
-    });
+
 
     $("#search").click(function () {
         $("#framewrapper").animate({
@@ -56,11 +52,7 @@ define(function(require) {
         }
     });
 
-    $("#workwrapper").animate({
-        right: "3%",
-        width: "toggle"
-    }, 1000, function () {
-    });
+
 
     $("#workspace").click(function () {
         $("#workwrapper").animate({
@@ -82,4 +74,13 @@ define(function(require) {
     $("#back").click(function(){
         $('#frame').contentWindow.history.back(-1);
     });
+
+    $("#chat").click(function () {
+        $("#chatwrapper").animate({
+            right: "4%",
+            width: "toggle"
+        }, 1000, function () {
+        });
+    });
+
 });

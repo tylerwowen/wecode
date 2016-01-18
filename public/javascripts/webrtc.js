@@ -111,6 +111,22 @@ define(function(require) {
             console.debug('Room ' + room + ' is full');
         });
 
+        $('form').submit(function(){
+            socket.emit('print username', myId, room);
+            socket.emit('chat message', $('#m').val(), room);
+            $('#m').val('');
+        });
+
+        socket.on('print username', function(data){
+            console.log(data);
+            $('#messages').append($('<li>').text(data));
+        });
+
+        socket.on('chat message', function(message){
+            console.log(message);
+            $('#messages').append($('<li>').text(message));
+        });
+
         socket.on('joined', function (IdArray) {
             var promise = new Promise(function(resolve, reject) {
                 getUserMedia(constraints, successCallback, errorCallback);
