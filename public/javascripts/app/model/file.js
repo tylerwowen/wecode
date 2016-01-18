@@ -2,12 +2,8 @@ define(function(require) {
     "use strict";
 
     var RealTimeData = require('app/model/realtimedata');
-    var GoogleFileAdapter = require('app/adapters/googlefileadapter');
     var ACEAdapter = require('app/adapters/aceadapter');
     var gapi = require('gapi');
-
-
-    var data = {};
 
     var bind = function (fn, me) {
         return function () {
@@ -15,11 +11,11 @@ define(function(require) {
         };
     };
 
-    function File(fileName, id, editor) {
+    function File(fileName, id, editor, fileAdapter) {
         this.id = id;
         this.name = fileName;
         this.realTimeData = new RealTimeData();
-        this.googleFileAdapter = new GoogleFileAdapter(this);
+        this.googleFileAdapter = fileAdapter;
         this.editor = editor;
         this.adapter = new ACEAdapter(editor);
         this.currentData = null;
@@ -42,11 +38,8 @@ define(function(require) {
 
         // After a file has been initialized and loaded, we can access the
         // document. We will wire up the data model to the UI.
-        this.onFileLoaded = function(doc, id) {
+        this.onFileLoaded = function(doc) {
 
-            data[id] = this.realTimeData;
-
-            this.realTimeData.id = id;
             this.realTimeData.text = doc.getModel().getRoot().get('text');
             this.realTimeData.cursors = doc.getModel().getRoot().get('cursors');
             this.realTimeData.collaborators = doc.this.realTimeData.getCollaborators();
@@ -56,13 +49,12 @@ define(function(require) {
 
         // Connects the realtime data to the collaborative string
         this.connectWithEditor = function(id) {
-            this.realTimeData = data[id];
 
             if (!realTimeData) {
                 return false;
             }
             this.removeAllListeners();
-            this.currentData = this.realTimeData;
+                this.currentData = this.realTimeData;
             this.editor.setValue(this.realTimeData.text.getText());
 
             var currentUserId = this.realTimeData.getCurrentUserId(this.realTimeData.collaborators);
@@ -111,7 +103,18 @@ define(function(require) {
         };
 
         this.load = function () {
-            this.googleFileAdapter.loadDriveFile(this);
+            var that = this;
+
+            return this.googleFileAdapter.loadDriveFile(that.id).then(function(doc) {
+                if (doc) {
+                    console.log("On File Loaded called");
+                    that.onFileLoaded(doc);
+                }
+                else {
+                    console.log("On File Initialized called");
+                    that.onFileInitialize()
+                }
+            });
         };
 
     }).call(File.prototype);
