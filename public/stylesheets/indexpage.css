@@ -90,15 +90,18 @@ iframe {
 
 .line-center{
     margin:0;padding:0 10px;
-    background:#fff;
+    background:  #404040;
     display:inline-block;
 }
-h5{
+h4{
+    color: #ffffff!important;
+}
 
+h5{
     text-align:center;
     position:relative;
     z-index:2;
-
+    color: #ffffff!important;
 }
 h5:after{
     content:"";
@@ -135,6 +138,14 @@ h5:after{
     margin: 0;
 }
 
+#signUpButton, #loginButton {
+    margin: 5px;
+}
+
+#signUp {
+    color: #ffffff!important;
+}
+
 .navbar {
     background: transparent!important;
 }
@@ -145,4 +156,8 @@ h5:after{
 
 .form-group {
     text-align: center;
+}
+
+.dropdown-menu {
+    background-color: #404040!important;
 }

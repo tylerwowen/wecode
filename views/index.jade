@@ -17,7 +17,7 @@ html
         .navbar.navbar-default.navbar-fixed-top
             ul.nav.pull-right
                 li.dropdown
-                    button.btn.btn-success.dropdown-toggle(href='#', data-toggle='dropdown') Login
+                    button.btn.btn-success.dropdown-toggle#loginButton(href='#', data-toggle='dropdown') Login
                     .dropdown-menu#loginMenu
                         form#formLogin.form
                             h4 Sign in via
@@ -42,9 +42,9 @@ html
                                 br
                                 button.btn.btn-success.page-scroll#btnLogin(type='button') Login
                                 div#signUp Not registered?
-                                    a(href='/users') Sign Up
+                                    a(href='/users')  Sign Up
                     li
-                    a.btn.btn-success.btn-xl.page-scroll(href='/users') Sign Up
+                    a.btn.btn-success.btn-xl.page-scroll#signUpButton(href='/users') Sign Up
         header
             .header-content
                 .header-content-inner
