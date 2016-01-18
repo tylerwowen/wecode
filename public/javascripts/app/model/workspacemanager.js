@@ -1,9 +1,8 @@
 define(function(require) {
     "use strict";
 
-    var WorkSpace = require('app/model/workspace'),
-        Q = require('q'),
-        Adapter = require('app/adapters/googleworkspaceadapter');
+    var Q = require('q'),
+        Adapter = require('app/adapters/googlesetupadapter');
 
     function WorkspaceManager() {
         this.rootFolderId = null;
@@ -18,15 +17,18 @@ define(function(require) {
         // Init operations
         this.init = function() {
             var that = this;
-            return this.loadConfiguration().then(function(rootFolderId) {
-                that.rootFolderId = rootFolderId;
-                return that.getWorkspaceList();
+            return this.adapter.load()
+                .then(function() {
+                    return that.loadConfiguration();
+                }).then(function(rootFolderId) {
+                    that.rootFolderId = rootFolderId;
+                    return that.getWorkspaceList();
             });
         };
 
         this.loadConfiguration = function() {
             var that = this;
-            this.adapter.loadConfiguration().then(function(rootFolderId) {
+            return this.adapter.loadConfiguration().then(function(rootFolderId) {
                 if (rootFolderId != null) {
                     return rootFolderId;
                 }

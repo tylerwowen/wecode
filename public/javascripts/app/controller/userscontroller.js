@@ -2,49 +2,62 @@ define(function (require) {
     "use strict";
 
     var $ = require('jquery'),
+        gapi = require('gapi'),
         UserManager = require('app/model/usermanager'),
         WorkSpaceManager = require('app/model/workspacemanager');
 
     function Controller() {
+        this.userManager = new UserManager();
+        this.workspaceManager = new WorkSpaceManager();
 
-        var that = this;
-
-        $('#signup').click(function () {
-            var userInput = that.getUserInput();
-            UserManager.signup(userInput).then(function () {
-                that.updateStatus();
-            }, function (error) {
-                console.error(error);
-            });
-        });
-
-        $('#login').click(function () {
-            var userInput = that.getUserInput();
-            UserManager.login(userInput).then(function () {
-                $('#login-hovering').hide();
-            }, function (error) {
-                console.error(error);
-            });
-        });
-
-        $('#logout').click(function () {
-            UserManager.logout();
-            that.updateStatus();
-        });
-
-        $('#saveWorkSpaceBtn').click(function () {
-            var id = $('#workSpaceId').val();
-            WorkSpaceManager.saveWorkSpace(id).then(function () {
-                that.showWorkSpaceList();
-            });
-        });
+        this.onGapiSuccess = this.onGapiSuccess.bind(this);
+        this.onGapiFailure = this.onGapiFailure.bind(this);
     }
 
     (function () {
         this.constructor = Controller;
 
-        this.updateStatus = function () {
-            this.updateStatus();
+        this.init = function() {
+            var that = this;
+            this.userManager.initGapi().then(function() {
+                that.connectToView();
+            });
+        };
+
+        this.connectToView = function() {
+            var that = this;
+
+            this.renderButton();
+
+            $('#signup').click(function () {
+                var userInput = that.getUserInput();
+                UserManager.signup(userInput).then(function () {
+                    that.updateStatus();
+                }, function (error) {
+                    console.error(error);
+                });
+            });
+
+            $('#login').click(function () {
+                var userInput = that.getUserInput();
+                UserManager.login(userInput).then(function () {
+                    $('#login-hovering').hide();
+                }, function (error) {
+                    console.error(error);
+                });
+            });
+
+            $('#logout').click(function () {
+                UserManager.logout();
+                that.updateStatus();
+            });
+
+            $('#saveWorkSpaceBtn').click(function () {
+                var id = $('#workSpaceId').val();
+                WorkSpaceManager.saveWorkSpace(id).then(function () {
+                    that.showWorkSpaceList();
+                });
+            });
         };
 
         this.getUserInput = function() {
@@ -58,12 +71,34 @@ define(function (require) {
         };
 
         this.updateStatus = function() {
-            if (UserManager.isLoggedIn()) {
+            if (this.userManager.isLoggedIn()) {
                 this.showLoggedInMessage();
                 this.showWorkSpaceList();
             } else {
                 this.showNotLoggedInMessage();
             }
+        };
+
+        this.renderButton = function() {
+            gapi.signin2.render('signin-button', {
+                'width': 300,
+                'height': 50,
+                'longtitle': true,
+                'theme': 'dark',
+                'onsuccess': this.onGapiSuccess,
+                'onfailure': this.onGapiFailure
+            });
+        };
+
+        this.onGapiSuccess = function(googleUser) {
+            this.updateStatus();
+            this.showWorkSpaceList();
+            this.userManager.onGapiSuccess(googleUser);
+        };
+
+        this.onGapiFailure = function(error) {
+            console.log(error);
+            this.userManager.onGapiFailure(error);
         };
 
         this.showLoggedInMessage = function() {
@@ -76,13 +111,17 @@ define(function (require) {
 
         this.showWorkSpaceList = function() {
 
-            WorkSpaceManager.getWorkSpaceList().then(function (workSpaceList) {
+            this.workspaceManager.init().then(function (workSpaceList) {
                 $('#workSpaceList').empty();
                 workSpaceList.forEach(function (workSpace) {
+                    var params = $.param({
+                        id: workSpace.id,
+                        name: workSpace.name
+                    });
                     $('#workSpaceList').append(
                         '<li>' +
-                        '<a href="/main?workspace=' + workSpace.id + '">' +
-                        workSpace.get('name') + '</a>' +
+                        '<a href="/main?' + params + '">' +
+                        workSpace.name+ '</a>' +
                         '</li>');
                 })
             }, function (error) {

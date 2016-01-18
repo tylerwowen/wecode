@@ -3,6 +3,6 @@ define(function(require) {
         Controller = require('app/controller/userscontroller');
 
     var controller = new Controller();
-    controller.updateStatus();
+    controller.init();
 
 });

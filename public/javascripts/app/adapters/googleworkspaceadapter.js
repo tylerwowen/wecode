@@ -2,9 +2,9 @@ define(function (require) {
     "use strict";
 
     var gapi = require('gapi'),
+        Q = require('q'),
         File = require('app/model/file'),
-        Folder = require('app/model/folder'),
-        Workspace = require('app/model/workspace');
+        Folder = require('app/model/folder');
 
     function WorkspaceAdapter() {
 
@@ -15,7 +15,13 @@ define(function (require) {
         this.constructor = WorkspaceAdapter;
 
         this.load = function() {
-            return gapi.client.load('drive', 'v3');
+            var deferred = Q.defer();
+            gapi.load('client', function(){
+                gapi.client.load('drive', 'v3').then(function() {
+                    deferred.resolve();
+                });
+            });
+            return deferred.promise;
         };
 
         /**
@@ -24,63 +30,6 @@ define(function (require) {
          */
         this.realtimeMimeType = 'application/vnd.google-apps.drive-sdk';
         this.folderMimeType = 'application/vnd.google-apps.folder';
-
-
-        this.createConfigurationFile = function(rootFolderId) {
-            const boundary = '-------314159265358979323846';
-            const delimiter = "\r\n--" + boundary + "\r\n";
-            const close_delim = "\r\n--" + boundary + "--";
-
-            var metadata = {
-                'name': 'config.json',
-                'mimeType': 'application/json',
-                'parents': [ 'appDataFolder']
-            };
-
-            var configuration = JSON.stringify({
-                'rootFolderId': rootFolderId
-            });
-
-            var body =
-                delimiter +
-                'Content-Type: application/json\r\n\r\n' +
-                JSON.stringify(metadata) +
-                delimiter +
-                'Content-Type: application/json\r\n\r\n' +
-                configuration +
-                close_delim;
-
-            return gapi.client.request({
-                'path': '/upload/drive/v3/files',
-                'method': 'POST',
-                'params': {'uploadType': 'multipart'},
-                'headers': {
-                    'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
-                },
-                'body': body
-            });
-        };
-
-        this.loadConfiguration = function() {
-            var request = {
-                spaces: 'appDataFolder',
-                q: 'name = "config.json"'
-            };
-            return gapi.client.drive.files.list(request)
-                .then(function(response) {
-                    if (response.result.files.length < 1) {
-                        return null;
-                    }
-                    if (response.result.files[0].name == 'config.json') {
-                        return gapi.client.drive.files.get({
-                            fileId: response.result.files[0].id,
-                            alt: 'media'
-                        }).then(function(json) {
-                            return JSON.parse(json.body).rootFolderId;
-                        });
-                    }
-                });
-        };
 
         /**
          * Fetches all the files(folders as well) under a folder
@@ -98,33 +47,10 @@ define(function (require) {
                 var contentList = [];
                 for (var i = 0; i < files.length; i++) {
                     if (files[i].mimeType.includes(that.realtimeMimeType)) {
-                        //contentList[i] = new File(files[i].name);
+                        contentList[i] = new File(response.result.name.id, fileName);
                     }
                     else if (files[i].mimeType == that.folderMimeType) {
                         contentList[i] = new Folder(files[i].id, files[i].name, that);
-                    }
-                }
-                return contentList;
-            });
-        };
-
-        /**
-         * Fetches all the workspace
-         * @param {!string} folderId is the ID of the root folder.
-         * @return {!promise} returns a promise
-         * @export
-         */
-        this.getWorkspaceList = function(folderId) {
-            var that = this;
-            var request = {
-                q: "'" + folderId + "'" + ' in parents'
-            };
-            return gapi.client.drive.files.list(request).then(function(response) {
-                var workspaces = response.result.files;
-                var contentList = [];
-                for (var i = 0; i < workspaces.length; i++) {
-                    if (workspaces[i].mimeType == that.folderMimeType) {
-                        contentList[i] = new Workspace(workspaces[i].id, workspaces[i].name, that);
                     }
                 }
                 return contentList;
@@ -187,20 +113,6 @@ define(function (require) {
                 });
         };
 
-        this.createRootFolder = function() {
-            var folderName = 'WeCodeApplicationData';
-            var request = {
-                'resource': {
-                    mimeType: this.folderMimeType,
-                    name: folderName
-                }
-            };
-            return gapi.client.drive.files.create(request)
-                .then(function(response) {
-                    return response.result.id;
-                });
-        };
-
         /**
          * Delete a folder.
          * @param {!string} folderId of the file to be created.
@@ -210,20 +122,6 @@ define(function (require) {
         this.deleteFolder = function(folderId) {
             return this.deleteFile(folderId);
         };
-
-        // Sets a file's permission
-        this.insertPermission = function(fileId, value, type, role) {
-            var body = {
-                'value': value,
-                'type': type,
-                'role': role
-            };
-            var request = {
-                'fileId': fileId,
-                'resource': body
-            };
-            return gapi.client.drive.permissions.create(request);
-        }
 
     }).call(WorkspaceAdapter.prototype);
 

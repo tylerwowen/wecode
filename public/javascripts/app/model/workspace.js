@@ -1,13 +1,12 @@
 define(function (require) {
     "use strict";
 
-    var File = require('app/model/file'),
-        Folder = require('app/model/folder');
+    var Folder = require('app/model/folder');
 
     function Workspace(id, name, adapter) {
         this.id = id;
         this.name = name;
-        this.rootFolder = new Folder(id, name);
+        this.rootFolder = new Folder(id, name, adapter);
         this.contentList = this.rootFolder.contentList;
         this.isShared = false;
         this.adapter = adapter;
@@ -56,9 +55,9 @@ define(function (require) {
 
         this.createFolder = function(parentId, folderName) {
             var that = this;
-            return this.adapter.createFolder(parentId, folderName).then(function(folder) {
-                that.contentList[folder.id] = folder;
-                return folder;
+            return this.adapter.createFolder(parentId, folderName).then(function(folderId) {
+                that.contentList[folderId] = new Folder(folderId, folderName, that.adapter);
+                return that.contentList[folderId];
             });
         };
 

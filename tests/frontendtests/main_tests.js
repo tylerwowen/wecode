@@ -12,7 +12,8 @@ requirejs.config({
         'chai': '//chaijs.com/chai',
         'mocha': '//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha',
         'q': 'https://cdnjs.cloudflare.com/ajax/libs/q.js/1.4.1/q.min',
-        'sinon': '//cdnjs.cloudflare.com/ajax/libs/sinon.js/1.15.4/sinon.min'
+        'sinon': '//cdnjs.cloudflare.com/ajax/libs/sinon.js/1.15.4/sinon.min',
+        'chaiaspromised': '//cdn.rawgit.com/domenic/chai-as-promised/master/lib/chai-as-promised'
     },
     shim: {
         'gapi': {
@@ -44,7 +45,7 @@ define(function(require) {
     var $ = require('jquery');
     var chai = require('chai');
     var mocha = require('mocha');
-    var chaiAsPromised = require("../../tests/frontendtests/lib/chaiaspromised");
+    var chaiAsPromised = require('chaiaspromised');
     //requirejs(['public/javascripts/webrtc','public/javascripts/draggableObjects', 'public/javascripts/searchwindow', 'bootstrap']);
 
     chai.use(chaiAsPromised);

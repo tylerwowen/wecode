@@ -41,7 +41,7 @@ define(function(require) {
                 }).then(function() {
                     return adapter.deleteFolder(jsonId);
                 }).then(function(response) {
-                    expect(response.status).to.equal(200);
+                    expect(response.status).to.equal(204);
                     done();
                 });
             });

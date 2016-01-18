@@ -12,7 +12,7 @@ define(function (require) {
     function Folder(id, name, adapter) {
         this.id = id;
         this.name = name;
-        this.contentlList = null;
+        this.contentList = null;
         this.adapter = adapter;
     }
 
