@@ -1,12 +1,11 @@
 define(function(require) {
     "use strict";
 
-    var $ = require('jquery'),
+    var Q = require('q'),
         gapi = require('gapi');
 
-    function GoogleFileAdapter(file) {
-        this.file = file;
-    }
+    function GoogleFileAdapter() {}
+
 
     (function() {
 
@@ -18,28 +17,16 @@ define(function(require) {
          * @export
          */
 
-        // Function from RealtimeUtils:
-        // load: function(documentId, onFileLoaded, initializeModel) {
-        //    var that = this;
-        //    gapi.drive.realtime.load(documentId, function(doc) {
-        //        window.doc = doc;  // Debugging purposes
-        //        onFileLoaded(doc);
-        //    }, initializeModel, this.onError);
-        // },
-
         this.loadDriveFile = function(id) {
-            var that = this;
-            if (id) {
-                var isDataCached = this.file.connectWithEditor(id);
-                if(!isDataCached) {
-                    gapi.drive.realtime.load(id, function(doc) {
-                        that.file.onFileLoaded(doc, id);
-                    }, this.file.onFileInitialize. this.onError);
-                }
-                return true;
-            } else {
-                return false;
-            }
+            var deferred = Q.defer();
+            gapi.drive.realtime.load(id, function(doc) {
+                deferred.resolve(doc);
+            },function(){
+                deferred.resolve();
+            },function(error) {
+                deferred.reject(new Error(error));
+            });
+            return deferred.promise;
         };
 
     }).call(GoogleFileAdapter.prototype);
