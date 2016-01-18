@@ -2,100 +2,137 @@ define(function (require) {
     "use strict";
 
     var $ = require('jquery'),
+        gapi = require('gapi'),
         UserManager = require('app/model/usermanager'),
         WorkSpaceManager = require('app/model/workspacemanager');
 
-    function getUserInput() {
-        var userName = $('#userName').val();
-        var password = $('#password').val();
-
-        return {
-            userName: userName,
-            password: password
-        };
-    }
-
-    function updateStatus() {
-        if (UserManager.isLoggedIn()) {
-            showLoggedInMessage();
-            showWorkSpaceList();
-        } else {
-            showNotLoggedInMessage();
-        }
-    }
-
-    function showLoggedInMessage() {
-        $('#status').text('You are logged in.');
-    }
-
-    function showNotLoggedInMessage() {
-        $('#status').text('You are NOT logged in.');
-    }
-
-    function showWorkSpaceList() {
-
-        WorkSpaceManager.getWorkSpaceList().then(function (workSpaceList) {
-            $('#workSpaceList').empty();
-            workSpaceList.forEach(function (workSpace) {
-                $('#workSpaceList').append(
-                    '<li>' +
-                    '<a href="/main?workspace=' + workSpace.id + '">' +
-                    workSpace.get('name') + '</a>' +
-                    '</li>');
-            })
-        }, function (error) {
-            console.error(error);
-        });
-    }
-
     function Controller() {
+        this.userManager = new UserManager();
+        this.workspaceManager = new WorkSpaceManager();
 
-        var that = this;
-
-        $('#signup').click(function () {
-            var userInput = getUserInput();
-            UserManager.signup(userInput).then(function () {
-                updateStatus();
-            }, function (error) {
-                console.error(error);
-            });
-        });
-
-        $('#login').click(function () {
-            var userInput = getUserInput();
-            UserManager.login(userInput).then(function () {
-                $('#login-hovering').hide();
-                that.callback();
-            }, function (error) {
-                console.error(error);
-            });
-        });
-
-        $('#logout').click(function () {
-            UserManager.logout();
-            updateStatus();
-        });
-
-        $('#saveWorkSpaceBtn').click(function () {
-            var id = $('#workSpaceId').val();
-            WorkSpaceManager.saveWorkSpace(id).then(function () {
-                showWorkSpaceList();
-            });
-        });
+        this.onGapiSuccess = this.onGapiSuccess.bind(this);
+        this.onGapiFailure = this.onGapiFailure.bind(this);
     }
 
     (function () {
         this.constructor = Controller;
 
-        this.updateStatus = function () {
-            updateStatus();
+        this.init = function() {
+            var that = this;
+            this.userManager.initGapi().then(function() {
+                that.connectToView();
+            });
+        };
+
+        this.connectToView = function() {
+            var that = this;
+
+            this.renderButton();
+
+            $('#signup').click(function () {
+                var userInput = that.getUserInput();
+                UserManager.signup(userInput).then(function () {
+                    that.updateStatus();
+                }, function (error) {
+                    console.error(error);
+                });
+            });
+
+            $('#login').click(function () {
+                var userInput = that.getUserInput();
+                UserManager.login(userInput).then(function () {
+                    $('#login-hovering').hide();
+                }, function (error) {
+                    console.error(error);
+                });
+            });
+
+            $('#logout').click(function () {
+                UserManager.logout();
+                that.updateStatus();
+            });
+
+            $('#saveWorkSpaceBtn').click(function () {
+                var id = $('#workSpaceId').val();
+                WorkSpaceManager.saveWorkSpace(id).then(function () {
+                    that.showWorkSpaceList();
+                });
+            });
+        };
+
+        this.getUserInput = function() {
+            var userName = $('#userName').val();
+            var password = $('#password').val();
+
+            return {
+                userName: userName,
+                password: password
+            };
+        };
+
+        this.updateStatus = function() {
+            if (this.userManager.isLoggedIn()) {
+                this.showLoggedInMessage();
+                this.showWorkSpaceList();
+            } else {
+                this.showNotLoggedInMessage();
+            }
+        };
+
+        this.renderButton = function() {
+            gapi.signin2.render('signin-button', {
+                'width': 300,
+                'height': 50,
+                'longtitle': true,
+                'theme': 'dark',
+                'onsuccess': this.onGapiSuccess,
+                'onfailure': this.onGapiFailure
+            });
+        };
+
+        this.onGapiSuccess = function(googleUser) {
+            this.updateStatus();
+            this.showWorkSpaceList();
+            this.userManager.onGapiSuccess(googleUser);
+        };
+
+        this.onGapiFailure = function(error) {
+            console.log(error);
+            this.userManager.onGapiFailure(error);
+        };
+
+        this.showLoggedInMessage = function() {
+            $('#status').text('You are logged in.');
+        };
+
+        this.showNotLoggedInMessage = function() {
+            $('#status').text('You are NOT logged in.');
+        };
+
+        this.showWorkSpaceList = function() {
+
+            this.workspaceManager.init().then(function (workSpaceList) {
+                $('#workSpaceList').empty();
+                workSpaceList.forEach(function (workSpace) {
+                    var params = $.param({
+                        id: workSpace.id,
+                        name: workSpace.name
+                    });
+                    $('#workSpaceList').append(
+                        '<li>' +
+                        '<a href="/main?' + params + '">' +
+                        workSpace.name+ '</a>' +
+                        '</li>');
+                })
+            }, function (error) {
+                console.error(error);
+            });
         };
 
         this.loginRequest = function (init) {
             $('#login-hovering').show();
             this.callback = init;
         };
-
     }).call(Controller.prototype);
 
 

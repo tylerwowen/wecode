@@ -1,7 +1,7 @@
 define(function(require) {
     "use strict";
 
-    var ACEAdapter = require('app/model/aceadapter'),
+    var ACEAdapter = require('app/adapters/aceadapter'),
         Cursor = require('app/model/cursor'),
         gapi = require('gapi');
 
@@ -49,12 +49,10 @@ define(function(require) {
         return "00000".substring(0, 6 - c.length) + c;
     }
 
-
-
     function RealtimeDataManager(editor) {
         this.editor = editor;
         this.adapter = new ACEAdapter(editor);
-        this.currentData;
+        this.currentData = null;
         this.updateEditorText = bind(this.updateEditorText, this);
         this.updateEditorCursors = bind(this.updateEditorCursors, this);
     }

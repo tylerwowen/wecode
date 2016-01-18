@@ -8,14 +8,16 @@ define(function(require) {
     var editorController = new EditorController(),
         userController = new UserController();
 
+    //if (userController.userManager.isLoggedIn()) {
+    //    init();
+    //}
+    //else {
+    //    userController.loginRequest(init);
+    //}
+    init();
     function init() {
         requirejs(['webrtc', 'widgets']);
+        userController.init();
         editorController.init();
-    }
-    if (UserManager.isLoggedIn()) {
-        init();
-    }
-    else {
-        userController.loginRequest(init);
     }
 });
