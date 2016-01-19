@@ -10,6 +10,13 @@ rtcSockets = function(app) {
     var io = require('socket.io').listen(app, { log: false });
     io.sockets.on('connection', function (socket){
 
+        socket.on('chat message', function(message, room){
+            io.sockets.in(room).emit('chat message', message);
+        });
+
+        socket.on('print username', function(data, room){
+            io.sockets.in(room).emit('print username', data);
+        });
         /**
          * Listens to a message from a client to handle peer connections, the different steps
          * it performs are:

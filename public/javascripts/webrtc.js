@@ -111,6 +111,20 @@ define(function(require) {
             console.debug('Room ' + room + ' is full');
         });
 
+        $('form').submit(function(){
+            socket.emit('print username', myId, room);
+            socket.emit('chat message', $('#m').val(), room);
+            $('#m').val('');
+        });
+
+        socket.on('print username', function(data){
+            $('#messages').append($('<li>').text(data + " says: "));
+        });
+
+        socket.on('chat message', function(message){
+            $('#messages').append($('<li>').text(message));
+        });
+
         socket.on('joined', function (IdArray) {
             var promise = new Promise(function(resolve, reject) {
                 getUserMedia(constraints, successCallback, errorCallback);
@@ -121,7 +135,7 @@ define(function(require) {
                 for(var i = 0; i < IdArray.length; i++) {
                     var remoteId = IdArray[i];
                     if(myId === remoteId){
-                        continue;
+
                     }
                     else{
                         createPeerConnection(remoteId);
@@ -139,12 +153,11 @@ define(function(require) {
          * 4. If it receives a candidate then it will send a candidate to the other client
          */
         socket.on('message', function (message, remoteId) {
-            if (message === 'got user media') {
-                console.debug('got user media from message');
-                maybeStartPeerConnection();
-            } else if (message.type === 'offer') { //Handle when a user sends an offer
+            if (message.type === 'offer') { //Handle when a user sends an offer
                 console.debug('Received an offer from a peer, setting sdp as the remote');
                 createPeerConnection(remoteId);
+                $('#messages').append($('<li>').text(remoteId + " has joined the room."));
+                $('#messages').append($('<li>').text(""));
                 pcs[remoteId].setRemoteDescription(new RTCSessionDescription(message));
                 doAnswer(remoteId);
             } else if (message.type === 'answer') {
@@ -156,6 +169,9 @@ define(function(require) {
                 pcs[remoteId].addIceCandidate(candidate);
             } else if (message === 'bye') {
                 handleRemoteHangup(remoteId);
+                $('#messages').append($('<li>').text(remoteId + " has left the room."));
+                $('#messages').append($('<li>').text(""));
+
             } else if (message === 'room')
                 console.log('room');
         });
@@ -285,7 +301,7 @@ define(function(require) {
         }
 
         function handleRemoteHangup(remoteId) {
-            var remoteVideo = document.getElementById(remoteId)
+            var remoteVideo = document.getElementById(remoteId);
             pcs[remoteId].close();
             pcs.delete(remoteId);
             console.log('Session terminated');
