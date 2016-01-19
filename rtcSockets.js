@@ -11,12 +11,10 @@ rtcSockets = function(app) {
     io.sockets.on('connection', function (socket){
 
         socket.on('chat message', function(message, room){
-            console.log(message);
             io.sockets.in(room).emit('chat message', message);
         });
 
         socket.on('print username', function(data, room){
-            console.log(data);
             io.sockets.in(room).emit('print username', data);
         });
         /**

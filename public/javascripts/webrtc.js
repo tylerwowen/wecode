@@ -118,12 +118,10 @@ define(function(require) {
         });
 
         socket.on('print username', function(data){
-            console.log(data);
-            $('#messages').append($('<li>').text(data));
+            $('#messages').append($('<li>').text(data + " says: "));
         });
 
         socket.on('chat message', function(message){
-            console.log(message);
             $('#messages').append($('<li>').text(message));
         });
 
@@ -161,6 +159,8 @@ define(function(require) {
             } else if (message.type === 'offer') { //Handle when a user sends an offer
                 console.debug('Received an offer from a peer, setting sdp as the remote');
                 createPeerConnection(remoteId);
+                $('#messages').append($('<li>').text(remoteId + " has join the room."));
+                $('#messages').append($('<li>').text(""));
                 pcs[remoteId].setRemoteDescription(new RTCSessionDescription(message));
                 doAnswer(remoteId);
             } else if (message.type === 'answer') {
@@ -172,6 +172,9 @@ define(function(require) {
                 pcs[remoteId].addIceCandidate(candidate);
             } else if (message === 'bye') {
                 handleRemoteHangup(remoteId);
+                $('#messages').append($('<li>').text(remoteId + " has left the room."));
+                $('#messages').append($('<li>').text(""));
+
             } else if (message === 'room')
                 console.log('room');
         });
