@@ -46,10 +46,15 @@ define(function (require) {
             var wsID = this.getParam('id');
             var wsName = this.getParam('name');
             // Get a list of files from work space with wsID
-            this.workspace = new Workspace(wsID, wsName, this.workspaceAdapter);
-            this.workspace.getContentsList().then(function (contents) {
-                that.showList(contents);
-            });
+            if (wsID != null) {
+                this.workspace = new Workspace(wsID, wsName, this.workspaceAdapter);
+                this.workspace.getContentsList().then(function (contents) {
+                    that.showList(contents);
+                });
+            }
+            else {
+                $('#workwrapper').show();
+            }
         };
 
         this.refreshWorkSpace = function() {
