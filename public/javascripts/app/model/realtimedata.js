@@ -1,15 +1,42 @@
 define(function(require) {
     "use strict";
-    
-    // Realtime data structure
-    function RealTimeData() {
 
+    var gapi = require('gapi'),
+        Cursor = require('app/model/cursor');
+
+    // Realtime data structure
+    function RealTimeData(doc) {
+        this.text = doc.getModel().getRoot().get('text');
+        this.cursors = doc.getModel().getRoot().get('cursors');
+        this.collaborators = doc.getCollaborators();
     }
+
     (function () {
 
-        this.text = null;
-        this.cursors = null;
-        this.collaborators = null;
+        this.constructor = RealTimeData;
+
+        this.removeAllListeners = function() {
+            this.text.removeAllEventListeners();
+            this.cursors.removeAllEventListeners();
+        };
+
+        this.addTextChangeListener = function(listener) {
+            this.text.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, listener);
+            this.text.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, listener);
+        };
+
+        this.addCursorChangeListener = function(listener) {
+            this.cursors.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, listener);
+        };
+
+        this.getCursorFor = function(id) {
+            return this.cursors.get(id);
+        };
+
+        this.initCursorFor = function(id) {
+            var cursor = new Cursor(0, 0);
+            return this.cursors.set(id, cursor);
+        };
 
         this.getCurrentUserId = function() {
             for (var i = 0; i < this.collaborators.length; i++) {
@@ -19,28 +46,9 @@ define(function(require) {
             }
         };
 
-        this.getColor = function(string) {
-            return '#' + this.intToRGB(this.hashCode(string));
-        };
 
-        this.hashCode = function(str) {
-            var hash = 0;
-            for (var i = 0; i < str.length; i++) {
-                hash = str.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            return hash;
-        };
-
-        this.intToRGB = function(i) {
-            var c = (i & 0x00FFFFFF)
-                .toString(16)
-                .toUpperCase();
-
-            return "00000".substring(0, 6 - c.length) + c;
-        };
 
     }).call(RealTimeData.prototype);
 
     return RealTimeData;
-
 });

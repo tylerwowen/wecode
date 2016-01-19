@@ -30,7 +30,7 @@ define(function(require) {
         this.auth2 = null;
         this.userName = null;
         this.gToken = null;
-        this.refreshInterval = 180000;
+        this.refreshInterval = 1800000;
 
         this.initGapi = function() {
             var that = this;
@@ -40,18 +40,13 @@ define(function(require) {
                     client_id: clientId,
                     scope: scopes
                 });
-                that.attauchClickHandler();
-                that.authorize();
+                that.attachClickHandler();
                 deferred.resolve();
             });
-            if (this.authTimer) {
-                window.clearTimeout(this.authTimer);
-            }
-            this.refreshAuth();
             return deferred.promise;
         };
 
-        this.attauchClickHandler = function() {
+        this.attachClickHandler = function() {
             var that = this;
             //this.auth2.attachClickHandler('signin-button', {}, this.onGapiSuccess, this.onGapiFailure);
         };
@@ -60,6 +55,10 @@ define(function(require) {
             console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
             this.gToken = googleUser.getAuthResponse().access_token;
             this.userName = googleUser.getBasicProfile().getName();
+            if (this.authTimer) {
+                window.clearTimeout(this.authTimer);
+            }
+            this.refreshAuth();
         };
 
         this.onGapiFailure = function(error) {
@@ -70,16 +69,40 @@ define(function(require) {
             return this.auth2.isSignedIn.get();
         };
 
-        /**
-         * Attempts to authorize.
-         * @private
-         */
-        this.authorize = function() {
-            // Try with no popups first.
+        this.startAuthorizing = function() {
+            var that = this;
+            var deferred = Q.defer();
+
             gapi.auth.authorize({
                 client_id: clientId,
                 scope: scopes,
                 immediate: true
+            }, function(authResult) {
+                if (authResult && !authResult.error) {
+                    that.gToken = authResult.access_token;
+                    console.log('Authorization succeed');
+                }
+                deferred.resolve(authResult);
+            });
+
+            if (this.authTimer) {
+                window.clearTimeout(this.authTimer);
+            }
+            this.refreshAuth();
+
+            return deferred.promise;
+        };
+
+        /**
+         * Attempts to authorize.
+         * @private
+         */
+        this.authorize = function(usePopup) {
+            // Try with no popups first.
+            gapi.auth.authorize({
+                client_id: clientId,
+                scope: scopes,
+                immediate: !usePopup
             }, this.handleAuthResult);
         };
 
@@ -103,7 +126,7 @@ define(function(require) {
         this.refreshAuth = function() {
             var that = this;
             this.authTimer = setTimeout(function() {
-                that.authorize();
+                that.authorize(false);
                 that.refreshAuth();
             }, this.refreshInterval);
         };

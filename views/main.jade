@@ -3,6 +3,9 @@ extends layout
 block content
     include login
     include workspace
+    include textchat
+    include sidebar
+
     .container
         .row
             .col-md-2
@@ -10,5 +13,3 @@ block content
             .col-md-9
                 include codeeditor
                 include webrtc
-            .col-md-1
-                include sidebar

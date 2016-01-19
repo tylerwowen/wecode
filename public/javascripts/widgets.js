@@ -30,48 +30,80 @@ define(function(require) {
 
     var browser = false;
     var workspace = false;
+    var textchat = false;
 
     showWorkSpaceList();
 
-    $("#framewrapper").animate({
-        right: "3%",
-        width: "toggle"
-    }, 1000, function () {
-    });
+
 
     $("#search").click(function () {
         $("#framewrapper").animate({
-            right: "3%",
+            right: "4%",
             width: "toggle"
         }, 1000, function () {
         });
         browser = !browser;
-        if(workspace==true){
+        if (workspace==true){
             $("#workwrapper").animate({
-                right: "3%",
+                right: "4%",
                 width: "toggle"
             }, 1000, function () {
             });
             workspace = false;
         }
-    });
-
-    $("#workwrapper").animate({
-        right: "3%",
-        width: "toggle"
-    }, 1000, function () {
+        else if (textchat==true){
+            $("#chatwrapper").animate({
+                right: "4%",
+                width: "toggle"
+            }, 1000, function () {
+            });
+            textchat = false;
+        }
     });
 
     $("#workspace").click(function () {
         $("#workwrapper").animate({
-            right: "3%",
+            right: "4%",
             width: "toggle"
         }, 1000, function () {
         });
         workspace = !workspace;
-        if(browser==true){
+        if (browser==true){
             $("#framewrapper").animate({
-                right: "3%",
+                right: "4%",
+                width: "toggle"
+            }, 1000, function () {
+            });
+            browser = false;
+        }
+        else if (textchat==true){
+            $("#chatwrapper").animate({
+                right: "4%",
+                width: "toggle"
+            }, 1000, function () {
+            });
+            textchat = false;
+        }
+    });
+
+    $("#chat").click(function () {
+        $("#chatwrapper").animate({
+            right: "4%",
+            width: "toggle"
+        }, 1000, function () {
+        });
+        textchat = !textchat;
+        if (workspace==true){
+            $("#workwrapper").animate({
+                right: "4%",
+                width: "toggle"
+            }, 1000, function () {
+            });
+            workspace = false;
+        }
+        else if (browser==true){
+            $("#framewrapper").animate({
+                right: "4%",
                 width: "toggle"
             }, 1000, function () {
             });
@@ -79,7 +111,4 @@ define(function(require) {
         }
     });
 
-    $("#back").click(function(){
-        $('#frame').contentWindow.history.back(-1);
-    });
 });

@@ -17,11 +17,22 @@ define(function (require) {
     (function () {
         this.constructor = Controller;
 
-        this.init = function() {
+        this.init = function(onEventuallySuccess) {
             var that = this;
-            this.userManager.initGapi().then(function() {
-                that.connectToView();
-            });
+            this.onEventuallySuccess = onEventuallySuccess;
+            return this.userManager.initGapi()
+                .then(function() {
+                    return that.userManager.startAuthorizing();
+                })
+                .then(function(authResult) {
+                    if (authResult && authResult.error) {
+                        that.renderButton();
+                        that.loginRequest();
+                    }
+                    else if (authResult && !authResult.error){
+                        onEventuallySuccess();
+                    }
+                });
         };
 
         this.connectToView = function() {
@@ -29,35 +40,35 @@ define(function (require) {
 
             this.renderButton();
 
-            $('#signup').click(function () {
-                var userInput = that.getUserInput();
-                UserManager.signup(userInput).then(function () {
-                    that.updateStatus();
-                }, function (error) {
-                    console.error(error);
-                });
-            });
-
-            $('#login').click(function () {
-                var userInput = that.getUserInput();
-                UserManager.login(userInput).then(function () {
-                    $('#login-hovering').hide();
-                }, function (error) {
-                    console.error(error);
-                });
-            });
-
-            $('#logout').click(function () {
-                UserManager.logout();
-                that.updateStatus();
-            });
-
-            $('#saveWorkSpaceBtn').click(function () {
-                var id = $('#workSpaceId').val();
-                WorkSpaceManager.saveWorkSpace(id).then(function () {
-                    that.showWorkSpaceList();
-                });
-            });
+            //$('#signup').click(function () {
+            //    var userInput = that.getUserInput();
+            //    UserManager.signup(userInput).then(function () {
+            //        that.updateStatus();
+            //    }, function (error) {
+            //        console.error(error);
+            //    });
+            //});
+            //
+            //$('#login').click(function () {
+            //    var userInput = that.getUserInput();
+            //    UserManager.login(userInput).then(function () {
+            //        $('#login-hovering').hide();
+            //    }, function (error) {
+            //        console.error(error);
+            //    });
+            //});
+            //
+            //$('#logout').click(function () {
+            //    UserManager.logout();
+            //    that.updateStatus();
+            //});
+            //
+            //$('#saveWorkSpaceBtn').click(function () {
+            //    var id = $('#workSpaceId').val();
+            //    WorkSpaceManager.saveWorkSpace(id).then(function () {
+            //        that.showWorkSpaceList();
+            //    });
+            //});
         };
 
         this.getUserInput = function() {
@@ -92,7 +103,9 @@ define(function (require) {
 
         this.onGapiSuccess = function(googleUser) {
             this.updateStatus();
-            this.showWorkSpaceList();
+            //this.showWorkSpaceList();
+            this.onEventuallySuccess();
+            $('#login-hovering').hide();
             this.userManager.onGapiSuccess(googleUser);
         };
 
@@ -129,9 +142,8 @@ define(function (require) {
             });
         };
 
-        this.loginRequest = function (init) {
+        this.loginRequest = function () {
             $('#login-hovering').show();
-            this.callback = init;
         };
     }).call(Controller.prototype);
 

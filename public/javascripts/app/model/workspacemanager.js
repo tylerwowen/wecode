@@ -58,7 +58,7 @@ define(function(require) {
             return this.getWorkspaceList();
         };
 
-        this.createWorkSpace = function(workSpaceId) {
+        this.createWorkSpace = function() {
 
         };
 

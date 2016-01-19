@@ -16,11 +16,13 @@ define(function (require) {
 
         this.workspaceAdapter = new WorkspaceAdapter();
         this.fileAdapter = new FileAdapter();
+
         this.editor = ace.edit('editor');
         this.editor.setTheme("ace/theme/monokai");
         this.editor.getSession().setMode("ace/mode/javascript");
         this.editor.getSession().setUseWrapMode(true);
         this.editor.$blockScrolling = Infinity;
+
         this.aceAdapter = new ACEAdapter(this.editor);
     }
 
@@ -53,7 +55,7 @@ define(function (require) {
         this.connectToView = function() {
             var that = this;
             $('#fileButton').click(function () {
-                that.workspace.createFile(that.workspace.id, $('#fileName').val());
+                taht.createFile($('#fileName').val());
             });
 
             $('#files').on('click', 'li.file', function () {
@@ -75,9 +77,10 @@ define(function (require) {
 
         this.createFile = function(fileName) {
             if (fileName) {
-                $.when(googleAdapter.createDriveFile(fileName)).then(function (driveFileId, fileName) {
-                    fs.createParseFile(driveFileId, fileName);
-                    refreshList(driveFileId, fileName);
+                var that = this;
+                this.workspace.createFile(that.workspace.id, fileName)
+                    .then(function (file) {
+                    that.refreshList(file.id, file.name);
                 });
             }
             else {
@@ -86,6 +89,7 @@ define(function (require) {
         };
 
         this.showList = function(contents) {
+            var that = this;
             if (contents != null) {
                 for (var id in contents) {
                     if (contents.hasOwnProperty(id)) {
@@ -105,7 +109,10 @@ define(function (require) {
                 }
             }
             else {
-                createFile('Demo');
+                this.workspace.createFile(this.workspace.id, 'demo')
+                    .then(function (file) {
+                        that.refreshList(file.id, file.name);
+                    });
             }
         };
 
