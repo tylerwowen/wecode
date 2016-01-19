@@ -124,6 +124,24 @@ define(function (require) {
                 });
         };
 
+        this.createWorkSpace = function(parentID, folderName) {
+            var request = {
+                'resource': {
+                    mimeType: this.folderMimeType,
+                    name: folderName,
+                    parents: [parentID]
+                }
+            };
+            return gapi.client.drive.files.create(request)
+                .then(function(response) {
+                    return {
+                        id: response.result.id,
+                        name: response.result.name
+                    };
+                });
+        };
+
+
         this.deleteFile = function(fileId) {
             var request = {
                 'fileId': fileId

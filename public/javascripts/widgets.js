@@ -12,44 +12,8 @@ define(function(require) {
         angular.bootstrap(document, ["app"]);
     });
 
-    function showWorkSpaceList() {
-        this.workspaceManager = new WorkSpaceManager();
-
-
-        this.workspaceManager.init().then(function (workSpaceList) {
-            $('#workSpaceList').empty();
-            workSpaceList.forEach(function (workSpace) {
-                var params = $.param({
-                    id: workSpace.id,
-                    name: workSpace.name
-                });
-                $('#workSpaceList').append(
-                    '<li>' +
-                    '<a href="/main?' + params + '">' +
-                    workSpace.name+ '</a>' +
-                    '</li>');
-            })
-        }, function (error) {
-            console.error(error);
-        });
-        //WorkSpaceManager.getWorkSpaceList().then(function (workSpaceList) {
-        //    $('#workSpaceList').empty();
-        //    workSpaceList.forEach(function (workSpace) {
-        //        $('#workSpaceList').append(
-        //            '<li>' +
-        //            '<a href="/main?workspace=' + workSpace.id + '">' +
-        //            workSpace.get('name') + '</a>' +
-        //            '</li>');
-        //    })
-        //}, function (error) {
-        //    console.error(error);
-        //});
-    }
-
     var browser = false;
     var workspace = false;
-
-    showWorkSpaceList();
 
     $("#framewrapper").animate({
         right: "3%",
@@ -80,6 +44,10 @@ define(function(require) {
     }, 1000, function () {
     });
 
+    $("#back").click(function(){
+        $('#frame').contentWindow.history.back(-1);
+    });
+
     $("#workspace").click(function () {
         $("#workwrapper").animate({
             right: "3%",
@@ -97,7 +65,33 @@ define(function(require) {
         }
     });
 
-    $("#back").click(function(){
-        $('#frame').contentWindow.history.back(-1);
+    var workspaceManager = new WorkSpaceManager();
+
+    function showWorkSpaceList() {
+
+        workspaceManager.init().then(function (workSpaceList) {
+            $('#workSpaceList').empty();
+            workSpaceList.forEach(function (workSpace) {
+                var params = $.param({
+                    id: workSpace.id,
+                    name: workSpace.name
+                });
+                $('#workSpaceList').append(
+                    '<li>' +
+                    '<a href="/main?' + params + '">' +
+                    workSpace.name+ '</a>' +
+                    '</li>');
+            })
+        }, function (error) {
+            console.error(error);
+        });
+    }
+    showWorkSpaceList();
+
+    $('#workSpaceButton').click(function() {
+        var name = $('#newWorkSpaceInput').val();
+        console.log(name);
+        workspaceManager.createWorkSpace(name);
     });
+
 });
