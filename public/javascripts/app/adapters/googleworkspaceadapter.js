@@ -123,6 +123,23 @@ define(function (require) {
             return this.deleteFile(folderId);
         };
 
+        /**
+         * Rename a realtime file.
+         * @param {!string} fileId of the file to be created.
+         * @return {!promise} returns a promise
+         * @export
+         */
+        this.renameFile = function(id, fileName) {
+            var body = {'title': fileName};
+            var request = gapi.client.drive.files.patch({
+                'fileId': id,
+                'resource': body
+            });
+            request.execute(function(resp) {
+                console.log('New Title: ' + resp.title);
+            });
+        };
+
     }).call(WorkspaceAdapter.prototype);
 
     return WorkspaceAdapter;
