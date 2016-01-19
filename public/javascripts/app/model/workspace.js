@@ -46,8 +46,8 @@ define(function (require) {
             });
         };
 
-        this.loadFile = function(fileId, editor, fileAdapter) {
-            return this.contentList[fileId].load(editor, fileAdapter);
+        this.loadFile = function(fileId, aceAdapter, fileAdapter) {
+            return this.contentList[fileId].load(aceAdapter, fileAdapter);
         };
 
         this.deleteFile = function(fileId) {

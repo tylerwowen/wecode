@@ -62,7 +62,7 @@ define(function(require) {
         this.createWorkSpace = function(workSpaceName) {
             console.log(this);
             this.adapter.createWorkSpace(this.rootFolderId, workSpaceName);
-        };
+       };
 
     }).call(WorkspaceManager.prototype);
 

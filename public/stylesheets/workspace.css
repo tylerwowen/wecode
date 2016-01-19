@@ -5,6 +5,7 @@
     width: 25%;
     height: 100%;
     z-index: 103;
+    display: none;
 }
 
 .workspaces {

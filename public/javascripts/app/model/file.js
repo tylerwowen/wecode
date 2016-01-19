@@ -1,10 +1,7 @@
 define(function(require) {
     "use strict";
 
-    var RealTimeData = require('app/model/realtimedata'),
-        ACEAdapter = require('app/adapters/aceadapter'),
-        Cursor = require('app/model/cursor'),
-        gapi = require('gapi');
+    var RealTimeData = require('app/model/realtimedata');
 
     function File(id, fileName) {
         this.id = id;
@@ -20,25 +17,33 @@ define(function(require) {
         this.constructor = File;
         this.fileAdapter = null;
         this.editor = null;
-        this.adapter = null;
+        this.aceAdapter = null;
         this.realtimeData = null;
 
-        this.load = function (editor, fileAdapter) {
-            this.editor = editor;
-            this.fileAdapter = fileAdapter;
+        /**
+         * Calls a load function for Google Drive and passes necessary functions.
+         * @param {!string} aceAdapter Ace editor adapter
+         * @param {!string} fileAdapter GoogleFileAdapter
+         */
+        this.load = function (aceAdapter, fileAdapter) {
 
             if (this.realtimeData != null) {
                 this.connectWithEditor();
             }
             else {
-                this.adapter = new ACEAdapter(editor);
+                this.editor = aceAdapter.ace;
+                this.fileAdapter = fileAdapter;
+                this.aceAdapter = aceAdapter;
                 this.fileAdapter.loadDriveFile(this.id, this.onFileLoaded, this.onFileInitialize);
             }
         };
 
-        // The first time a file is opened, it must be initialized with the
-        // document structure. This function will add a collaborative string
-        // to our model at the root.
+        /**
+         * Initializes a file is opened for the first time,
+         * it must be initialized with the document structure.
+         * This function will add a collaborative string to our model at the root..
+         * @param {!string} model
+         */
         this.onFileInitialize = function(model) {
             var string = model.createString();
             model.getRoot().set('text', string);
@@ -47,50 +52,53 @@ define(function(require) {
             model.getRoot().set('cursors', map);
         };
 
-        // After a file has been initialized and loaded, we can access the
-        // document. We will wire up the data model to the UI.
+        /**
+         * After a file has been initialized and loaded,
+         * we can access the document.
+         * We will wire up the data model to the UI.
+         * @param {!string} doc
+         */
         this.onFileLoaded = function(doc) {
-            this.realtimeData = new RealTimeData();
-            this.realtimeData.text = doc.getModel().getRoot().get('text');
-            this.realtimeData.cursors = doc.getModel().getRoot().get('cursors');
-            this.realtimeData.collaborators = doc.getCollaborators();
-
+            this.realtimeData = new RealTimeData(doc);
             this.connectWithEditor();
         };
 
-        // Connects the realtime data to the collaborative string
+        /**
+         * Connects the realtime data to the collaborative string
+         */
         this.connectWithEditor = function() {
 
             this.removeAllListeners();
             this.editor.setValue(this.realtimeData.text.getText());
 
             var currentUserId = this.realtimeData.getCurrentUserId();
-            var cursor = this.realtimeData.cursors.get(currentUserId);
+            var cursor = this.realtimeData.getCursorFor(currentUserId);
 
             if (cursor != null) {
-                var position = this.adapter.posFromIndex(cursor.selectionEnd);
+                var position = this.aceAdapter.posFromIndex(cursor.selectionEnd);
                 this.editor.navigateTo(position.row, position.column);
             }
             else {
-                cursor = new Cursor(0, 0);
-                this.realtimeData.cursors.set(currentUserId, cursor);
+                this.realtimeData.initCursorFor(currentUserId);
             }
 
-            this.addRealTimeDataListeners(this.realtimeData);
-            this.adapter.addListeners(this.realtimeData, currentUserId);
+            this.addRealTimeDataListeners();
+            this.aceAdapter.addListeners(this.realtimeData, currentUserId);
         };
 
+        /**
+         * Removes all the listeners from both realtimeData and ACEAdapter
+         */
         this.removeAllListeners = function() {
             if (this.realtimeData) {
-                this.adapter.detach();
-                this.realtimeData.text.removeAllEventListeners();
-                this.realtimeData.cursors.removeAllEventListeners();
+                this.aceAdapter.detach();
+                this.realtimeData.removeAllListeners();
             }
         };
 
         this.updateEditorText = function(event) {
             if (!event.isLocal) {
-                this.adapter.applyOperation(event)
+                this.aceAdapter.applyOperation(event)
             }
         };
 
@@ -98,14 +106,33 @@ define(function(require) {
             if (!event.isLocal) {
                 var userId = event.property;
                 var cursor = event.newValue;
-                this.adapter.setOtherCursor(cursor, this.realtimeData.getColor(userId), userId);
+                this.aceAdapter.setOtherCursor(cursor, this.getColor(userId), userId);
             }
         };
 
         this.addRealTimeDataListeners = function() {
-            this.realtimeData.text.addEventListener(gapi.drive.realtime.EventType.TEXT_INSERTED, this.updateEditorText);
-            this.realtimeData.text.addEventListener(gapi.drive.realtime.EventType.TEXT_DELETED, this.updateEditorText);
-            this.realtimeData.cursors.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, this.updateEditorCursors);
+            this.realtimeData.addTextChangeListener(this.updateEditorText);
+            this.realtimeData.addCursorChangeListener(this.updateEditorCursors);
+        };
+
+        this.getColor = function(string) {
+            return '#' + this.intToRGB(this.hashCode(string));
+        };
+
+        this.hashCode = function(str) {
+            var hash = 0;
+            for (var i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return hash;
+        };
+
+        this.intToRGB = function(i) {
+            var c = (i & 0x00FFFFFF)
+                .toString(16)
+                .toUpperCase();
+
+            return "00000".substring(0, 6 - c.length) + c;
         };
 
     }).call(File.prototype);
