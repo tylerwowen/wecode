@@ -74,7 +74,7 @@ define(function(require) {
                 width: "toggle"
             }, 1000, function () {
             });
-            workspace = false;
+            browser = false;
         }
         else if (textchat==true){
             $("#chatwrapper").animate({
