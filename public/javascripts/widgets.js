@@ -14,18 +14,18 @@ define(function(require) {
 
     function showWorkSpaceList() {
 
-        WorkSpaceManager.getWorkSpaceList().then(function (workSpaceList) {
-            $('#workSpaceList').empty();
-            workSpaceList.forEach(function (workSpace) {
-                $('#workSpaceList').append(
-                    '<li>' +
-                    '<a href="/main?workspace=' + workSpace.id + '">' +
-                    workSpace.get('name') + '</a>' +
-                    '</li>');
-            })
-        }, function (error) {
-            console.error(error);
-        });
+        //WorkSpaceManager.getWorkSpaceList().then(function (workSpaceList) {
+        //    $('#workSpaceList').empty();
+        //    workSpaceList.forEach(function (workSpace) {
+        //        $('#workSpaceList').append(
+        //            '<li>' +
+        //            '<a href="/main?workspace=' + workSpace.id + '">' +
+        //            workSpace.get('name') + '</a>' +
+        //            '</li>');
+        //    })
+        //}, function (error) {
+        //    console.error(error);
+        //});
     }
 
     var browser = false;

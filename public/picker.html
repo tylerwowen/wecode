@@ -17,7 +17,13 @@
         var appId = "315862064112";
 
         // Scope to use to access user's Drive items.
-        var scope = ['https://www.googleapis.com/auth/drive'];
+        var scope = ['https://www.googleapis.com/auth/drive.install',
+            'https://www.googleapis.com/auth/drive.file',
+            'https://www.googleapis.com/auth/drive.appdata',
+            'https://www.googleapis.com/auth/drive.metadata',
+            'email',
+            'profile'
+        ];
 
         var pickerApiLoaded = false;
         var oauthToken;
@@ -26,6 +32,31 @@
         function loadPicker() {
             gapi.load('auth', {'callback': onAuthApiLoad});
             gapi.load('picker', {'callback': onPickerApiLoad});
+            gapi.load('drive', 'v3');
+        }
+
+        function printApplicationDataFolderMetadata() {
+            var request = gapi.client.drive.files.get({
+                'fileId': 'appDataFolder'
+            });
+            request.execute(function(resp) {
+                console.log('Id: ' + resp.id);
+                console.log('Title: ' + resp.title);
+            });
+        }
+
+        function update() {
+            gapi.client.drive.files.update({
+                'fileId': '0B8WWHHPFdW35dTlKX1ZWczV6R1U',
+                'addParents': ['appDataFolder']
+            }, function (err, file) {
+                if (err) {
+                    // Handle error
+                    console.log(err);
+                } else {
+                    console.log("Folder Id: ", file.id);
+                }
+            });
         }
 
         function onAuthApiLoad() {
@@ -83,5 +114,6 @@
 
 <!-- The Google API Loader script. -->
 <script type="text/javascript" src="https://apis.google.com/js/api.js?onload=loadPicker"></script>
+<script src="https://apis.google.com/js/client.js"></script>
 </body>
 </html>
