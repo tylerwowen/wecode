@@ -5,7 +5,8 @@ define(function (require) {
         ace = require('ace/ace'),
         Workspace = require('app/model/workspace'),
         WorkspaceAdapter = require('app/adapters/googleworkspaceadapter'),
-        FileAdapter = require('app/adapters/googlefileadapter');
+        FileAdapter = require('app/adapters/googlefileadapter'),
+        ACEAdapter = require('app/adapters/aceadapter');
 
     ace.config.set("packaged", true);
     ace.config.set("basePath", require.toUrl("ace"));
@@ -15,12 +16,12 @@ define(function (require) {
 
         this.workspaceAdapter = new WorkspaceAdapter();
         this.fileAdapter = new FileAdapter();
-
         this.editor = ace.edit('editor');
         this.editor.setTheme("ace/theme/monokai");
         this.editor.getSession().setMode("ace/mode/javascript");
         this.editor.getSession().setUseWrapMode(true);
         this.editor.$blockScrolling = Infinity;
+        this.aceAdapter = new ACEAdapter(this.editor);
     }
 
     (function () {
@@ -57,7 +58,7 @@ define(function (require) {
 
             $('#files').on('click', 'li.file', function () {
                 var id = $(this).attr('id');
-                that.workspace.loadFile(id, that.editor, that.fileAdapter);
+                that.workspace.loadFile(id, that.aceAdapter, that.fileAdapter);
             });
 
             $('#files').on('click', 'li.folder', function () {

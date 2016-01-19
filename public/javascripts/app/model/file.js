@@ -20,25 +20,33 @@ define(function(require) {
         this.constructor = File;
         this.fileAdapter = null;
         this.editor = null;
-        this.adapter = null;
+        this.aceAdapter = null;
         this.realtimeData = null;
 
-        this.load = function (editor, fileAdapter) {
-            this.editor = editor;
-            this.fileAdapter = fileAdapter;
+        /**
+         * Calls a load function for Google Drive and passes necessary functions.
+         * @param {!string} editor Ace editor
+         * @param {!string} fileAdapter GoogleFileAdapter
+         */
+        this.load = function (aceAdapter, fileAdapter) {
 
             if (this.realtimeData != null) {
                 this.connectWithEditor();
             }
             else {
-                this.adapter = new ACEAdapter(editor);
+                this.editor = aceAdapter.ace;
+                this.fileAdapter = fileAdapter;
+                this.aceAdapter = aceAdapter;
                 this.fileAdapter.loadDriveFile(this.id, this.onFileLoaded, this.onFileInitialize);
             }
         };
 
-        // The first time a file is opened, it must be initialized with the
-        // document structure. This function will add a collaborative string
-        // to our model at the root.
+        /**
+         * Initializes a file is opened for the first time,
+         * it must be initialized with the document structure.
+         * This function will add a collaborative string to our model at the root..
+         * @param {!string} model
+         */
         this.onFileInitialize = function(model) {
             var string = model.createString();
             model.getRoot().set('text', string);
@@ -47,8 +55,12 @@ define(function(require) {
             model.getRoot().set('cursors', map);
         };
 
-        // After a file has been initialized and loaded, we can access the
-        // document. We will wire up the data model to the UI.
+        /**
+         * After a file has been initialized and loaded,
+         * we can access the document.
+         * We will wire up the data model to the UI.
+         * @param {!string} doc
+         */
         this.onFileLoaded = function(doc) {
             this.realtimeData = new RealTimeData();
             this.realtimeData.text = doc.getModel().getRoot().get('text');
@@ -58,7 +70,9 @@ define(function(require) {
             this.connectWithEditor();
         };
 
-        // Connects the realtime data to the collaborative string
+        /**
+         * Connects the realtime data to the collaborative string
+         */
         this.connectWithEditor = function() {
 
             this.removeAllListeners();
@@ -68,7 +82,7 @@ define(function(require) {
             var cursor = this.realtimeData.cursors.get(currentUserId);
 
             if (cursor != null) {
-                var position = this.adapter.posFromIndex(cursor.selectionEnd);
+                var position = this.aceAdapter.posFromIndex(cursor.selectionEnd);
                 this.editor.navigateTo(position.row, position.column);
             }
             else {
@@ -77,12 +91,15 @@ define(function(require) {
             }
 
             this.addRealTimeDataListeners(this.realtimeData);
-            this.adapter.addListeners(this.realtimeData, currentUserId);
+            this.aceAdapter.addListeners(this.realtimeData, currentUserId);
         };
 
+        /**
+         * Removes all the listeners from both realtimeData and ACEAdapter
+         */
         this.removeAllListeners = function() {
             if (this.realtimeData) {
-                this.adapter.detach();
+                this.aceAdapter.detach();
                 this.realtimeData.text.removeAllEventListeners();
                 this.realtimeData.cursors.removeAllEventListeners();
             }
@@ -90,7 +107,7 @@ define(function(require) {
 
         this.updateEditorText = function(event) {
             if (!event.isLocal) {
-                this.adapter.applyOperation(event)
+                this.aceAdapter.applyOperation(event)
             }
         };
 
@@ -98,7 +115,7 @@ define(function(require) {
             if (!event.isLocal) {
                 var userId = event.property;
                 var cursor = event.newValue;
-                this.adapter.setOtherCursor(cursor, this.realtimeData.getColor(userId), userId);
+                this.aceAdapter.setOtherCursor(cursor, this.realtimeData.getColor(userId), userId);
             }
         };
 
