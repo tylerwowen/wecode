@@ -153,10 +153,7 @@ define(function(require) {
          * 4. If it receives a candidate then it will send a candidate to the other client
          */
         socket.on('message', function (message, remoteId) {
-            if (message === 'got user media') {
-                console.debug('got user media from message');
-                maybeStartPeerConnection();
-            } else if (message.type === 'offer') { //Handle when a user sends an offer
+            if (message.type === 'offer') { //Handle when a user sends an offer
                 console.debug('Received an offer from a peer, setting sdp as the remote');
                 createPeerConnection(remoteId);
                 $('#messages').append($('<li>').text(remoteId + " has joined the room."));
