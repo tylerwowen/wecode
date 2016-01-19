@@ -47,20 +47,22 @@ define(function(require) {
                     return that.workspaceList;
                 });
             }
+            //console.log(this.rootFolderId);
             return this.adapter.getWorkspaceList(this.rootFolderId).then(function(contents) {
                 that.workspaceList = contents;
                 return that.workspaceList;
             });
         };
 
-        this.refreshWrokspaceList = function() {
+        this.refreshWorkspaceList = function() {
             this.workspaceList = [];
             return this.getWorkspaceList();
         };
 
-        this.createWorkSpace = function() {
-
-        };
+        this.createWorkSpace = function(workSpaceName) {
+            console.log(this);
+            this.adapter.createWorkSpace(this.rootFolderId, workSpaceName);
+       };
 
     }).call(WorkspaceManager.prototype);
 

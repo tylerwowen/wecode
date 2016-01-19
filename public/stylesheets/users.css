@@ -1,0 +1,50 @@
+/*body {*/
+    /*background-color: #404040!important;*/
+/*}*/
+
+h1 {
+    text-align: center;
+    font-size: 175%;
+    color: #404040;
+    font-weight: 300;
+}
+
+h1, input {
+    font-family: "Open Sans", Helvetica, sans-serif;
+}
+
+.input {
+    width: 75%;
+    height: 50px;
+    display: block;
+    margin: 0 auto 15px;
+    padding: 0 15px;
+    border: none;
+    border-bottom: 2px solid #ebebeb;
+}
+
+#wrapper {
+    background-color: transparent;
+    margin: 0 auto;
+    display: table;
+}
+
+#logbox {
+    float: left;
+    padding: 10px;
+    margin: 50px !important;
+    width: 340px;
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+    -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+}
+
+#signup, #login {
+    position: relative;
+    width: 85%;
+    height: 50px;
+    display: block;
+    margin: 30px auto 30px;
+}
+

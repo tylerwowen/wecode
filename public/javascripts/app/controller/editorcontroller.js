@@ -55,7 +55,7 @@ define(function (require) {
         this.connectToView = function() {
             var that = this;
             $('#fileButton').click(function () {
-                taht.createFile($('#fileName').val());
+                that.createFile($('#fileName').val());
             });
 
             $('#files').on('click', 'li.file', function () {

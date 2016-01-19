@@ -3,6 +3,9 @@ script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.min.js', 
 #workwrapper
     .workspaces
         .select Select a Workspace
+        input#newWorkSpaceInput.input-sm.form-control(type='text', placeholder='Create New Workspace')
+        .workSpaceButton
+            button#workSpaceButton.btn.btn-success.btn-sm(type='button') Create
         .worklist
             ul#menu-content.menu-content.collapse.out
                 li.collapsed(data-toggle='collapse', data-target='#workSpaceList')
