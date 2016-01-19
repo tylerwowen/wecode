@@ -86,27 +86,122 @@ define(function (require) {
         };
 
         this.showList = function(contents) {
+            var that = this;
+
+            function mouseX(evt) {
+                if (evt.pageX) {
+                    return evt.pageX;
+                } else if (evt.clientX) {
+                    return evt.clientX + (document.documentElement.scrollLeft ?
+                            document.documentElement.scrollLeft :
+                            document.body.scrollLeft);
+                } else {
+                    return null;
+                }
+            }
+
+            function mouseY(evt) {
+                if (evt.pageY) {
+                    return evt.pageY;
+                } else if (evt.clientY) {
+                    return evt.clientY + (document.documentElement.scrollTop ?
+                            document.documentElement.scrollTop :
+                            document.body.scrollTop);
+                } else {
+                    return null;
+                }
+            }
+
             if (contents != null) {
                 for (var id in contents) {
                     if (contents.hasOwnProperty(id)) {
+                        var menu = '<div class="hide" id="rmenu">' +
+                            '<ul> ' +
+                            '<li>' +
+                            '<a id="rename' + id + '">Rename</a>' +
+                            '</li>' +
+                            '<li>' +
+                            '<a id="delete' + id + '">Delete</a>' +
+                            '</li> ' +
+                            '</ul>' +
+                            '</div>';
+
+                        $('#files').append(menu);
+
                         if (contents[id].constructor.name == 'File') {
-                            $('#files').append(
-                                '<li style="color:white" class="file" id="' + id + '">' +
-                                contents[id].name +
-                                '</li>');
+
+                            var file =  '<li style="color:white" class="file" id=' + id + '>' +
+                                            contents[id].name +
+                                        '</li>';
+
+                            $('#files').append(file);
+
+                            document.getElementById("rename" + id).addEventListener('click', function(e) {
+                                that.renameFile(id);
+                            });
+
+                            document.getElementById("delete" + id).addEventListener('click', function(e) {
+                                that.deleteFile(id);
+                            });
+
+
+                        } else if (contents[id].constructor.name == 'Folder') {
+
+                            var folder = '<li style="color:white" class="folder" id="' + id + '">' +
+                                            contents[id].name +
+                                        '</li>';
+
+                            $('#files').append(folder);
+
+                            //document.getElementById("rename" + id).addEventListener('click', function(e) {
+                            //    that.renameFolder(id);
+                            //});
+                            //
+                            //document.getElementById("delete" + id).addEventListener('click', function(e) {
+                            //    that.deleteFolder(id);
+                            //});
                         }
-                        if (contents[id].constructor.name == 'Folder') {
-                            $('#files').append(
-                                '<li style="color:white" class="folder" id="' + id + '">' +
-                                contents[id].name +
-                                '</li>');
-                        }
+
+                        document.getElementById(id).addEventListener('contextmenu', function(e) {
+                            console.log('right clicked');
+                            document.getElementById("rmenu").className = "showMenu";
+                            document.getElementById("rmenu").style.top =  mouseY(event) + 'px';
+                            document.getElementById("rmenu").style.left = mouseX(event) + 'px';
+
+                            window.event.returnValue = false;
+                        });
+
+                        $(document).bind("click", function(event) {
+                            document.getElementById("rmenu").className = "hideMenu";
+                        });
                     }
                 }
+
             }
             else {
                 createFile('Demo');
             }
+
+        };
+
+        /**
+         * Starts off renaming a file
+         * @param {string} id
+         */
+        this.renameFile = function(id) {
+            var fileName = prompt("Please enter the new file name", "");
+            if (fileName != null) {
+                this.workspaceAdapter.renameFile(id, fileName);
+            }
+        };
+
+        /**
+         * Starts off deleting a file
+         * @param {string} id
+         */
+        this.deleteFile = function(id) {
+            console.log("Deleting the file");
+            this.workspaceAdapter.deleteFile(id);
         };
 
         this.refreshList = function(driveFileId, fileName) {

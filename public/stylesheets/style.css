@@ -25,6 +25,17 @@ a {
     width:      100%;
 }
 
+.showMenu {
+    z-index:1000;
+    position: absolute;
+    background-color:#C0C0C0;
+    display: block;
+}
+
+.hideMenu {
+    display: none;
+}
+
 #vidwrapper {
     height:     15%;
     display: inline-block;
