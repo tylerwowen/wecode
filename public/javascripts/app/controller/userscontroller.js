@@ -94,7 +94,7 @@ define(function (require) {
             this.updateStatus();
             this.showWorkSpaceList();
             this.userManager.onGapiSuccess(googleUser);
-            window.location.href = ('/main');
+            //window.location.href = ('/main');
         };
 
         this.onGapiFailure = function(error) {

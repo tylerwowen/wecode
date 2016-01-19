@@ -13,7 +13,25 @@ define(function(require) {
     });
 
     function showWorkSpaceList() {
+        this.workspaceManager = new WorkSpaceManager();
 
+
+        this.workspaceManager.init().then(function (workSpaceList) {
+            $('#workSpaceList').empty();
+            workSpaceList.forEach(function (workSpace) {
+                var params = $.param({
+                    id: workSpace.id,
+                    name: workSpace.name
+                });
+                $('#workSpaceList').append(
+                    '<li>' +
+                    '<a href="/main?' + params + '">' +
+                    workSpace.name+ '</a>' +
+                    '</li>');
+            })
+        }, function (error) {
+            console.error(error);
+        });
         //WorkSpaceManager.getWorkSpaceList().then(function (workSpaceList) {
         //    $('#workSpaceList').empty();
         //    workSpaceList.forEach(function (workSpace) {
