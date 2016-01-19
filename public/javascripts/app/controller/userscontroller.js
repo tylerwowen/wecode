@@ -85,6 +85,8 @@ define(function (require) {
             if (this.userManager.isLoggedIn()) {
                 this.showLoggedInMessage();
                 this.showWorkSpaceList();
+                console.log('signed in')
+                window.location.href = ('/main');
             } else {
                 this.showNotLoggedInMessage();
             }
@@ -92,8 +94,8 @@ define(function (require) {
 
         this.renderButton = function() {
             gapi.signin2.render('signin-button', {
-                'width': 300,
-                'height': 50,
+                'width': 214,
+                'height': 30,
                 'longtitle': true,
                 'theme': 'dark',
                 'onsuccess': this.onGapiSuccess,
