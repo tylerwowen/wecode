@@ -113,6 +113,16 @@ h5:after{
     z-index:-1;
 }
 
+.navbar-brand {
+    color: #ffffff!important;
+}
+
+.dropdown-menu:before {
+    color: #404040!important;
+    border-color: #404040!important;
+    background: #404040!important;
+}
+
 #loginMenu {
     padding: 17px;
     width: 250px;
@@ -147,7 +157,7 @@ h5:after{
 }
 
 .navbar {
-    background: transparent!important;
+    background: #404040!important;
 }
 
 .nav.pull-right {

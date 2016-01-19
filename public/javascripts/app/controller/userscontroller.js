@@ -81,8 +81,8 @@ define(function (require) {
 
         this.renderButton = function() {
             gapi.signin2.render('signin-button', {
-                'width': 300,
-                'height': 50,
+                'width': 214,
+                'height': 30,
                 'longtitle': true,
                 'theme': 'dark',
                 'onsuccess': this.onGapiSuccess,
@@ -94,6 +94,7 @@ define(function (require) {
             this.updateStatus();
             this.showWorkSpaceList();
             this.userManager.onGapiSuccess(googleUser);
+            window.location.href = ('/main');
         };
 
         this.onGapiFailure = function(error) {
