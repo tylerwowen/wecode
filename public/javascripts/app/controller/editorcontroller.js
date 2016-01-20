@@ -46,33 +46,104 @@ define(function (require) {
             var wsID = this.getParam('id');
             var wsName = this.getParam('name');
             // Get a list of files from work space with wsID
-            this.workspace = new Workspace(wsID, wsName, this.workspaceAdapter);
-            this.workspace.getContentsList().then(function (contents) {
-                that.showList(contents);
-            });
+            if (wsID != null) {
+                this.workspace = new Workspace(wsID, wsName, this.workspaceAdapter);
+                this.workspace.getContentsList().then(function (contents) {
+                    that.showList(contents);
+                });
+            }
+            else {
+                $('#workwrapper').show();
+            }
+        };
+
+        this.refreshWorkSpace = function() {
+            $('#files').empty();
+            this.loadWorkspace();
         };
 
         this.connectToView = function() {
             var that = this;
-            $('#fileButton').click(function () {
+            $('#fileButton').click(function() {
                 that.createFile($('#fileName').val());
             });
 
-            $('#files').on('click', 'li.file', function () {
+            $('#files').on('click', 'li.file', function(event) {
                 var id = $(this).attr('id');
                 that.workspace.loadFile(id, that.aceAdapter, that.fileAdapter);
             });
 
-            $('#files').on('click', 'li.folder', function () {
+            $('#files').on('click', 'li.folder', function() {
                 var id = $(this).attr('id');
                 that.workspace.loadFolderContents(id);
             });
 
-            $('#refreshButton').click(function () {
-                $('#files').empty();
-                that.loadWorkspace();
+            $('#files').on('contextmenu','li.content', function(event) {
+                console.log('right clicked');
+                var id = $(this).attr('id');
+                $("#rmenu").css('top', event.pageY);
+                $("#rmenu").css('left', event.pageX);
+                $("#rmenu").attr('contentId', id);
+                $("#rmenu").show();
+
+                window.event.returnValue = false;
             });
 
+            $(document).on('click', function() {
+                $("#rmenu").hide();
+                $("#rmenu").removeAttr('contentId');
+            });
+
+            $('#refreshButton').on('click', function() {
+                that.refreshWorkSpace();
+            });
+
+            $('#renameContent').on('click', function() {
+                var id = $(this).parents('div').attr('contentId');
+                that.renameFile(id);
+            });
+
+            $('#deleteContent').on('click', function() {
+                var id = $(this).parents('div').attr('contentId');
+                that.deleteFile(id);
+            });
+        };
+
+        this.showList = function(contents) {
+            var that = this;
+
+            if (contents != null) {
+                for (var id in contents) {
+                    if (contents.hasOwnProperty(id)) {
+                        if (contents[id].constructor.name == 'File') {
+                            var file =  '<li style="color:white" class="content file" id=' + id + '>' +
+                                contents[id].name +
+                                '</li>';
+                            $('#files').append(file);
+                        } else if (contents[id].constructor.name == 'Folder') {
+                            var folder = '<li style="color:white" class="content folder" id="' + id + '">' +
+                                contents[id].name +
+                                '</li>';
+                            $('#files').append(folder);
+                        }
+                    }
+                }
+            }
+            else {
+                this.workspace.createFile(this.workspace.id, 'demo')
+                    .then(function (file) {
+                        that.addContentToList(file.id, file.name);
+                    });
+            }
+
+        };
+
+        this.addContentToList = function(contentId, fileName) {
+            $('#fileName').val('');
+            $('#files').append(
+                '<li style="color:white" class="file content" id="' + contentId + '">' +
+                fileName +
+                '</li>');
         };
 
         this.createFile = function(fileName) {
@@ -80,114 +151,12 @@ define(function (require) {
                 var that = this;
                 this.workspace.createFile(that.workspace.id, fileName)
                     .then(function (file) {
-                    that.refreshList(file.id, file.name);
+                    that.addContentToList(file.id, file.name);
                 });
             }
             else {
                 alert('Please input a file name!');
             }
-        };
-
-        this.showList = function(contents) {
-            var that = this;
-
-            function mouseX(evt) {
-                if (evt.pageX) {
-                    return evt.pageX;
-                } else if (evt.clientX) {
-                    return evt.clientX + (document.documentElement.scrollLeft ?
-                            document.documentElement.scrollLeft :
-                            document.body.scrollLeft);
-                } else {
-                    return null;
-                }
-            }
-
-            function mouseY(evt) {
-                if (evt.pageY) {
-                    return evt.pageY;
-                } else if (evt.clientY) {
-                    return evt.clientY + (document.documentElement.scrollTop ?
-                            document.documentElement.scrollTop :
-                            document.body.scrollTop);
-                } else {
-                    return null;
-                }
-            }
-
-            if (contents != null) {
-                for (var id in contents) {
-                    if (contents.hasOwnProperty(id)) {
-                        var menu = '<div class="hide" id="rmenu">' +
-                            '<ul> ' +
-                            '<li>' +
-                            '<a id="rename' + id + '">Rename</a>' +
-                            '</li>' +
-                            '<li>' +
-                            '<a id="delete' + id + '">Delete</a>' +
-                            '</li> ' +
-                            '</ul>' +
-                            '</div>';
-
-                        $('#files').append(menu);
-
-                        if (contents[id].constructor.name == 'File') {
-
-                            var file =  '<li style="color:white" class="file" id=' + id + '>' +
-                                            contents[id].name +
-                                        '</li>';
-
-                            $('#files').append(file);
-
-                            document.getElementById("rename" + id).addEventListener('click', function(e) {
-                                that.renameFile(id);
-                            });
-
-                            document.getElementById("delete" + id).addEventListener('click', function(e) {
-                                that.deleteFile(id);
-                            });
-
-
-                        } else if (contents[id].constructor.name == 'Folder') {
-
-                            var folder = '<li style="color:white" class="folder" id="' + id + '">' +
-                                            contents[id].name +
-                                        '</li>';
-
-                            $('#files').append(folder);
-
-                            //document.getElementById("rename" + id).addEventListener('click', function(e) {
-                            //    that.renameFolder(id);
-                            //});
-                            //
-                            //document.getElementById("delete" + id).addEventListener('click', function(e) {
-                            //    that.deleteFolder(id);
-                            //});
-                        }
-
-                        document.getElementById(id).addEventListener('contextmenu', function(e) {
-                            console.log('right clicked');
-                            document.getElementById("rmenu").className = "showMenu";
-                            document.getElementById("rmenu").style.top =  mouseY(event) + 'px';
-                            document.getElementById("rmenu").style.left = mouseX(event) + 'px';
-
-                            window.event.returnValue = false;
-                        });
-
-                        $(document).bind("click", function(event) {
-                            document.getElementById("rmenu").className = "hideMenu";
-                        });
-                    }
-                }
-
-            }
-            else {
-                this.workspace.createFile(this.workspace.id, 'demo')
-                    .then(function (file) {
-                        that.refreshList(file.id, file.name);
-                    });
-            }
-
         };
 
         /**
@@ -206,16 +175,10 @@ define(function (require) {
          * @param {string} id
          */
         this.deleteFile = function(id) {
-            console.log("Deleting the file");
-            this.workspaceAdapter.deleteFile(id);
-        };
-
-        this.refreshList = function(driveFileId, fileName) {
-            $('#fileName').val('');
-            $('#files').append(
-                '<li style="color:white" class="file" id="' + driveFileId + '">' +
-                fileName +
-                '</li>');
+            var that = this;
+            this.workspaceAdapter.deleteFile(id).then(function (res) {
+                that.refreshWorkSpace();
+            });
         };
 
         /**

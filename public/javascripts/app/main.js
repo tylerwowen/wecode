@@ -4,7 +4,7 @@ define(function(require) {
         UserController = require('app/controller/userscontroller'),
         UserManager = require('app/model/usermanager');
 
-    require(['draggableObjects', 'bootstrap']);
+    require(['bootstrap']);
 
     var editorController = new EditorController(),
         userController = new UserController();
@@ -12,7 +12,7 @@ define(function(require) {
     userController.init(onEventuallySuccess);
 
     function onEventuallySuccess() {
-        requirejs(['webrtc', 'widgets']);
+        requirejs(['app/webrtc', 'app/widgets','draggableObjects']);
         editorController.init();
     }
 
