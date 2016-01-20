@@ -98,7 +98,13 @@ define(function(require) {
     $('#workSpaceButton').click(function() {
         var name = $('#newWorkSpaceInput').val();
         console.log(name);
-        workspaceManager.createWorkSpace(name);
+        workspaceManager.createWorkSpace(name)
+            .then(function(){
+                return workspaceManager.refreshWorkspaceList();
+            })
+            .then(function() {
+                showWorkSpaceList();
+            });
     });
 
     $("#chat").click(function () {
