@@ -20,7 +20,6 @@
     height: 100%;
     color: #e1ffff;
     z-index: 105;
-    border-right: 1px #404040 solid;
 }
 .workspaces .select {
     background-color: #181818;
@@ -44,13 +43,12 @@
 }
 .workspaces ul a {
     text-decoration: none;
-    color: #e1ffff;
 }
 .workspaces ul a i {
     width: 20px;
 }
 .workspaces li:hover {
-    background-color: #4f5b69;
+    background-color: #d2d2d2;
     -webkit-transition: all 1s ease;
     -moz-transition: all 1s ease;
     -o-transition: all 1s ease;

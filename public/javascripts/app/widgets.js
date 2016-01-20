@@ -132,4 +132,13 @@ define(function(require) {
         }
     });
 
+    $('.sidebar li').on('click', function(){
+        if (!$(this).is($('#microphone')) || !$(this).is($('#videoButton'))) {
+            $('.sidebar li').removeClass('selected');
+            if (workspace || browser || textchat) {
+                $(this).addClass('selected');
+            }
+        }
+    });
+
 });
