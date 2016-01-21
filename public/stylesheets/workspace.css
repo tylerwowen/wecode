@@ -28,11 +28,13 @@
 
 #wsblock li {
     list-style: none;
-    margin: 0;
     line-height: 35px;
     cursor: pointer;
-    padding-left: 20px;
-    font-size: 14px;
+    padding: 20px;
+    font-size: 20px;
+    background-color: #d2d2d2;
+    border-radius: 7px;
+    margin: 10px;
 }
 
 #workSpaceList li:before {
@@ -40,7 +42,8 @@
     content: "\f005";
     display: inline-block;
     padding-left: 10px;
-    padding-right: 10px;
+    padding-right: 20px;
+    font-size: 40px;
     vertical-align: middle;
 }
 
@@ -56,7 +59,7 @@
     width: 20px;
 }
 #wsblock li:hover {
-    background-color: #d2d2d2;
+    background-color: #797777;
     -webkit-transition: all 1s ease;
     -moz-transition: all 1s ease;
     -o-transition: all 1s ease;
@@ -64,7 +67,7 @@
 }
 
 #workspaceform {
-    padding: 10px;
+    padding: 10px 10px 0 10px;
 }
 
 .btn-success {
