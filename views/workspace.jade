@@ -1,13 +1,12 @@
 script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.min.js', data-main='javascripts/users')
 
 #workwrapper
-    .workspaces
-        .select Select a Workspace
-        input#newWorkSpaceInput.input-sm.form-control(type='text', placeholder='Create New Workspace')
-        .workSpaceButton
-            button#workSpaceButton.btn.btn-success.btn-sm(type='button') Create
-        .worklist
-            ul#menu-content.menu-content.collapse.out
-                li.collapsed(data-toggle='collapse', data-target='#workSpaceList')
-                ul#workSpaceList.elements
+    #wsblock
+        #wsHeader Select a Workspace
+        .input-group#workspaceform
+            input#newWorkSpaceInput.form-control(type='text', placeholder='Create New Workspace', autocomplete='off')
+            span.input-group-btn
+                button#workSpaceButton.btn.btn-success
+                    span.glyphicon.glyphicon-plus
+        ul#workSpaceList.elements
 

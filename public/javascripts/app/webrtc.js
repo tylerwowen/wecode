@@ -100,6 +100,7 @@ define(function(require) {
         });
 
         $('#videoButton').click(function() {
+            $(this).toggleClass('disable');
             localStream.getVideoTracks()[0].enabled =
                 !(localStream.getVideoTracks()[0].enabled);
         });
