@@ -31,9 +31,9 @@
 .sidebar ul,
 .sidebar li { /* each element in side bar*/
     list-style: none;
-    padding: 20px 0 20px 0;
+    padding: 0px 0 0px 0;
     margin: 0;
-    line-height: 50px;
+    line-height: 100px;
     text-align: center;
     cursor: pointer;
 }
@@ -49,5 +49,9 @@
 
 .sidebar li.selected {
     background-color: #4f5b69;
+}
+
+#videoButton.disable {
+    color: #272B2F;
 }
 
