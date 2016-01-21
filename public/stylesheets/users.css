@@ -9,10 +9,6 @@ h1 {
     font-weight: 300;
 }
 
-h1, input {
-    font-family: "Open Sans", Helvetica, sans-serif;
-}
-
 .input {
     width: 75%;
     height: 50px;

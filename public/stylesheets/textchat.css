@@ -7,16 +7,17 @@
     z-index: 103;
     background-color: white;
     display: none;
+    border: 5px solid white;
 }
 
 #chatheader {
-    background-color: #181818;
+    font-family: 'Muli', sans-serif;
+    background-color: #B72C2C;
     line-height: 50px;
     display: block;
     text-align: center;
-    font-size: 14px;
+    font-size: 18px;
     color: #e1ffff;
-    border-bottom: 1px solid #23282e;
 }
 
 #textform {
@@ -29,8 +30,9 @@
 #messages {
     list-style-type: none;
     margin: 0;
-    padding: 0;
+    padding: 6px 6px 0 0px;
     width: 100%;
+    word-wrap:break-word;
     height: 86%;
 }
 
@@ -39,7 +41,7 @@
 }
 
 #messages li:nth-child(odd) {
-    color: #006666;
+    color: #4f5b69;
 }
 
 #messages li:nth-child(even) {
