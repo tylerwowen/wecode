@@ -152,4 +152,8 @@ define(function(require) {
         $(this).addClass('current');
     });
 
+    $('#inviteEmail').on('click', function() {
+        window.location.href="mailto:?subject=Join%20me%20at%20WeCode!"+document.title+"&body="+escape(window.location.href);
+    });
+
 });
