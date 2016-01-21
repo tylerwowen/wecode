@@ -25,7 +25,7 @@
     width: 4%;
     right: 0;
     height: 100%;
-    color: #e1ffff;
+    color: white;
 }
 
 .sidebar ul,
@@ -42,9 +42,6 @@
     background-color: #7D8792;
 }
 
-.sidebar li {
-    padding-left: 0;
-}
 .sidebar li a {
     text-decoration: none;
     color: white;

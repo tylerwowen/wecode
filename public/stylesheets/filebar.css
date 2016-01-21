@@ -1,12 +1,12 @@
 #filebar {
     overflow: auto;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 200;
     background-color: #181818;
     position: absolute;
     width: 100%;
     height: 100%;
-    color: #e1ffff;
+    color: white;
     overflow-y: hidden;
 }
 
@@ -28,6 +28,7 @@
 
 #files li {
     background-color: #1c1c1c;
+    font-family: Verdana, sans-serif;
     border: none;
     line-height: 28px;
     padding-left: 20px;
@@ -48,11 +49,12 @@
 
 #folders {
     padding-left: 0;
+    font-size: 16px;
 }
 
 #folders a {
     text-decoration: none;
-    color: #e1ffff;
+    color: white;
 }
 #folders a i {
     padding-left: 15px;
