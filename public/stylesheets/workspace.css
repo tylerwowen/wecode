@@ -13,12 +13,12 @@
 #wsblock {
     width: 100%;
     height: 100%;
+    font-family: 'Muli', sans-serif;
 }
 
 #wsHeader {
     background-color: #B72C2C;
     z-index: 105;
-    font-family: 'Muli', sans-serif;
     line-height: 50px;
     display: block;
     text-align: center;
@@ -26,44 +26,44 @@
     color: white;
 }
 
-#wsblock li {
+#workSpaceList li {
     list-style: none;
-    line-height: 35px;
     cursor: pointer;
-    padding: 20px;
     font-size: 20px;
-    background-color: #d2d2d2;
-    border-radius: 7px;
-    margin: 10px;
 }
 
-#workSpaceList li:before {
+#workSpaceList li a:before {
     font-family: FontAwesome;
     content: "\f005";
-    display: inline-block;
     padding-left: 10px;
     padding-right: 20px;
-    font-size: 40px;
     vertical-align: middle;
+}
+
+#workSpaceList li a {
+    text-decoration: none;
+    color: black;
+    padding: 15px;
+    line-height: 30px;
+    border-radius: 7px;
+    display: inline-block !important;
+    width: 100%;
+    background-color: #d2d2d2;
+    margin-bottom: 10px;
 }
 
 #wsblock ul {
     padding-left: 0;
+    margin: 10px;
 }
-#wsblock ul a {
-    text-decoration: none;
-    color: black;
 
-}
-#wsblock ul a i {
-    width: 20px;
-}
-#wsblock li:hover {
+#workSpaceList li a:hover {
     background-color: #797777;
     -webkit-transition: all 1s ease;
     -moz-transition: all 1s ease;
     -o-transition: all 1s ease;
     transition: all 1s ease;
+    color: white;
 }
 
 #workspaceform {
