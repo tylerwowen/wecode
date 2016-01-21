@@ -130,13 +130,14 @@ define(function (require) {
          * @export
          */
         this.renameFile = function(id, fileName) {
-            var body = {'title': fileName};
-            var request = gapi.client.drive.files.patch({
+            console.log(id, fileName);
+            var body = {'name': fileName};
+            var request = {
                 'fileId': id,
                 'resource': body
-            });
-            request.execute(function(resp) {
-                console.log('New Title: ' + resp.title);
+            };
+            return gapi.client.drive.files.update(request).then(function(responce){
+                console.log(responce);
             });
         };
 
