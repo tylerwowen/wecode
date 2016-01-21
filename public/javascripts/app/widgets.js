@@ -4,14 +4,6 @@ define(function(require) {
         $ = require('jquery'),
         WorkSpaceManager = require('app/model/workspacemanager');
 
-    angular.element(document).ready(function () {
-        var app = angular.module("app", []);
-        app.controller("selected", function ($scope) {
-            $scope.show = false;
-        });
-        angular.bootstrap(document, ["app"]);
-    });
-
     var browser = false;
     var workspace = false;
     var textchat = false;
