@@ -136,8 +136,8 @@ define(function (require) {
                 'fileId': id,
                 'resource': body
             };
-            return gapi.client.drive.files.update(request).then(function(responce){
-                console.log(responce);
+            return gapi.client.drive.files.update(request).then(function(response){
+                console.log(response);
             });
         };
 
