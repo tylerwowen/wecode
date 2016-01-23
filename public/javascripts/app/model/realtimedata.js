@@ -46,8 +46,6 @@ define(function(require) {
             }
         };
 
-
-
     }).call(RealTimeData.prototype);
 
     return RealTimeData;

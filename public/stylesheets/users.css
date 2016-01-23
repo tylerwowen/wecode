@@ -36,11 +36,10 @@ h1 {
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
 }
 
-#signup, #login {
+#signup, #login, .abcRioButton, .abcRioButtonBlue{
     position: relative;
-    width: 85%;
+    width: 85% !important;
     height: 50px;
     display: block;
     margin: 30px auto 30px;
 }
-

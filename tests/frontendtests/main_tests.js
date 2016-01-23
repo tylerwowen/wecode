@@ -50,14 +50,12 @@ define(function(require) {
 
     chai.use(chaiAsPromised);
 
-    //chai.use(chaiJquery);
-
     mocha.setup({
         ui:'bdd'
     });
 
     require([
-        //'../../tests/frontendtests/gfileadapter.test',
+        '../../tests/frontendtests/gfileadapter.test',
         '../../tests/frontendtests/gworkspaceadapter.test',
         '../../tests/frontendtests/gsetupadapter.test'
     ], function(require) {

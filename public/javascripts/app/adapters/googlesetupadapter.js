@@ -141,7 +141,6 @@ define(function (require) {
                 });
         };
 
-
         this.deleteFile = function(fileId) {
             var request = {
                 'fileId': fileId

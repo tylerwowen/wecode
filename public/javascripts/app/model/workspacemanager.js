@@ -47,7 +47,6 @@ define(function(require) {
                     return that.workspaceList;
                 });
             }
-            //console.log(this.rootFolderId);
             return this.adapter.getWorkspaceList(this.rootFolderId).then(function(contents) {
                 that.workspaceList = contents;
                 return that.workspaceList;

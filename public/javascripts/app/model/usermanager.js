@@ -40,15 +40,9 @@ define(function(require) {
                     client_id: clientId,
                     scope: scopes
                 });
-                that.attachClickHandler();
                 deferred.resolve();
             });
             return deferred.promise;
-        };
-
-        this.attachClickHandler = function() {
-            var that = this;
-            //this.auth2.attachClickHandler('signin-button', {}, this.onGapiSuccess, this.onGapiFailure);
         };
 
         this.onGapiSuccess = function(googleUser) {
@@ -134,68 +128,4 @@ define(function(require) {
     }).call(UserManager.prototype);
 
     return UserManager;
-
-    //function setupParseUser(userInput) {
-    //
-    //    user.set('username', userInput.userName);
-    //    user.set('password', userInput.password);
-    //
-    //    // other fields can be set just like with Parse.Object
-    //    // user.set('phone', '650-555-0000');
-    //}
-    //var user = Parse.User.current();
-    //var isLoggedIn = false;
-    //
-    //if (user) {
-    //    isLoggedIn = true;
-    //}
-    //else {
-    //    isLoggedIn = false;
-    //    user = new Parse.User();
-    //}
-
-    //return {
-    //    signup: function(userInput) {
-    //        var successful = new Parse.Promise();
-    //
-    //        setupParseUser(userInput);
-    //        user.signUp(null, {
-    //            success: function(user) {
-    //                isLoggedIn = true;
-    //                successful.resolve();
-    //            },
-    //            error: function(user, error) {
-    //                // Show the error message somewhere and let the user try again.
-    //                alert('Error: ' + error.code + ' ' + error.message);
-    //            }
-    //        });
-    //        return successful;
-    //    },
-    //
-    //    login: function(userInput) {
-    //        var successful = new Parse.Promise();
-    //
-    //        setupParseUser(userInput);
-    //        user.logIn( {
-    //            success: function(user) {
-    //                isLoggedIn = true;
-    //                console.log('logged in with user: ' + user.getUsername());
-    //                successful.resolve();
-    //            },
-    //            error: function(user, error) {
-    //                console.error(error);
-    //            }
-    //        });
-    //        return successful;
-    //    },
-    //
-    //    logout: function() {
-    //        Parse.User.logOut();
-    //        isLoggedIn = false;
-    //    },
-    //
-    //    isLoggedIn: function() {
-    //        return isLoggedIn;
-    //    }
-    //};
 });

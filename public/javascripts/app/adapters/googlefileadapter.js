@@ -24,7 +24,6 @@ define(function(require) {
          * @param {!string} id for the document to load.
          * @export
          */
-
         this.loadDriveFile = function(id, onFileLoaded, initializeModel) {
             gapi.drive.realtime.load(id, function(doc) {
                 onFileLoaded(doc);

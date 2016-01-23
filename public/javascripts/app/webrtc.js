@@ -1,5 +1,4 @@
 define(function(require) {
-    var RealtimeUtils = require('lib/realtimeutils');
     var $ = require('jquery');
     require('lib/adapter');
     require('socketio');
@@ -80,12 +79,29 @@ define(function(require) {
         sendMessage('bye');
     };
 
+    /**
+     * Examines url query parameters for a specific parameter.
+     * @param {!string} urlParam to search for in url parameters.
+     * @return {?(string)} returns match as a string of null if no match.
+     * @export
+     */
+    function getParam(urlParam) {
+        var regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
+        var match = window.location.search.match(regExp);
+        if (match && match.length) {
+            match = match[0];
+            match = match.replace(urlParam + '=', '').replace('&', '');
+        } else {
+            match = null;
+        }
+        return match;
+    }
+
     // Start the WebRTC-ness when you detect the correct browser
     if (webrtcDetectedBrowser === 'chrome' || webrtcDetectedBrowser === 'firefox') {
         var socket = io.connect();
-        var realtimeUtils = new RealtimeUtils();
         var joined = false;
-        room = realtimeUtils.getParam('workspace');
+        room = getParam('id');
         if(!room){
             room = 'theUltimatePlayground';
         }

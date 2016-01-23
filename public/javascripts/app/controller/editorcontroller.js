@@ -199,7 +199,6 @@ define(function (require) {
             return match;
         };
 
-
     }).call(Controller.prototype);
 
     return Controller;
