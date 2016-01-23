@@ -1,132 +1,79 @@
-.filebar {
+#filebar {
     overflow: auto;
     font-size: 12px;
     font-weight: 200;
     background-color: #181818;
     position: absolute;
     width: 100%;
-    height: 100vh;
-    color: #e1ffff;
+    height: 100%;
+    color: white;
     overflow-y: hidden;
 }
 
-.fileName{
-    padding-top: 5px;
-    padding-left: 5px;
-    padding-bottom: 5px;
-    padding-right: 5px;
-}
-
-.filebar_row{
-    height: 10vh;
-    max-height: 34px;
-}
-
-.refreshButton,
-.fileButton{
-    padding-left: 5px;
-    float: left;
-}
-
-.filebar .project {
+#wsName {
     background-color: #181818;
     line-height: 50px;
     display: block;
     text-align: center;
-    font-size: 14px;
-    border-bottom: 1px solid #23282e;
+    font-size: 18px;
+}
 
-}
-.filebar .toggle-btn {
-    display: none;
-}
-.filebar ul,
-.filebar li {
+#menu-content, #files {
     list-style: none;
     padding: 0;
     margin: 0;
     line-height: 35px;
     cursor: pointer;
-
-}
-.filebar ul :not(collapsed) .arrow:before,
-.filebar li :not(collapsed) .arrow:before {
-    font-family: FontAwesome;
-    content: "\f078";
-    display: inline-block;
-    padding-left: 10px;
-    padding-right: 10px;
-    vertical-align: middle;
-    float: right;
 }
 
-.filebar ul .elements li,
-.filebar li .elements li {
+#files li {
     background-color: #1c1c1c;
+    font-family: Verdana, sans-serif;
     border: none;
     line-height: 28px;
     padding-left: 20px;
 }
-.filebar ul .elements li:hover,
-.filebar li .elements li:hover {
+
+#files li.current {
     background-color: #404040;
 }
-.filebar ul .elements li:before,
-.filebar li .elements li:before {
+
+#files li:before {
     font-family: FontAwesome;
-    content: "\f105";
+    content: "\f1c9";
     display: inline-block;
     padding-left: 10px;
     padding-right: 10px;
     vertical-align: middle;
 }
-.filebar li {
+
+#folders {
     padding-left: 0;
+    font-size: 16px;
 }
-.filebar li a {
+
+#folders a {
     text-decoration: none;
-    color: #e1ffff;
+    color: white;
 }
-.filebar li a i {
-    padding-left: 10px;
-    width: 20px;
-    padding-right: 20px;
+#folders a i {
+    padding-left: 15px;
+    width: 25px;
+    padding-right: 25px;
 }
-.filebar li:hover {
+
+#folders:hover {
     background-color: #4f5b69;
     -webkit-transition: all 1s ease;
     -moz-transition: all 1s ease;
     -o-transition: all 1s ease;
     transition: all 1s ease;
 }
-@media (max-width: 767px) {
-    .filebar {
-        position: relative;
-        width: 100%;
-        margin-bottom: 10px;
-    }
-    .filebar .toggle-btn {
-        display: block;
-        cursor: pointer;
-        position: absolute;
-        right: 10px;
-        top: 10px;
-        z-index: 10 !important;
-        padding: 3px;
-        background-color: #ffffff;
-        color: #000;
-        width: 40px;
-        text-align: center;
-    }
-    .project {
-        text-align: left !important;
-        font-size: 22px;
-        padding-left: 20px;
-        line-height: 50px !important;
-    }
+
+#menu-content {
+    display: block;
 }
-@media (min-width: 767px) {
-    .filebar .menu-list .menu-content {
-        display: block;
-    }
+
+#fileForm {
+    padding: 10px;
 }

@@ -46,7 +46,7 @@ define(function(require) {
             this.ace.on('blur', this.onBlur);
             this.ace.on('focus', this.onFocus);
             return this.aceSession.selection.on('changeCursor', this.onCursorActivity);
-        }
+        };
 
         this.grabDocumentState = function () {
             this.lastDocLines = this.aceDoc.getAllLines();

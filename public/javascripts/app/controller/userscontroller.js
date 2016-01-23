@@ -2,100 +2,95 @@ define(function (require) {
     "use strict";
 
     var $ = require('jquery'),
-        UserManager = require('app/model/usermanager'),
-        WorkSpaceManager = require('app/model/workspacemanager');
-
-    function getUserInput() {
-        var userName = $('#userName').val();
-        var password = $('#password').val();
-
-        return {
-            userName: userName,
-            password: password
-        };
-    }
-
-    function updateStatus() {
-        if (UserManager.isLoggedIn()) {
-            showLoggedInMessage();
-            showWorkSpaceList();
-        } else {
-            showNotLoggedInMessage();
-        }
-    }
-
-    function showLoggedInMessage() {
-        $('#status').text('You are logged in.');
-    }
-
-    function showNotLoggedInMessage() {
-        $('#status').text('You are NOT logged in.');
-    }
-
-    function showWorkSpaceList() {
-
-        WorkSpaceManager.getWorkSpaceList().then(function (workSpaceList) {
-            $('#workSpaceList').empty();
-            workSpaceList.forEach(function (workSpace) {
-                $('#workSpaceList').append(
-                    '<li>' +
-                    '<a href="/main?workspace=' + workSpace.id + '">' +
-                    workSpace.get('name') + '</a>' +
-                    '</li>');
-            })
-        }, function (error) {
-            console.error(error);
-        });
-    }
+        gapi = require('gapi'),
+        UserManager = require('app/model/usermanager');
 
     function Controller() {
+        this.userManager = new UserManager();
 
-        var that = this;
-
-        $('#signup').click(function () {
-            var userInput = getUserInput();
-            UserManager.signup(userInput).then(function () {
-                updateStatus();
-            }, function (error) {
-                console.error(error);
-            });
-        });
-
-        $('#login').click(function () {
-            var userInput = getUserInput();
-            UserManager.login(userInput).then(function () {
-                $('#login-hovering').hide();
-                that.callback();
-            }, function (error) {
-                console.error(error);
-            });
-        });
-
-        $('#logout').click(function () {
-            UserManager.logout();
-            updateStatus();
-        });
-
-        $('#saveWorkSpaceBtn').click(function () {
-            var id = $('#workSpaceId').val();
-            WorkSpaceManager.saveWorkSpace(id).then(function () {
-                showWorkSpaceList();
-            });
-        });
+        this.onGapiSuccess = this.onGapiSuccess.bind(this);
+        this.onGapiFailure = this.onGapiFailure.bind(this);
     }
 
     (function () {
         this.constructor = Controller;
 
-        this.updateStatus = function () {
-            updateStatus();
+        this.init = function(onEventuallySuccess) {
+            var that = this;
+            this.onEventuallySuccess = onEventuallySuccess;
+            return this.userManager.initGapi()
+                .then(function() {
+                    that.connectToView();
+                    return that.userManager.startAuthorizing();
+                })
+                .then(function(authResult) {
+                    if (authResult && authResult.error) {
+                        that.loginRequest();
+                    }
+                    else if (authResult && !authResult.error){
+                        onEventuallySuccess();
+                    }
+                });
         };
 
-        this.loginRequest = function (init) {
+        this.connectToView = function() {
+            this.attachSignin();
+        };
+
+        this.getUserInput = function() {
+            var userName = $('#userName').val();
+            var password = $('#password').val();
+
+            return {
+                userName: userName,
+                password: password
+            };
+        };
+
+        this.updateStatus = function() {
+            if (this.userManager.isLoggedIn()) {
+                this.showLoggedInMessage();
+                console.log('signed in');
+                window.location.href = ('/main');
+            } else {
+                this.showNotLoggedInMessage();
+            }
+        };
+
+        this.attachSignin = function() {
+            gapi.signin2.render('signin-button', {
+                'height': 50,
+                'width': 220,
+                'longtitle': true,
+                'theme': 'dark',
+                'onsuccess': this.onGapiSuccess,
+                'onfailure': this.onGapiFailure
+            });
+        };
+
+        this.onGapiSuccess = function(googleUser) {
+            this.updateStatus();
+            this.onEventuallySuccess();
+            $('#login-hovering').hide();
+            this.userManager.onGapiSuccess(googleUser);
+        };
+
+        this.onGapiFailure = function(error) {
+            console.log(error);
+            this.userManager.onGapiFailure(error);
+        };
+
+        this.showLoggedInMessage = function() {
+            $('#status').text('You are logged in.');
+        };
+
+        this.showNotLoggedInMessage = function() {
+            $('#status').text('You are NOT logged in.');
+        };
+
+        this.loginRequest = function () {
             $('#login-hovering').show();
-            this.callback = init;
         };
-
     }).call(Controller.prototype);
 
 

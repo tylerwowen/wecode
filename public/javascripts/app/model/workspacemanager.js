@@ -1,68 +1,69 @@
 define(function(require) {
     "use strict";
 
-    var Parse = require('parse');
+    var Q = require('q'),
+        Adapter = require('app/adapters/googlesetupadapter');
 
-    Parse.initialize('mxwTWgOduKziA6I6YTwQ5ZlqSESu52quHsqX0xId',
-        'rCQqACMXvizSE5pnZ9p8efewtz8ONwsVAgm2AHCP');
-
-    var WorkSpace = Parse.Object.extend('WorkSpace');
-    var File = Parse.Object.extend('File');
-
-
-    function createWorkSpace() {
-
-        var workSpace = new WorkSpace();
-        var relation = workSpace.relation('files');
-        var user = Parse.User.current();
-
-        var query = new Parse.Query(File);
-        query.get("Zw0gCNNahz").then(function(fetchedFile) {
-            relation.add(fetchedFile)
-        }).then(function(){
-            return workSpace.save();
-        }).then(function() {
-            var userWorkSpaceRelation = user.relation('workSpaceList');
-            userWorkSpaceRelation.add(workSpace);
-            user.save();
-        }, function(error) {
-            console.error(error);
-        });
+    function WorkspaceManager() {
+        this.rootFolderId = null;
+        this.workspaceList = [];
+        this.adapter = new Adapter();
     }
 
-    return {
+    (function(){
 
-        getWorkSpaceList: function() {
+        this.constructor = WorkspaceManager;
 
-            var successful = new Parse.Promise();
-            var relation = Parse.User.current().relation('workSpaceList');
-            var query = relation.query();
-
-            query.find().then(function(workSpaceList) {
-                successful.resolve(workSpaceList);
-            }, function(error) {
-                console.error(error);
+        // Init operations
+        this.init = function() {
+            var that = this;
+            return this.adapter.load()
+                .then(function() {
+                    return that.loadConfiguration();
+                }).then(function(rootFolderId) {
+                    that.rootFolderId = rootFolderId;
+                    return that.getWorkspaceList();
             });
-            return successful;
-        },
+        };
 
-        saveWorkSpace: function(workSpaceId) {
-
-            var successful = new Parse.Promise();
-            var user = Parse.User.current();
-            var query = new Parse.Query(WorkSpace);
-
-            query.get(workSpaceId).then(function(workSpace) {
-                var relation = user.relation('workSpaceList');
-                relation.add(workSpace);
-                user.save().then(function() {
-                    successful.resolve();
+        this.loadConfiguration = function() {
+            var that = this;
+            return this.adapter.loadConfiguration().then(function(rootFolderId) {
+                if (rootFolderId != null) {
+                    return rootFolderId;
+                }
+                // first time, create rootFolder and configuration
+                return that.adapter.createRootFolder().then(function(rootFolderId) {
+                    that.adapter.createConfigurationFile(rootFolderId);
+                    return rootFolderId;
                 });
-            }, function(error) {
-                console.error(error);
-                alert('We cannot find the work space id. Please check it.');
             });
-            return successful;
-        }
-    }
+        };
+
+        this.getWorkspaceList = function() {
+            var that = this;
+            if (this.workspaceList.length != 0) {
+                return Q.fcall(function () {
+                    return that.workspaceList;
+                });
+            }
+            return this.adapter.getWorkspaceList(this.rootFolderId).then(function(contents) {
+                that.workspaceList = contents;
+                return that.workspaceList;
+            });
+        };
+
+        this.refreshWorkspaceList = function() {
+            this.workspaceList = [];
+            return this.getWorkspaceList();
+        };
+
+        this.createWorkSpace = function(workSpaceName) {
+            console.log(this);
+            return this.adapter.createWorkSpace(this.rootFolderId, workSpaceName);
+        };
+
+    }).call(WorkspaceManager.prototype);
+
+    return WorkspaceManager;
 });

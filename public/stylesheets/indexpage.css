@@ -87,3 +87,87 @@ iframe {
     display: block;
     margin: 0 auto;
 }
+
+.line-center{
+    margin:0;padding:0 10px;
+    background:  #404040;
+    display:inline-block;
+}
+h4{
+    color: #ffffff!important;
+}
+
+h5{
+    text-align:center;
+    position:relative;
+    z-index:2;
+    color: #ffffff!important;
+}
+h5:after{
+    content:"";
+    position:absolute;
+    top:50%;
+    left:0;
+    right:0;
+    border-top:solid 1px darkgray;
+    z-index:-1;
+}
+
+.navbar-brand {
+    color: #ffffff!important;
+}
+
+.dropdown-menu:before {
+    color: #404040!important;
+    border-color: #404040!important;
+    background: #404040!important;
+}
+
+#loginMenu {
+    padding: 17px;
+    width: 250px;
+}
+
+
+#signInButton {
+    position: absolute;
+    padding: 15px !important;
+}
+
+#signin-button {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+#username, #password {
+    height: 30px;
+}
+
+#formLogin {
+    margin: 0;
+}
+
+#signUpButton, #loginButton {
+    margin: 5px;
+}
+
+#signUp {
+    color: #ffffff!important;
+}
+
+.navbar {
+    background: #404040!important;
+}
+
+.nav.pull-right {
+    padding-right: 10px;;
+}
+
+.form-group {
+    text-align: center;
+}
+
+.dropdown-menu {
+    background-color: #404040!important;
+}

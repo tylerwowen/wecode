@@ -1,0 +1,50 @@
+#chatwrapper {
+    position: absolute;
+    top: 0;
+    right: 4%;
+    width: 25%;
+    height: 100%;
+    z-index: 103;
+    background-color: white;
+    display: none;
+    border: 5px solid white;
+}
+
+#chatheader {
+    font-family: 'Muli', sans-serif;
+    background-color: #B72C2C;
+    line-height: 50px;
+    display: block;
+    text-align: center;
+    font-size: 18px;
+    color: white;
+}
+
+#textform {
+    height: 6% !important;
+    bottom: 0;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#messages {
+    list-style-type: none;
+    margin: 0;
+    padding: 6px 6px 0 0px;
+    width: 100%;
+    word-wrap:break-word;
+    height: 86%;
+}
+
+#messages li {
+    padding-left: 10px;
+}
+
+#messages li:nth-child(odd) {
+    color: #4f5b69;
+}
+
+#messages li:nth-child(even) {
+    padding-left: 20px;
+    max-width: 100%;
+}

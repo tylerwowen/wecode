@@ -2,7 +2,7 @@
 .row,
 html,
 body {
-    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    font-family: 'Muli', sans-serif;
     height: 100vh;
     width: 100vw;
     padding: 0 !important;
@@ -10,7 +10,7 @@ body {
 }
 
 a {
-    color: #00B7FF;
+    color: white;
 }
 
 .container{
@@ -22,32 +22,33 @@ a {
     position:   absolute;
     z-index:    50;
     height:     100%;
-    width:      107%;
-}
-
-#vidwrapper{
-    height:     100% !important;
     width:      100%;
-    z-index:    100;
-    /*float:      left;*/
-}
-#localVideo,
-#remoteVideo{
-    height:     100% !important;
-    width:      auto;
-    z-index:    100;
-    float:      left;
 }
 
-.row_video{
+#rmenu {
+    z-index:1000;
+    position: absolute;
+    background-color:#C0C0C0;
+    display: none;
+}
+
+#vidwrapper {
+    height:     15%;
+    display: inline-block;
+    white-space: nowrap;
+    z-index:    100;
     position: absolute;
     bottom: 0%;
-    height: 20% !important;
-    width: 107%;
+    right: 0%;
+}
+
+#vidwrapper > video:nth-of-type(n) {
+    height: 100%;
+    position: relative;
+    bottom: 0%;
 }
 
 .col-md-2, /* file bar */
-.col-md-6, /* used for halve of col-md-1*/
 .col-md-1, /* side bar */
 .col-md-9{ /* code editor & videos */
     position: absolute;
@@ -60,7 +61,10 @@ a {
 }
 
 .col-md-9{ /* code editor & videos */
-    max-width: 75%;
+    overflow: hidden;
+    min-width: 79.34%;
 }
 
-
+.col-md-1 {
+    max-width: 4%;
+}

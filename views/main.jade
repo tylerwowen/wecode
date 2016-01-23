@@ -3,15 +3,13 @@ extends layout
 block content
     include login
     include workspace
+    include textchat
+    include sidebar
+
     .container
         .row
             .col-md-2
                 include filebar
             .col-md-9
                 include codeeditor
-                .row_video
-                    include webrtc
-            .col-md-1
-                .col-md-6
-                .col-md-6
-                    include sidebar
+                include webrtc

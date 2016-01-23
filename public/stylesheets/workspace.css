@@ -4,58 +4,78 @@
     right: 4%;
     width: 25%;
     height: 100%;
-    z-index: 103;
+    z-index: 105;
+    display: none;
+    border: 5px solid white;
+    background-color: white;
 }
 
-.workspaces {
-    overflow: auto;
-    font-size: 12px;
-    font-weight: 200;
-    background-color: #181818;
-    position: fixed;
-    top: 0;
-    right: 4%;
-    width: 25%;
+#wsblock {
+    width: 100%;
     height: 100%;
-    color: #e1ffff;
-    z-index: 105;
-    border-right: 1px #404040 solid;
+    font-family: 'Muli', sans-serif;
 }
-.workspaces .select {
-    background-color: #181818;
+
+#wsHeader {
+    background-color: #B72C2C;
+    z-index: 105;
     line-height: 50px;
     display: block;
     text-align: center;
-    font-size: 14px;
-    border-bottom: 1px solid #23282e;
+    font-size: 18px;
+    color: white;
 }
 
-.workspaces li{
+#workSpaceList li {
     list-style: none;
-    margin: 0;
-    line-height: 35px;
     cursor: pointer;
-    padding-left: 15px;
+    font-size: 20px;
 }
 
-.workspaces ul {
-    padding-left: 0;
+#workSpaceList li a:before {
+    font-family: FontAwesome;
+    content: "\f005";
+    padding-left: 10px;
+    padding-right: 20px;
+    vertical-align: middle;
 }
-.workspaces ul a {
+
+#workSpaceList li a {
     text-decoration: none;
-    color: #e1ffff;
+    color: black;
+    padding: 15px;
+    line-height: 30px;
+    border-radius: 7px;
+    display: inline-block !important;
+    width: 100%;
+    background-color: #d2d2d2;
+    margin-bottom: 10px;
 }
-.workspaces ul a i {
-    width: 20px;
+
+#wsblock ul {
+    padding-left: 0;
+    margin: 10px;
 }
-.workspaces li:hover {
-    background-color: #4f5b69;
+
+#workSpaceList li a:hover {
+    background-color: #797777;
     -webkit-transition: all 1s ease;
     -moz-transition: all 1s ease;
     -o-transition: all 1s ease;
     transition: all 1s ease;
+    color: white;
 }
 
-.worklist .menu-content {
-    display: block;
+#workspaceform {
+    padding: 10px 10px 0 10px;
+}
+
+.btn-success {
+    background-color: #4f5b69 !important;
+    border-color: #4f5b69 !important;
+}
+
+.btn-success:hover {
+    background-color: #7D8792 !important;
+    border-color: #7D8792 !important;
 }
