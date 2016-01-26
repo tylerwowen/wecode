@@ -51,7 +51,6 @@ define(function (require) {
             if (this.userManager.isLoggedIn()) {
                 this.showLoggedInMessage();
                 console.log('signed in');
-                window.location.href = ('/main');
             } else {
                 this.showNotLoggedInMessage();
             }
