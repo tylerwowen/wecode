@@ -4,7 +4,13 @@ define(function(require) {
     var Q = require('q'),
         Adapter = require('app/adapters/googlesetupadapter');
 
+    var instance = null;
+
     function WorkspaceManager() {
+        if (instance != null) {
+            throw new Error('Cannot instantiate more than one WorkspaceManager, ' +
+                'use WorkspaceManager.sharedInstance')
+        }
         this.rootFolderId = null;
         this.workspaceList = [];
         this.adapter = new Adapter();
@@ -65,5 +71,12 @@ define(function(require) {
 
     }).call(WorkspaceManager.prototype);
 
-    return WorkspaceManager;
+    WorkspaceManager.sharedInstance = function() {
+        if (instance == null) {
+            instance = new WorkspaceManager();
+        }
+        return instance;
+    };
+
+    return WorkspaceManager.sharedInstance;
 });
