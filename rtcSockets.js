@@ -1,3 +1,6 @@
+var io = require('socket.io');
+var sio;
+
 /**
  * This module is responsible for setting up the socket listener.
  *
@@ -6,48 +9,21 @@
  *   2. Handle sending messages from the client side
  *   3. Handle room joining/creating from the client side
  */
-rtcSockets = function(app) {
-    var io = require('socket.io').listen(app, { log: false });
-    io.sockets.on('connection', function (socket){
+function rtcSockets(server) {
+    sio = io(server);
+
+    sio.on('connection', function (socket){
 
         socket.on('chat message', function(message, room){
-            io.sockets.in(room).emit('chat message', message);
+            sio.sockets.in(room).emit('chat message', message);
         });
 
         socket.on('print username', function(data, room){
-            io.sockets.in(room).emit('print username', data);
+            sio.sockets.in(room).emit('print username', data);
         });
-        /**
-         * Listens to a message from a client to handle peer connections, the different steps
-         * it performs are:
-         * 1. Listens to a offer and delivers it to the remote client with id remoteId
-         * 2. Listens to a answer and delivers it to the remote client with id remoteId
-         * 3. Listens to a message type of candidate and deliverse it to the remote client with id remoteId
-         * 4. Listens to a message bye and delivers it to all the clients connected to the room
-         */
-        socket.on('message', function (message, room, remoteId) {
-            var newRemoteId = socket.store.id;
-            var findAndSendMessageToMatchingClient = function(message, remoteId, newRemoteId) {
-                var clients = io.sockets.clients(room);
-                for(var i = 0; i < clients.length; i++){
-                    if(clients[i].id === remoteId){
-                        clients[i].emit('message', message, newRemoteId);
-                    }
-                }
-            }
-            
-            if(message.type === 'offer') {
-                findAndSendMessageToMatchingClient(message, remoteId, newRemoteId);
-            }
-            else if(message.type === 'answer') {
-                findAndSendMessageToMatchingClient(message, remoteId, newRemoteId);
-            }
-            else if(message.type === 'candidate') {
-                findAndSendMessageToMatchingClient(message, remoteId, newRemoteId);  
-            }
-            else if(message === 'bye') {
-                socket.broadcast.to(room).emit('message', message, newRemoteId);
-            }
+
+        socket.on('message', function (message, room, receiverId) {
+            messageHandler(message, room, receiverId, socket);
         });
 
         /**
@@ -55,29 +31,67 @@ rtcSockets = function(app) {
          */
         socket.on('gotUserMedia', function(message) {
             socket.emit('gotUserMedia', true);
-        })
+        });
 
         /**
          *  Deals with clients joining the room for video chat
          */
-        socket.on('create or join', function (room) {
-            var getCurrentConnectedUsers = function() {
-                var currentlyConnected = [];
-                var clients = io.sockets.clients(room);
-                for(var i = 0; i < clients.length; i++)
-                    currentlyConnected.push(clients[i].id);
-                return currentlyConnected;
-            }
-
-            var clientsInRoom = io.sockets.clients(room).length;
-            if (clientsInRoom < 5) {
-                socket.join(room);
-                socket.emit('joined', getCurrentConnectedUsers());
-            } else {
-                socket.emit('full', room);
-            }
+        socket.on('create or join', function(roomId) {
+            joinHandler(roomId, socket);
         });
     });
-};
+}
+
+/**
+ * Listens to a message from a client to handle peer connections, the different steps
+ * it performs are:
+ * 1. Listens to a offer and delivers it to the remote client with id remoteId
+ * 2. Listens to a answer and delivers it to the remote client with id remoteId
+ * 3. Listens to a message type of candidate and deliverse it to the remote client with id remoteId
+ * 4. Listens to a message bye and delivers it to all the clients connected to the room
+ */
+function messageHandler(message, room, receiverId, socket) {
+    var senderId = socket.id;
+
+    if(message.type === 'offer') {
+        sendMessageToReceiver(message, receiverId, senderId);
+    }
+    else if(message.type === 'answer') {
+        sendMessageToReceiver(message, receiverId, senderId);
+    }
+    else if(message.type === 'candidate') {
+        sendMessageToReceiver(message, receiverId, senderId);
+    }
+    else if(message === 'bye') {
+        sio.to(room).emit('message', message, senderId);
+    }
+}
+
+function sendMessageToReceiver(message, receiverId, senderId) {
+    sio.sockets.connected[receiverId].emit('message', message, senderId);
+}
+
+function joinHandler(roomID, socket) {
+
+    var room = sio.sockets.adapter.rooms[roomID];
+
+    if (!room || Object.keys(room).length < 5) {
+        socket.join(roomID);
+        room = sio.sockets.adapter.rooms[roomID].sockets;
+        socket.emit('joined', clientsInRoom(room));
+    }
+    else {
+        socket.emit('full', roomID);
+    }
+}
+
+function clientsInRoom(room) {
+    var currentlyConnected = [];
+    for (var client in room) {
+        if (!room.hasOwnProperty(client)) continue;
+        currentlyConnected.push(client);
+    }
+    return currentlyConnected;
+}
 
 module.exports = rtcSockets;
