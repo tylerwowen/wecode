@@ -60,7 +60,7 @@ define(function(require) {
         };
 
         this.isLoggedIn = function() {
-            //return this.auth2.isSignedIn.get();
+            return this.auth2.isSignedIn.get();
         };
 
         this.startAuthorizing = function() {

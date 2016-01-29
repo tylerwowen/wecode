@@ -20,7 +20,6 @@ define(function (require) {
             this.onEventuallySuccess = onEventuallySuccess;
             return this.userManager.initGapi()
                 .then(function() {
-                    that.connectToView();
                     return that.userManager.startAuthorizing();
                 })
                 .then(function(authResult) {
@@ -31,10 +30,6 @@ define(function (require) {
                         onEventuallySuccess();
                     }
                 });
-        };
-
-        this.connectToView = function() {
-            this.attachSignin();
         };
 
         this.getUserInput = function() {
@@ -88,6 +83,7 @@ define(function (require) {
         };
 
         this.loginRequest = function () {
+            this.attachSignin();
             $('#login-hovering').show();
         };
     }).call(Controller.prototype);
