@@ -75,6 +75,7 @@ define(function(require) {
             }, function(authResult) {
                 if (authResult && !authResult.error) {
                     that.gToken = authResult.access_token;
+                    that.userName = that.auth2.currentUser.get().getBasicProfile().getName();
                     console.log('Authorization succeed');
                 }
                 deferred.resolve(authResult);
