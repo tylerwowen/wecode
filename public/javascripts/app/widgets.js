@@ -74,7 +74,7 @@ define(function(require) {
     });
 
 
-    var workspaceManager = new WorkSpaceManager();
+    var workspaceManager = WorkSpaceManager();
 
     function showWorkSpaceList() {
 

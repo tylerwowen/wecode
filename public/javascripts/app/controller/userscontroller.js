@@ -6,7 +6,7 @@ define(function (require) {
         UserManager = require('app/model/usermanager');
 
     function Controller() {
-        this.userManager = new UserManager();
+        this.userManager = UserManager();
 
         this.onGapiSuccess = this.onGapiSuccess.bind(this);
         this.onGapiFailure = this.onGapiFailure.bind(this);

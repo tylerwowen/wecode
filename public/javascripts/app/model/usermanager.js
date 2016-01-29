@@ -1,8 +1,7 @@
 define(function(require) {
     "use strict";
 
-    var Parse = require('parse'),
-        Q = require('q'),
+    var Q = require('q'),
         gapi = require('gapi');
 
     var clientId = '315862064112-anadjteqedc54o1tkhg493e0jqntlfve.apps.googleusercontent.com';
@@ -14,10 +13,12 @@ define(function(require) {
         'email '+
         'profile';
 
+    var instance = null;
 
     function UserManager() {
-        Parse.initialize('mxwTWgOduKziA6I6YTwQ5ZlqSESu52quHsqX0xId',
-            'rCQqACMXvizSE5pnZ9p8efewtz8ONwsVAgm2AHCP');
+        if (instance != null) {
+            throw new Error('Cannot instantiate more than one UserManager, use UserManager.sharedInstance')
+        }
 
         this.onGapiSuccess = this.onGapiSuccess.bind(this);
         this.onGapiFailure = this.onGapiFailure.bind(this);
@@ -74,6 +75,7 @@ define(function(require) {
             }, function(authResult) {
                 if (authResult && !authResult.error) {
                     that.gToken = authResult.access_token;
+                    that.userName = that.auth2.currentUser.get().getBasicProfile().getName();
                     console.log('Authorization succeed');
                 }
                 deferred.resolve(authResult);
@@ -127,5 +129,12 @@ define(function(require) {
 
     }).call(UserManager.prototype);
 
-    return UserManager;
+    UserManager.sharedInstance = function() {
+        if (instance == null) {
+            instance = new UserManager();
+        }
+        return instance;
+    };
+
+    return UserManager.sharedInstance;
 });
