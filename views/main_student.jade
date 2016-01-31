@@ -6,5 +6,9 @@ block content
    include textchat
    include sidebar_student
    .container
-      include codeeditor
-      include webrtc
+      .row
+         .col-md-2
+            include filebar_student
+         .col-md-9
+            include codeeditor
+            include webrtc
