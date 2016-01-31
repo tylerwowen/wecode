@@ -79,26 +79,24 @@ define(function (require) {
                             alt: 'media'
                         }).then(function(json) {
                             return JSON.parse(json.body).rootFolderId;
-                        })
+                        });
                     }
                 });
         };
 
         /**
          * Create a link to a file in google that allows the file to be edited by anyone
-         * @param {object} file - the file in google to add permissions to
+         * @param {object} fileId - the file in google to add permissions to
          * @returns a promise for the passed file
          */
-        this.addPublicPermissions = function(file) {
+        this.addPublicPermissions = function(fileId) {
             return gapi.client.drive.permissions.create({
-                fileId: file,
+                fileId: fileId,
                 resource: {
                     type: 'anyone',
                     role: 'writer',
                     withLink: true
                 }
-            }).then(function() {
-                return file;
             });
         };
 

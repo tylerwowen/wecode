@@ -40,11 +40,15 @@ define(function(require) {
                 }
                 // first time, create rootFolder and configuration
                 return that.adapter.createRootFolder().then(function(rootFolderId) {
-                    that.adapter.createConfigurationFile(rootFolderId);
+                    return Q.all([
+                        rootFolderId,
+                        that.adapter.createConfigurationFile(rootFolderId),
+                        that.adapter.addPublicPermissions(rootFolderId)
+                    ]);
+                }).spread(function(rootFolderId) {
                     return rootFolderId;
-                }).then(function(rootFolderId) {
-                    return that.adapter.addPublicPermissions(rootFolderId);
                 });
+
             });
         };
 
@@ -67,7 +71,6 @@ define(function(require) {
         };
 
         this.createWorkSpace = function(workSpaceName) {
-            console.log(this);
             return this.adapter.createWorkSpace(this.rootFolderId, workSpaceName);
         };
 

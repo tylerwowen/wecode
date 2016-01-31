@@ -75,10 +75,7 @@ define(function(require) {
             }, function(authResult) {
                 if (authResult && !authResult.error) {
                     that.gToken = authResult.access_token;
-                    // Comment this out because it was causing errors when opening a new tab
-                    // and loading, because auth2 was still not loaded yet. Commented out
-                    // for now because of those errors
-                    //that.userName = that.auth2.currentUser.get().getBasicProfile().getName();
+                    that.userName = that.auth2.currentUser.get().getBasicProfile().getName();
                     console.log('Authorization succeed');
                 }
                 deferred.resolve(authResult);
