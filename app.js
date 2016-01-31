@@ -9,6 +9,7 @@ var fs = require('fs');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var main = require('./routes/main');
+var classes = require('./routes/classes');
 
 var options = {
     key: fs.readFileSync('key.pem').toString(),
@@ -33,6 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/main', main);
+app.use('/classes', classes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

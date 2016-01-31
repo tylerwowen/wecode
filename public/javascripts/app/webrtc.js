@@ -171,17 +171,14 @@ define(function(require) {
          */
         socket.on('message', function (message, remoteId) {
             if (message.type === 'offer') { //Handle when a user sends an offer
-                console.debug('Received an offer from a peer, setting sdp as the remote');
                 createPeerConnection(remoteId);
                 $('#messages').append($('<li>').text(remoteId + " has joined the room."));
                 $('#messages').append($('<li>').text(""));
                 pcs[remoteId].setRemoteDescription(new RTCSessionDescription(message));
                 doAnswer(remoteId);
             } else if (message.type === 'answer') {
-                console.debug('Received an answer from a peer, setting sdp as the remote');
                 pcs[remoteId].setRemoteDescription(new RTCSessionDescription(message));
             } else if (message.type === 'candidate') {
-                console.debug('Received a remote candidate from a peer, adding the ice candidate to the peer connection');
                 var candidate = new RTCIceCandidate({sdpMLineIndex: message.label, candidate: message.candidate});
                 pcs[remoteId].addIceCandidate(candidate);
             } else if (message === 'bye') {
@@ -211,7 +208,6 @@ define(function(require) {
          */
         function createPeerConnection(remoteId) {
             try {
-                console.debug('Create peer connection');
                 var pc = new RTCPeerConnection(pc_config, pc_constraints);
                 pc.onicecandidate = handleIceCandidate;
             } catch (e) {
@@ -232,8 +228,6 @@ define(function(require) {
          * that you would like to create a connection with
          */
         function handleIceCandidate(event) {
-
-            console.debug('Handling ice candidate');
             if (event.candidate) {
                 sendMessage({
                     type: 'candidate',
@@ -260,9 +254,7 @@ define(function(require) {
                 }
             }
             constraints = mergeConstraints(constraints, sdpConstraints);
-            console.debug('Sending offer to peer');
             function setLocalAndSendMessage(sessionDescription) {
-                console.debug('Set Local and send message');
                 sessionDescription.sdp = preferOpus(sessionDescription.sdp);
                 pcs[remoteId].setLocalDescription(sessionDescription);
                 sendMessage(sessionDescription, remoteId);
@@ -275,9 +267,7 @@ define(function(require) {
          * to the remote peer
          */
         function doAnswer(remoteId) {
-            console.debug('Sending answer to peer');
             function setLocalAndSendMessage(sessionDescription) {
-                console.debug('Set Local and send message');
                 sessionDescription.sdp = preferOpus(sessionDescription.sdp);
                 pcs[remoteId].setLocalDescription(sessionDescription);
                 sendMessage(sessionDescription, remoteId);
