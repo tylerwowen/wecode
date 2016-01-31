@@ -48,7 +48,6 @@ define(function(require) {
                 }).spread(function(rootFolderId) {
                     return rootFolderId;
                 });
-
             });
         };
 

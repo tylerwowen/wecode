@@ -19,14 +19,14 @@ define(function (require) {
             var that = this;
             this.onEventuallySuccess = onEventuallySuccess;
             return this.userManager.initGapi()
-                .then(function() {
+                .then(function () {
                     return that.userManager.startAuthorizing();
                 })
-                .then(function(authResult) {
+                .then(function (authResult) {
                     if (authResult && authResult.error) {
                         that.loginRequest();
                     }
-                    else if (authResult && !authResult.error){
+                    else if (authResult && !authResult.error) {
                         onEventuallySuccess();
                     }
                 });
