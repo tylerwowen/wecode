@@ -9,6 +9,7 @@ var fs = require('fs');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var main = require('./routes/main');
+var main_student = require('./routes/main_student');
 var classes = require('./routes/classes');
 var questionlist = require('./routes/questionlist');
 var questionform = require('./routes/questionform');
@@ -36,6 +37,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/main', main);
+app.use('/main_student', main_student);
+
 app.use('/classes', classes);
 app.use('/questionform', questionform);
 app.use('/questionlist', questionlist);
