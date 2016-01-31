@@ -18,18 +18,37 @@ define(function (require) {
         this.init = function(onEventuallySuccess) {
             var that = this;
             this.onEventuallySuccess = onEventuallySuccess;
-            return this.userManager.initGapi()
-                .then(function() {
-                    return that.userManager.startAuthorizing();
+            if($('#loginButton').length){
+                $('#loginButton').click(function() {
+                    return that.userManager.initGapi()
+                        .then(function () {
+                            that.attachSignin();
+                            return that.userManager.startAuthorizing();
+                        })
+                        .then(function (authResult) {
+                            if (authResult && authResult.error) {
+                                that.loginRequest();
+                            }
+                            else if (authResult && !authResult.error) {
+                                onEventuallySuccess();
+                            }
+                        });
                 })
-                .then(function(authResult) {
-                    if (authResult && authResult.error) {
-                        that.loginRequest();
-                    }
-                    else if (authResult && !authResult.error){
-                        onEventuallySuccess();
-                    }
-                });
+            }
+            else {
+                return this.userManager.initGapi()
+                    .then(function () {
+                        return that.userManager.startAuthorizing();
+                    })
+                    .then(function (authResult) {
+                        if (authResult && authResult.error) {
+                            that.loginRequest();
+                        }
+                        else if (authResult && !authResult.error) {
+                            onEventuallySuccess();
+                        }
+                    });
+            }
         };
 
         this.getUserInput = function() {
@@ -43,10 +62,16 @@ define(function (require) {
         };
 
         this.updateStatus = function() {
-            if (this.userManager.isLoggedIn()) {
+            if(this.userManager.isLoggedIn() && (window.location.href.split('?')[0].split('/') === ('classes' || 'main'))) {
                 this.showLoggedInMessage();
                 console.log('signed in');
-            } else {
+            }
+            else if (this.userManager.isLoggedIn()) {
+                this.showLoggedInMessage();
+                console.log('signed in');
+                window.location.href = ('/classes');
+            }
+            else {
                 this.showNotLoggedInMessage();
             }
         };

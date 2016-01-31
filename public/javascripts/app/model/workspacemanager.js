@@ -42,6 +42,8 @@ define(function(require) {
                 return that.adapter.createRootFolder().then(function(rootFolderId) {
                     that.adapter.createConfigurationFile(rootFolderId);
                     return rootFolderId;
+                }).then(function(rootFolderId) {
+                    return that.adapter.addPublicPermissions(rootFolderId);
                 });
             });
         };

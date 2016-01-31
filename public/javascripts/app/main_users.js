@@ -7,5 +7,5 @@ define(function(require) {
 
     require(['login.jquery', 'login.bootstrap']);
     var controller = new Controller();
-    controller.init();
+    controller.init(function() {});
 });
