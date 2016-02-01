@@ -2,7 +2,7 @@ define(function (require, exports, module) {
     var $ = require('jquery');
     var classManager = require('app/model/workspacemanager')();
 
-    var Classes = function() {
+    var ClassController = function() {
         var self = this;
 
         this.init = function() {
@@ -59,5 +59,5 @@ define(function (require, exports, module) {
         }
     };
 
-    module.exports = Classes;
+    module.exports = ClassController;
 });
