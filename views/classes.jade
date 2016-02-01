@@ -1,0 +1,23 @@
+doctype html
+html
+    head
+        title
+        link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
+        link(rel='stylesheet', href='/stylesheets/classes.css')
+        script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.min.js', data-main='javascripts/classes')
+    body
+        include classes_create
+        .container
+            .row
+                .col-md-6
+                    |I'm a TA
+                    br
+                    ul#TAClassList.elements
+                    br
+                    button#TAClassFormButton.btn.btn-success.btn-xl Create Class
+                .col-md-6
+                    |I'm a student ;)
+                    br
+                    ul#studentClassList.elements
+                    br
+                    button#StudentAddClass.btn.btn-success.btn-xl Add Class

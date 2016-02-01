@@ -85,6 +85,24 @@ define(function (require) {
         };
 
         /**
+         * Create a link to a file in google that allows the file to be edited by anyone
+         * @param {object} file - the file in google to add permissions to
+         * @returns a promise for the passed file
+         */
+        this.addPublicPermissions = function(fileId) {
+            return gapi.client.drive.permissions.create({
+                fileId: fileId,
+                resource: {
+                    type: 'anyone',
+                    role: 'writer',
+                    withLink: true
+                }
+            }).then(function() {
+                return fileId;
+            });
+        };
+
+        /**
          * Fetches all the workspace
          * @param {!string} folderId is the ID of the root folder.
          * @return {!promise} returns a promise
