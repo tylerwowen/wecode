@@ -86,7 +86,7 @@ define(function (require) {
 
         /**
          * Create a link to a file in google that allows the file to be edited by anyone
-         * @param {object} file - the file in google to add permissions to
+         * @param {object} fileId - the file in google to add permissions to
          * @returns a promise for the passed file
          */
         this.addPublicPermissions = function(fileId) {
@@ -97,8 +97,6 @@ define(function (require) {
                     role: 'writer',
                     withLink: true
                 }
-            }).then(function() {
-                return fileId;
             });
         };
 

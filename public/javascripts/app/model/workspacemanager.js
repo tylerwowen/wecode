@@ -40,10 +40,12 @@ define(function(require) {
                 }
                 // first time, create rootFolder and configuration
                 return that.adapter.createRootFolder().then(function(rootFolderId) {
-                    that.adapter.createConfigurationFile(rootFolderId);
-                    return rootFolderId;
-                }).then(function(rootFolderId) {
-                    return that.adapter.addPublicPermissions(rootFolderId);
+                    return Q.all([
+                        rootFolderId,
+                        that.adapter.createConfigurationFile(rootFolderId),
+                    ]).spread(function(rootFolderId) {
+                        return rootFolderId;
+                    });
                 });
             });
         };
@@ -67,8 +69,11 @@ define(function(require) {
         };
 
         this.createWorkSpace = function(workSpaceName) {
-            console.log(this);
-            return this.adapter.createWorkSpace(this.rootFolderId, workSpaceName);
+            var that = this;
+            return this.adapter.createWorkSpace(this.rootFolderId, workSpaceName)
+                .then(function(workspace) {
+                    return that.adapter.addPublicPermissions(workspace.id);
+                });
         };
 
     }).call(WorkspaceManager.prototype);
