@@ -1,7 +1,7 @@
 define(function(require) {
-    var $ = require('jquery');
+    var $ = require('jquery'),
+        io = require('socketio');
     require('lib/adapter');
-    require('socketio');
 
     var videoList = document.getElementById('vidwrapper');
     var localStream;
@@ -52,7 +52,7 @@ define(function(require) {
      */
     function successCallback(stream) {
         // Create a video element for the DOM
-        myId = socket.socket.sessionid;
+        myId = '/#' + socket.id;
         var myVideo = document.createElement('video');
         myVideo.autoplay = true;
         myVideo.muted = true;
@@ -71,7 +71,7 @@ define(function(require) {
      * Error handler for getUserMedia for when things go wrong
      */
     function errorCallback(error) {
-        console.log("getUserMedia error: ", error);
+        console.error("getUserMedia error: ", error);
     }
 
     // Handle on browser close
@@ -151,10 +151,7 @@ define(function(require) {
             }).then(function(result) {
                 for(var i = 0; i < IdArray.length; i++) {
                     var remoteId = IdArray[i];
-                    if(myId === remoteId){
-
-                    }
-                    else{
+                    if(remoteId != myId){
                         createPeerConnection(remoteId);
                         doCall(remoteId);
                     }
@@ -197,10 +194,12 @@ define(function(require) {
          */
         function sendMessage(message, remoteId) {
             var size = arguments.length;
-            if(size === 1)
+            if(size === 1) {
                 socket.emit('message', message, room);
-            else if(size === 2)
+            }
+            else if(size === 2) {
                 socket.emit('message', message, room, remoteId);
+            }
         }
 
         /**
