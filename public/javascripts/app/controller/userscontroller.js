@@ -6,7 +6,7 @@ define(function (require) {
         UserManager = require('app/model/usermanager');
 
     function Controller() {
-        this.userManager = new UserManager();
+        this.userManager = UserManager();
 
         this.onGapiSuccess = this.onGapiSuccess.bind(this);
         this.onGapiFailure = this.onGapiFailure.bind(this);
@@ -19,14 +19,14 @@ define(function (require) {
             var that = this;
             this.onEventuallySuccess = onEventuallySuccess;
             return this.userManager.initGapi()
-                .then(function() {
+                .then(function () {
                     return that.userManager.startAuthorizing();
                 })
-                .then(function(authResult) {
+                .then(function (authResult) {
                     if (authResult && authResult.error) {
                         that.loginRequest();
                     }
-                    else if (authResult && !authResult.error){
+                    else if (authResult && !authResult.error) {
                         onEventuallySuccess();
                     }
                 });
@@ -45,8 +45,8 @@ define(function (require) {
         this.updateStatus = function() {
             if (this.userManager.isLoggedIn()) {
                 this.showLoggedInMessage();
-                console.log('signed in');
-            } else {
+            }
+            else {
                 this.showNotLoggedInMessage();
             }
         };

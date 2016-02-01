@@ -171,3 +171,7 @@ h5:after{
 .dropdown-menu {
     background-color: #404040!important;
 }
+
+#classButton {
+    display:none;
+}

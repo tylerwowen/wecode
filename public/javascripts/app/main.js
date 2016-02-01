@@ -1,8 +1,7 @@
 define(function(require) {
     var $ = require('jquery'),
         EditorController = require('app/controller/editorcontroller'),
-        UserController = require('app/controller/userscontroller'),
-        UserManager = require('app/model/usermanager');
+        UserController = require('app/controller/userscontroller');
 
     require(['bootstrap']);
 
