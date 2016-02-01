@@ -43,10 +43,9 @@ define(function(require) {
                     return Q.all([
                         rootFolderId,
                         that.adapter.createConfigurationFile(rootFolderId),
-                        that.adapter.addPublicPermissions(rootFolderId)
-                    ]);
-                }).spread(function(rootFolderId) {
-                    return rootFolderId;
+                    ]).spread(function(rootFolderId) {
+                        return rootFolderId;
+                    });
                 });
             });
         };
@@ -70,7 +69,11 @@ define(function(require) {
         };
 
         this.createWorkSpace = function(workSpaceName) {
-            return this.adapter.createWorkSpace(this.rootFolderId, workSpaceName);
+            var that = this;
+            return this.adapter.createWorkSpace(this.rootFolderId, workSpaceName)
+                .then(function(workspace) {
+                    return that.adapter.addPublicPermissions(workspace.id);
+                });
         };
 
     }).call(WorkspaceManager.prototype);
