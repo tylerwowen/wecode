@@ -6,7 +6,7 @@ html
       meta(name='viewport', content='width=device-width, initial-scale=1')
       link(rel='stylesheet', href='/stylesheets/users.css')
       link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
-      script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.min.js', data-main='javascripts/users')
+      script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.min.js', data-main='javascripts/question')
    body
       .container
          h3
@@ -25,5 +25,5 @@ html
          h3
             | Please enter your question
          .input-group.input-group-lg
-            input.form-control(type='text')
-         button.btn.btn-success(type='button') Submit
+            input#questionInput.form-control(type='text')
+         button#questionSubmitButton.btn.btn-success(type='button') Submit
