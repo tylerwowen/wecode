@@ -77,6 +77,7 @@ define(function(require) {
     // Handle on browser close
     window.onbeforeunload = function (e) {
         sendMessage('bye');
+        socket.emit('quit message', globalUserName, room);
     };
 
     /**
@@ -129,7 +130,7 @@ define(function(require) {
         });
 
         $('form').submit(function(){
-            socket.emit('print username', myId, room);
+            socket.emit('print username', globalUserName, room);
             socket.emit('chat message', $('#m').val(), room);
             $('#m').val('');
         });
@@ -143,6 +144,7 @@ define(function(require) {
         });
 
         socket.on('joined', function (IdArray) {
+            socket.emit('joined message', globalUserName, room);
             var promise = new Promise(function(resolve, reject) {
                 getUserMedia(constraints, successCallback, errorCallback);
                 socket.on('gotUserMedia', function(message) {
@@ -169,8 +171,6 @@ define(function(require) {
         socket.on('message', function (message, remoteId) {
             if (message.type === 'offer') { //Handle when a user sends an offer
                 createPeerConnection(remoteId);
-                $('#messages').append($('<li>').text(remoteId + " has joined the room."));
-                $('#messages').append($('<li>').text(""));
                 pcs[remoteId].setRemoteDescription(new RTCSessionDescription(message));
                 doAnswer(remoteId);
             } else if (message.type === 'answer') {
@@ -180,13 +180,19 @@ define(function(require) {
                 pcs[remoteId].addIceCandidate(candidate);
             } else if (message === 'bye') {
                 handleRemoteHangup(remoteId);
-                $('#messages').append($('<li>').text(remoteId + " has left the room."));
-                $('#messages').append($('<li>').text(""));
-
             } else if (message === 'room')
                 console.log('room');
         });
-        
+
+        socket.on('joined message', function(data){
+            $('#messages').append($('<li>').text(data + " has joined the room."));
+            $('#messages').append($('<li>').text(""));
+        });
+
+        socket.on('quit message', function(data){
+            $('#messages').append($('<li>').text(data + " has left the room."));
+            $('#messages').append($('<li>').text(""));
+        });
 
         /**
          * Sends message to the server to send to the other clients
