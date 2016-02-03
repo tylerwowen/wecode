@@ -1,0 +1,29 @@
+doctype html
+html
+   head
+      title Question Form
+      meta(charset='utf-8')
+      meta(name='viewport', content='width=device-width, initial-scale=1')
+      link(rel='stylesheet', href='/stylesheets/users.css')
+      link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
+      script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.min.js', data-main='javascripts/users')
+   body
+      .container
+         h3
+            | Please enter your topic
+         .dropdown
+            button#topicDropdown.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='true')
+               | Dropdown
+               span.caret
+            ul.dropdown-menu(aria-labelledby='topicDropdown')
+               li
+                  a(href='#') GiHub
+               li
+                  a(href='#') Javascript
+               li
+                  a(href='#') Artificial intelligence
+         h3
+            | Please enter your question
+         .input-group.input-group-lg
+            input.form-control(type='text')
+         button.btn.btn-success(type='button') Submit
