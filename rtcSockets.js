@@ -22,6 +22,14 @@ function rtcSockets(server, db) {
             sio.sockets.in(room).emit('print username', data);
         });
 
+        socket.on('joined message', function(data, room){
+            sio.sockets.in(room).emit('joined message', data);
+        });
+
+        socket.on('quit message', function(data, room){
+            sio.sockets.in(room).emit('quit message', data);
+        });
+
         /**
          * Listens to a message from a client to handle peer connections, the different steps
          * it performs are:
