@@ -1,0 +1,16 @@
+doctype html
+html
+    head
+    body
+        h1.
+            Question List
+        table
+            thead
+                tr
+                    th Topic
+                    th Question
+            tbody
+                each question, i in questionlist
+                    tr
+                        td #{i} #{question.topic}
+                        td #{question.question}

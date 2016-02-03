@@ -10,9 +10,9 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var main = require('./routes/main');
 var classes = require('./routes/classes');
-var userlist = require('./routes/userlist');
+var questionlist = require('./routes/questionlist');
 
-// New Code
+// Mongodb
 var monk = require('monk');
 var db = monk('127.0.0.1:27017/westudy');
 
@@ -43,10 +43,9 @@ app.use('/main', main);
 app.use('/classes', classes);
 
 // Make our db accessible to our router
-app.use('/userlist', function(req,res){
+app.use('/questionlist', function(req,res){
     req.db = db;
-    console.log(req.db);
-    userlist(req,res);
+    questionlist(req,res);
 });
 
 // catch 404 and forward to error handler
