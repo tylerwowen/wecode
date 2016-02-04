@@ -17,17 +17,31 @@ define(function (require, exports, module) {
             });
 
             $('#TACreateClassButton').click(function() {
-                self.addClass();
+                self.createClass();
                 $('#newClassForm').hide();
             });
 
-            $('#return').click(function(){
+            $('#TAreturn').click(function(){
                 $('#newClassForm').hide();
+            });
+
+            $('#StudentAddClass').click(function(){
+                $('#addNewClassForm').show();
+            });
+
+            $('#studentAddClassButton').click(function(){
+                self.studentClass();
+                $('#addNewClassForm').hide();
+            });
+
+
+            $('#studentReturn').click(function(){
+                $('#addNewClassForm').hide();
             });
         };
 
 
-        this.addClass = function(){
+        this.createClass = function(){
             var name = $('#TANewClassInput').val();
             console.log(name);
             classManager.createWorkSpace(name)
@@ -56,6 +70,11 @@ define(function (require, exports, module) {
             }, function (error) {
                 console.error(error);
             });
+        }
+
+        this.studentClass = function() {
+            var name = $('#studentAddNewClassInput').val();
+            classManager.addClass(name)
         }
     };
 
