@@ -8,10 +8,11 @@ var io = require('socket.io');
  *   2. Handle sending messages from the client side
  *   3. Handle room joining/creating from the client side
  */
-function rtcSockets(server) {
+function rtcSockets(server, db) {
     var sio = io(server);
 
     sio.on('connection', function (socket){
+        db(socket);
 
         socket.on('chat message', function(message, room){
             sio.sockets.in(room).emit('chat message', message);

@@ -1,7 +1,10 @@
 define(function (require) {
     "use strict";
 
+    require(['bootstrap']);
     var $ = require('jquery');
+    var io = require('socketio');
+    var socket = io.connect();
 
     function Controller() {
         this.topic = null;
@@ -19,7 +22,8 @@ define(function (require) {
         this.connectToView = function() {
             var that = this;
             $('#questionSubmitButton').on('click', function() {
-                that.submitQuestion();
+                //that.submitQuestion();
+                that.grabQuestionList();
             });
         };
 
@@ -38,6 +42,14 @@ define(function (require) {
         this.saveQuestionToDB = function() {
 
         };
+
+        this.grabQuestionList = function() {
+            socket.emit('grabQuestionList');
+        };
+
+        socket.on('questionCollection', function(questionCollection) {
+            console.log(questionCollection);
+        });
 
     }).call(Controller.prototype);
 

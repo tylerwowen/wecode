@@ -13,11 +13,6 @@ var classes = require('./routes/classes');
 var questionlist = require('./routes/questionlist');
 var questionform = require('./routes/questionform');
 
-// Mongodb
-var monk = require('monk');
-var db = monk('127.0.0.1:27017/westudy');
-
-
 var options = {
     key: fs.readFileSync('key.pem').toString(),
     cert: fs.readFileSync('key-cert.pem').toString()
@@ -42,13 +37,8 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/main', main);
 app.use('/classes', classes);
-+app.use('/questionform', questionform);
-
-// Make our db accessible to our router
-app.use('/questionlist', function(req,res){
-    req.db = db;
-    questionlist(req,res);
-});
+app.use('/questionform', questionform);
+app.use('/questionlist', questionlist);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
