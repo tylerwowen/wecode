@@ -104,7 +104,8 @@ define(function (require) {
             return gapi.client.drive.about.get(
                 {fields:'user'}
             ).then(function(response) {
-                    console.log(response.result.user.permissionId);
+                    return response.result.user.permissionId;
+                    //console.log(response.result.user.permissionId);
                 });
         };
 
@@ -114,27 +115,27 @@ define(function (require) {
             }).then(function(response) {
                 return response.result.permissions[0].id;
             }).then(function(permissionsId) {
-                console.log(permissionsId);
+                return permissionsId;
+                //console.log(permissionsId);
             });
         };
 
         this.getClassList = function(folderId) {
             console.log("in classList");
             var that = this;
-            var request = {
-                q: "'" + folderId + "'" + ' in parents'
-            };
-            return gapi.client.drive.files.list(request).then(function(response) {
-                var classes = response.result.files;
+
+            return gapi.client.drive.files.get(
+                {fileId: folderId}
+            ).then(function(response) {
                 var contentList = [];
-                for (var i = 0; i < classes.length; i++) {
-                    if (classes[i].mimeType == that.folderMimeType) {
-                        contentList[i] = {
-                            id: classes[i].id,
-                            name: classes[i].name
-                        };
-                    }
-                }
+                //console.log(response.result.mineType == that.folderMimeType);
+                //if(response.result.mineType == that.folderMimeType) {
+                    contentList.push({
+                        id: response.result.id,
+                        name: response.result.name
+                    });
+                //}
+                //console.log(contentList);
                 return contentList;
             });
         };

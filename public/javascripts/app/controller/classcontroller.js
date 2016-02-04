@@ -7,7 +7,9 @@ define(function (require, exports, module) {
 
         this.init = function() {
             self.createButtonListeners();
+            //self.createClass();
             self.showClasses();
+            self.showStudentClasses();
 
         };
 
@@ -70,11 +72,32 @@ define(function (require, exports, module) {
             }, function (error) {
                 console.error(error);
             });
-        }
+        };
+
+        this.showStudentClasses = function(classList) {
+            $('#studentClassList').empty();
+            classList.forEach(function (singleClass) {
+                console.log(singleClass);
+                //var params = $.param({
+                //    id: singleClass.id,
+                //    name: singleClass.name
+                //});
+                $('#studentClassList').append(
+                    '<li>' +
+                    '<a href="/main?' + singleClass.id + '">' +
+                    singleClass.name+ '</a>' +
+                    '</li>');
+            });
+        //}, function (error) {
+        //    console.error(error);
+        //}
+        };
 
         this.studentClass = function() {
             var name = $('#studentAddNewClassInput').val();
-            classManager.addClass(name)
+            classManager.addClass(name).then(function (){
+                self.showStudentClasses();
+            });
         }
     };
 
