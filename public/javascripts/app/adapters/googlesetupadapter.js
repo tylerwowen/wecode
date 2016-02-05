@@ -127,13 +127,12 @@ define(function (require) {
             return gapi.client.drive.files.get(
                 {fileId: folderId}
             ).then(function(response) {
-                var contentList = [];
                 //console.log(response.result.mineType == that.folderMimeType);
                 //if(response.result.mineType == that.folderMimeType) {
-                    contentList.push({
+                    var contentList ={
                         id: response.result.id,
                         name: response.result.name
-                    });
+                    };
                 //}
                 //console.log(contentList);
                 return contentList;
