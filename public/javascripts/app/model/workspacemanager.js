@@ -13,6 +13,7 @@ define(function(require) {
         }
         this.rootFolderId = null;
         this.workspaceList = [];
+        this.classList = [];
         this.adapter = new Adapter();
     }
 
@@ -29,7 +30,7 @@ define(function(require) {
                 }).then(function(rootFolderId) {
                     that.rootFolderId = rootFolderId;
                     return that.getWorkspaceList();
-            });
+                });
         };
 
         this.loadConfiguration = function() {
@@ -74,6 +75,32 @@ define(function(require) {
                 .then(function(workspace) {
                     return that.adapter.addPublicPermissions(workspace.id);
                 });
+        };
+
+        this.getStudentClassList = function (classID) {
+            var that = this;
+            return this.adapter.getClassList(classID).then(function(contents){
+                that.classList.push(contents);
+                return that.classList;
+            })
+        };
+
+        this.addClass = function(classID) {
+            var that = this;
+            var filePermissionID;
+            var userPermissionID;
+
+            return userPermissionID = this.adapter.getUserPermissionID().then(function() {
+                return filePermissionID = that.adapter.getFilePermissionId(classID);
+            }).then(function () {
+                if(userPermissionID != filePermissionID){
+                    return that.getStudentClassList(classID);
+                }
+                else{
+                    console.log("Can't be a student and a TA in the same class");
+                    return null;
+                }
+            });
         };
 
     }).call(WorkspaceManager.prototype);

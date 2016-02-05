@@ -8,7 +8,6 @@ define(function (require, exports, module) {
         this.init = function() {
             self.createButtonListeners();
             self.showClasses();
-
         };
 
         this.createButtonListeners = function() {
@@ -17,17 +16,31 @@ define(function (require, exports, module) {
             });
 
             $('#TACreateClassButton').click(function() {
-                self.addClass();
+                self.createClass();
                 $('#newClassForm').hide();
             });
 
-            $('#return').click(function(){
+            $('#TAreturn').click(function(){
                 $('#newClassForm').hide();
+            });
+
+            $('#StudentAddClass').click(function(){
+                $('#addNewClassForm').show();
+            });
+
+            $('#studentAddClassButton').click(function(){
+                self.studentClass();
+                $('#addNewClassForm').hide();
+            });
+
+
+            $('#studentReturn').click(function(){
+                $('#addNewClassForm').hide();
             });
         };
 
 
-        this.addClass = function(){
+        this.createClass = function(){
             var name = $('#TANewClassInput').val();
             console.log(name);
             classManager.createWorkSpace(name)
@@ -55,6 +68,26 @@ define(function (require, exports, module) {
                 })
             }, function (error) {
                 console.error(error);
+            });
+        };
+
+        this.showStudentClasses = function(classList) {
+            $('#studentClassList').empty();
+            classList.forEach(function (singleClass) {
+                $('#studentClassList').append(
+                    '<li>' +
+                    '<a href="/main_student?' + singleClass.id + '">' +
+                    singleClass.name+ '</a>' +
+                    '</li>');
+            });
+        };
+
+        this.studentClass = function() {
+            var that = this;
+            var name = $('#studentAddNewClassInput').val();
+            classManager.addClass(name).then(function (response){
+                if(response != null)
+                    that.showStudentClasses(response);
             });
         }
     };

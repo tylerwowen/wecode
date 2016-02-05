@@ -100,6 +100,39 @@ define(function (require) {
             });
         };
 
+        this.getUserPermissionID = function (){
+            return gapi.client.drive.about.get(
+                {fields:'user'}
+            ).then(function(response) {
+                    return response.result.user.permissionId;
+                });
+        };
+
+        this.getFilePermissionId = function (classID){
+            return gapi.client.drive.permissions.list({
+                fileId: classID
+            }).then(function(response) {
+                return response.result.permissions[0].id;
+            }).then(function(permissionsId) {
+                return permissionsId;
+            });
+        };
+
+        this.getClassList = function(folderId) {
+            console.log("in classList");
+            var that = this;
+
+            return gapi.client.drive.files.get(
+                {fileId: folderId}
+            ).then(function(response) {
+                    var contentList ={
+                        id: response.result.id,
+                        name: response.result.name
+                    };
+                return contentList;
+            });
+        };
+
         /**
          * Fetches all the workspace
          * @param {!string} folderId is the ID of the root folder.
