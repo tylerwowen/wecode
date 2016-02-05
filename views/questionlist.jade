@@ -4,10 +4,11 @@ html
         title Question List
         meta(charset='utf-8')
         meta(name='viewport', content='width=device-width, initial-scale=1')
-        link(rel='stylesheet', href='/stylesheets/users.css')
+        link(rel='stylesheet', href='/stylesheets/question.css')
         link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
         script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.min.js', data-main='javascripts/question')
     body
+        include questionform
         h3
             | Question List
         table
@@ -15,8 +16,5 @@ html
                 tr
                     th Topic
                     th Question
-            tbody
-                //each question, i in questionlist
-                //    tr
-                //        td #{i} #{question.topic}
-                //        td #{question.question}
+            tbody#questionTableBody
+        button#questionAddButton.btn.btn-success(type='button') Add Question
