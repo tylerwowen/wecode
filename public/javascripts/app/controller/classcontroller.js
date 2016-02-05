@@ -73,9 +73,7 @@ define(function (require, exports, module) {
 
         this.showStudentClasses = function(classList) {
             $('#studentClassList').empty();
-            //console.log(classList);
             classList.forEach(function (singleClass) {
-                //console.log(singleClass);
                 $('#studentClassList').append(
                     '<li>' +
                     '<a href="/main_student?' + singleClass.id + '">' +

@@ -105,7 +105,6 @@ define(function (require) {
                 {fields:'user'}
             ).then(function(response) {
                     return response.result.user.permissionId;
-                    //console.log(response.result.user.permissionId);
                 });
         };
 
@@ -116,7 +115,6 @@ define(function (require) {
                 return response.result.permissions[0].id;
             }).then(function(permissionsId) {
                 return permissionsId;
-                //console.log(permissionsId);
             });
         };
 
@@ -127,14 +125,10 @@ define(function (require) {
             return gapi.client.drive.files.get(
                 {fileId: folderId}
             ).then(function(response) {
-                //console.log(response.result.mineType == that.folderMimeType);
-                //if(response.result.mineType == that.folderMimeType) {
                     var contentList ={
                         id: response.result.id,
                         name: response.result.name
                     };
-                //}
-                //console.log(contentList);
                 return contentList;
             });
         };

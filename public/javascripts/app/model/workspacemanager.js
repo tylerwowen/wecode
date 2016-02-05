@@ -66,7 +66,6 @@ define(function(require) {
 
         this.refreshWorkspaceList = function() {
             this.workspaceList = [];
-            console.log(this.rootFolderId);
             return this.getWorkspaceList();
         };
 
@@ -82,7 +81,6 @@ define(function(require) {
             var that = this;
             return this.adapter.getClassList(classID).then(function(contents){
                 that.classList.push(contents);
-                //console.log(that.classList);
                 return that.classList;
             })
         };
