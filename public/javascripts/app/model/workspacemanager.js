@@ -30,11 +30,7 @@ define(function(require) {
                 }).then(function(rootFolderId) {
                     that.rootFolderId = rootFolderId;
                     return that.getWorkspaceList();
-                })
-                //.then(function(){
-                //    return that.getStudentClassList()
-                //})
-                ;
+                });
         };
 
         this.loadConfiguration = function() {
@@ -85,29 +81,27 @@ define(function(require) {
         this.getStudentClassList = function (classID) {
             var that = this;
             return this.adapter.getClassList(classID).then(function(contents){
-                that.classList = contents;
+                that.classList.push(contents);
                 //console.log(that.classList);
                 return that.classList;
             })
         };
 
         this.addClass = function(classID) {
-            console.log("in addClass");
             var that = this;
             var filePermissionID;
+            var userPermissionID;
 
-            var userPermissionID = this.adapter.getUserPermissionID().then(function() {
-                filePermissionID = that.adapter.getFilePermissionId(classID);
+            return userPermissionID = this.adapter.getUserPermissionID().then(function() {
+                return filePermissionID = that.adapter.getFilePermissionId(classID);
             }).then(function () {
                 if(userPermissionID != filePermissionID){
-                    console.log("worked");
                     return that.getStudentClassList(classID);
                 }
                 else{
                     console.log("Can't be a student and a TA in the same class");
-                    return;
+                    return null;
                 }
-
             });
         };
 
