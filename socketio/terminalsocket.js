@@ -1,5 +1,7 @@
 var fs = require('fs');
 var pty = require('pty.js');
+var spawn = require('child_process').spawn;
+var ss = require('socket.io-stream');
 
 var sshAuth = 'password';
 var existingConnections = {};
@@ -51,7 +53,7 @@ function setupSSH(socket, remoteHost, roomId) {
         io.sockets.in(roomId).emit('output', data);
     });
     term.on('exit', function(code) {
-        delete term[roomId];
+        if (existingConnections[roomId]) delete existingConnections[roomId];
         console.log((new Date()) + " PID=" + term.pid + " ENDED");
     });
 
@@ -62,9 +64,11 @@ function setupSSH(socket, remoteHost, roomId) {
         term.write(data);
     });
     socket.on('disconnect', function() {
-        delete term[roomId];
-        term.end();
+        if (existingConnections[roomId]) delete existingConnections[roomId];
+        term.destroy();
     });
+
+    downloadFile(socket, remoteHost.user, remoteHost.host, remoteHost.port)
 }
 
 function joinSSHConnection(socket, roomId) {
@@ -75,6 +79,18 @@ function joinSSHConnection(socket, roomId) {
 
     socket.on('input', function(data) {
         term.write(data);
+    });
+}
+
+function downloadFile(socket, user, host, port) {
+    ss(socket).on('downloadFile', function(stream, opts) {
+        var scp = spawn('scp',['-P', port, user+'@'+host+':'+opts.path, '/dev/stdout']);
+        console.log('downloading');
+        scp.stdout.pipe(stream);
+
+        scp.stderr.on('data', function(data) {
+            console.log('stderr: ', data);
+        });
     });
 }
 

@@ -83,7 +83,27 @@ $('#joinButton').on('click', function() {
     socket.emit('joinSSHConnection', roomId);
 });
 
+$('#loadButton').on('click', function() {
+    var path = $('input[name="path"]').val();
+    downloadFile(path);
+});
 
+function downloadFile(path) {
+    var stream = ss.createStream();
+    var fileData = "";
+
+    ss(socket).emit('downloadFile', stream, {path: path});
+
+    stream.on('data', function(data) {
+        for (var i = 0; i < data.length; i++) {
+            fileData += String.fromCharCode(data[i]);
+        }
+    });
+
+    stream.on('end', function () {
+        console.log(fileData);
+    });
+}
 
 //var t = new hterm.Terminal();
 //
