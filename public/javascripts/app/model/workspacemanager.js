@@ -42,7 +42,7 @@ define(function(require) {
                 return that.adapter.createRootFolder().then(function(rootFolderId) {
                     return Q.all([
                         rootFolderId,
-                        that.adapter.createConfigurationFile(rootFolderId),
+                        that.adapter.createConfigurationFile(rootFolderId)
                     ]).spread(function(rootFolderId) {
                         return rootFolderId;
                     });
