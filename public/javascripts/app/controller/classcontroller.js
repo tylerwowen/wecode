@@ -75,8 +75,12 @@ define(function (require, exports, module) {
             $('#studentClassList').empty();
             classList.forEach(function (singleClass) {
                 $('#studentClassList').append(
+                    //'<li>' +
+                    //'<a href="/main_student?' + singleClass.id + '">' +
+                    //singleClass.name+ '</a>' +
+                    //'</li>');
                     '<li>' +
-                    '<a href="/main_student?' + singleClass.id + '">' +
+                    '<a href="/questionlist?' + singleClass.id + '">' +
                     singleClass.name+ '</a>' +
                     '</li>');
             });

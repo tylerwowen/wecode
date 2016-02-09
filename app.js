@@ -10,10 +10,8 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var main = require('./routes/main');
 var main_student = require('./routes/main_student');
-var question_form = require('./routes/question_form');
 var classes = require('./routes/classes');
 var questionlist = require('./routes/questionlist');
-var questionform = require('./routes/questionform');
 
 var options = {
     key: fs.readFileSync('key.pem').toString(),
@@ -39,10 +37,8 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/main', main);
 app.use('/main_student', main_student);
-app.use('/question_form', question_form);
 
 app.use('/classes', classes);
-app.use('/questionform', questionform);
 app.use('/questionlist', questionlist);
 
 // catch 404 and forward to error handler
