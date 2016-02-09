@@ -5,15 +5,56 @@ body {
 #newClassForm, #addNewClassForm {
     display: none;
 }
+#page {
+    position: absolute;
+    z-index: 999;
+    background-color: white;
+    height: 100vh;
+    width: 100vw;
+    opacity: .6;
+    text-align: center !important;
+}
+
+#form {
+    position: absolute;
+    z-index: 1000;
+    background-color: #EDEDED;
+    padding: 10px 15px 15px 15px;
+    border-radius: 15px;
+    border-color:#d2d2d2;
+    border-width: 5px;
+    box-shadow:0 1px 0 #cfcfcf;
+    top: 50%;
+    left: 50%;
+    text-align: center !important;
+    transform: translate(-50%, -50%);
+}
+
+#addHeader {
+    text-align: center;
+    padding: 5px;
+    font-weight: bold;
+}
+
+.btn-group  {
+    text-align: center !important;
+    margin: auto !important;
+}
+
+.btn-success {
+    border-color: #921515 !important;
+    text-align: center !important;
+    margin: auto !important;
+}
 
 .navwrapper {
     background-color: #B72C2C;
     margin: 0 !important;
-    padding-right: 0 !important;
     padding-top: 120px ;
     width: 20%;
     height: 100%;
     float: left;
+    text-align: center;
 }
 
 #classcontent {
@@ -24,7 +65,7 @@ body {
 
 #navbar {
     list-style: none;
-    padding: 0 0 0 0 !important;
+    padding: 0 0 0 0px !important;
     margin: 0 10px 0 10px !important;
     height: 100%;
     width: 100%;
@@ -35,6 +76,17 @@ body {
     font-size: 16px;
     color: white;
     line-height: 40px;
+}
+
+#navbar li:hover {
+    background-color: gray;
+    border-radius: 3px;
+}
+
+#navbar li.selected:hover{
+    background-color: white;
+    color: #404040 !important;
+    border-radius: 5px;
 }
 
 .navwrapper li.selected{
@@ -89,6 +141,10 @@ body {
     background-color: #B72C2C;
     color: white;
     margin: 5px 0 5px 0;
+}
+
+button {
+    background: #B72C2C !important;
 }
 
 #TAClassFormButton, #StudentAddClass {
