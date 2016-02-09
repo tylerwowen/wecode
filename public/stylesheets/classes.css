@@ -1,3 +1,7 @@
+body {
+    background-color: #B72C2C !important;
+}
+
 #newClassForm, #addNewClassForm {
     display: none;
 }
@@ -7,10 +11,206 @@
     background-color: white;
     height: 100vh;
     width: 100vw;
+    opacity: .6;
+    text-align: center !important;
 }
+
 #form {
     position: absolute;
     z-index: 1000;
-    width: 100vw;
-    height: 100vh;
+    background-color: #EDEDED;
+    padding: 10px 15px 15px 15px;
+    border-radius: 15px;
+    border-color:#d2d2d2;
+    border-width: 5px;
+    box-shadow:0 1px 0 #cfcfcf;
+    top: 50%;
+    left: 50%;
+    text-align: center !important;
+    transform: translate(-50%, -50%);
 }
+
+#addHeader {
+    text-align: center;
+    padding: 5px;
+    font-weight: bold;
+}
+
+.btn-group  {
+    text-align: center !important;
+    margin: auto !important;
+}
+
+.btn-success {
+    border-color: #921515 !important;
+    text-align: center !important;
+    margin: auto !important;
+}
+
+.navwrapper {
+    background-color: #B72C2C;
+    margin: 0 !important;
+    padding-top: 120px ;
+    width: 20%;
+    height: 100%;
+    float: left;
+    text-align: center;
+}
+
+#classcontent {
+    padding-top: 75px;
+    padding-bottom: 0px;
+    height: 100%;
+}
+
+.navbar-default {
+    border: none !important;
+}
+
+#navbar {
+    list-style: none;
+    padding: 0 0 0 0px !important;
+    margin: 0 10px 0 10px !important;
+    height: 100%;
+    width: 100%;
+}
+
+#navbar li {
+    padding: 5px 15px 5px 15px !important;
+    font-size: 16px;
+    color: white;
+    line-height: 40px;
+}
+
+#navbar li:hover {
+    background-color: gray;
+    border-radius: 3px;
+}
+
+#navbar li.selected:hover{
+    background-color: white;
+    color: #404040 !important;
+    border-radius: 5px;
+}
+
+.navwrapper li.selected{
+    background-color: white;
+    color: #404040 !important;
+    border-radius: 5px;
+}
+
+#navbar {
+    color: white !important;
+    text-decoration: none;
+    display: block;
+}
+
+#classcontainer {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100vh;
+    width: 100vm;
+}
+
+.navbar {
+    background: #404040!important;
+}
+
+.navbar a{
+    color: white !important;
+}
+
+#TAClassList, #studentClassList {
+    list-style: none;
+    min-height: 300px;
+    overflow-y: auto;
+}
+
+#instructor, #student{
+    background-color: white;
+    padding: 10px 15px 10px 15px;
+    border-radius: 5px;
+    min-height: 70vh;
+}
+
+#instructor {
+    display: none;
+}
+
+#TAheader, #StudentHeader {
+    text-align: center;
+    padding: 5px;
+    display: block;
+    border-radius: 3px;
+    background-color: #B72C2C;
+    color: white;
+    margin: 5px 0 5px 0;
+}
+
+button {
+    background: #B72C2C !important;
+}
+
+#TAClassFormButton, #StudentAddClass {
+    text-align: center !important;
+    margin: 0 auto;
+    display: block;
+    background: #B72C2C !important;
+    border: #B72C2C !important;
+    bottom: 0;
+}
+
+ol a {
+    display: block;
+    padding:4px 8px; /* Add some spacing around the content */
+    color:#666;
+}
+
+ol a:hover {
+    text-decoration: none;
+    background-color: gray;
+    color: white;
+}
+
+ol {
+    counter-reset:li; /* Initiate a counter */
+    margin-left:0; /* Remove the default left margin */
+    padding-left:0; /* Remove the default left padding */
+}
+ol > li {
+    position:relative; /* Create a positioning context */
+    margin:0 0 6px 2em; /* Give each list item a left margin to make room for the numbers */
+    list-style:none; /* Disable the normal item numbering */
+    background:#f6f6f6;
+}
+ol > li:before {
+    content:counter(li); /* Use the counter as content */
+    counter-increment:li; /* Increment the counter by 1 */
+    /* Position and style the number */
+    position:absolute;
+    left:-2em;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+    width:2em;
+    /* Some space between the number and the content in browsers that support
+       generated content but not positioning it (Camino 2 is one example) */
+    margin-right:8px;
+    padding:4px;
+    color:#fff;
+    background: #B72C2C;
+    font-weight:bold;
+    font-family:"Helvetica Neue", Arial, sans-serif;
+    text-align:center;
+}
+li ol,
+li ul {margin-top:6px;}
+ol ol li:last-child {margin-bottom:0;}
+
+ol:empty:after {
+    content: "You do not have any classes!";
+    color: black;
+    display: block;
+    text-align: center;
+}
+
