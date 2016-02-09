@@ -25,6 +25,7 @@ define(function (require) {
             var that = this;
             $('#questionSubmitButton').on('click', function() {
                 that.submitQuestion();
+                that.getQuestionCollection();
             });
             $('#questionAddButton').on('click', function() {
                 that.displayAddQuestionForm();
@@ -45,6 +46,7 @@ define(function (require) {
         };
 
         this.getQuestionCollection = function() {
+            $("#questionTableBody tr").remove();
             socket.emit('getQuestionCollection');
         };
 
@@ -59,7 +61,9 @@ define(function (require) {
             } else {
                 for (var q = 0; q < this.qCollection.length; q++) {
                     var question =  '<tr><td id=' + this.qCollection[q]._id + '>' +
-                        this.qCollection[q].topic + '</td><td>'+this.qCollection[q].question+'</td>></tr>';
+                            this.qCollection[q].topic + '</td>' +
+                            '<td><a href="/main_student?">' + this.qCollection[q].question +
+                            '</a></td></tr>';
                     $('#questionTableBody').append(question);
                 }
             }
