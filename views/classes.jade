@@ -12,23 +12,22 @@ html
         include classes_add
         .container#classcontainer
             .navbar.navbar-default.navbar-fixed-top
-                .navbar-brand WeCode
-            #navwrapper
+                a(href="/").navbar-brand WeCode
+            .navwrapper
                 ul#navbar
-                    li
-                        a(href='#item1') Home
-                    li
-                        a(href='#item2') Classes
+                    li#studentSelector Student
+                    li#TAselector Instructor
             .row#classcontent
-                .col-md-5.instructor
-                    | I'm a TA
+                .col-md-8#instructor
+                    #TAheader| Classes
                     br
-                    ul#TAClassList.elements
+                    ol#TAClassList.elements
                     br
-                    button#TAClassFormButton.btn.btn-success.btn-xl Create Class
-                .col-md-4
-                    | I'm a student ;)
+                    #TAButtonWrapper
+                        button#TAClassFormButton.btn.btn-success.btn-xl Create Class
+                .col-md-8#student
+                    #StudentHeader| Classes
                     br
-                    ul#studentClassList.elements
+                    ol#studentClassList.elements
                     br
                     button#StudentAddClass.btn.btn-success.btn-xl Add Class
