@@ -63,6 +63,10 @@ body {
     height: 100%;
 }
 
+.navbar-default {
+    border: none !important;
+}
+
 #navbar {
     list-style: none;
     padding: 0 0 0 0px !important;
@@ -204,7 +208,9 @@ li ul {margin-top:6px;}
 ol ol li:last-child {margin-bottom:0;}
 
 ol:empty:after {
-    content: "You have no classes!";
+    content: "You do not have any classes!";
     color: black;
+    display: block;
+    text-align: center;
 }
 

@@ -28,4 +28,5 @@ define(function(require) {
         $('#student').hide();
         $('#instructor').show();
     });
+
 });
