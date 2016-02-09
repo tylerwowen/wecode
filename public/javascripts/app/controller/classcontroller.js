@@ -33,12 +33,26 @@ define(function (require, exports, module) {
                 $('#addNewClassForm').hide();
             });
 
-
             $('#studentReturn').click(function(){
                 $('#addNewClassForm').hide();
             });
-        };
 
+            $('#StudentSelector').addClass('selected');
+
+            $('#StudentSelector').click(function(){
+                $('li').removeClass('selected');
+                $(this).addClass('selected');
+                $('#student').show();
+                $('#instructor').hide();
+            });
+
+            $('#TAselector').click(function(){
+                $('li').removeClass('selected');
+                $(this).addClass('selected');
+                $('#student').hide();
+                $('#instructor').show();
+            });
+        };
 
         this.createClass = function(){
             var name = $('#TANewClassInput').val();

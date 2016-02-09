@@ -12,21 +12,4 @@ define(function(require) {
         var classController = new ClassController();
         classController.init();
     }
-
-    $('#studentSelector').addClass('selected');
-
-    $('#studentSelector').on('click', function(){
-            $('li').removeClass('selected');
-            $(this).addClass('selected');
-            $('#student').show();
-            $('#instructor').hide();
-    });
-
-    $('#TAselector').on('click', function(){
-        $('li').removeClass('selected');
-        $(this).addClass('selected');
-        $('#student').hide();
-        $('#instructor').show();
-    });
-
 });
