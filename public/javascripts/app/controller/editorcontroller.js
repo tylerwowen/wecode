@@ -11,6 +11,14 @@ define(function (require) {
     ace.config.set("packaged", true);
     ace.config.set("basePath", require.toUrl("ace"));
 
+    var supportedLanguages = {
+        'cpp': 'c_cpp',
+        'c': 'c_cpp',
+        'java': 'java',
+        'js': 'javascript',
+        'py': 'python',
+        'swift': 'swift'
+    };
 
     function Controller() {
 
@@ -19,7 +27,7 @@ define(function (require) {
 
         this.editor = ace.edit('editor');
         this.editor.setTheme("ace/theme/monokai");
-        this.editor.getSession().setMode("ace/mode/javascript");
+        this.editor.getSession().setMode("ace/mode/plain_text");
         this.editor.getSession().setUseWrapMode(true);
         this.editor.$blockScrolling = Infinity;
 
@@ -68,7 +76,9 @@ define(function (require) {
                 that.createFile($('#fileName').val());
             });
 
-            $('#files').on('click', 'li.file', function(event) {
+            $('#files').on('click', 'li.file', function() {
+                var fileName = $(this).text();
+                that.setEditorMode(fileName);
                 var id = $(this).attr('id');
                 that.workspace.loadFile(id, that.aceAdapter, that.fileAdapter);
             });
@@ -151,8 +161,8 @@ define(function (require) {
                 var that = this;
                 this.workspace.createFile(that.workspace.id, fileName)
                     .then(function (file) {
-                    that.addContentToList(file.id, file.name);
-                });
+                        that.addContentToList(file.id, file.name);
+                    });
             }
             else {
                 alert('Please input a file name!');
@@ -197,6 +207,19 @@ define(function (require) {
                 match = null;
             }
             return match;
+        };
+
+        this.setEditorMode = function(fileName) {
+            var extension = fileName.split('.')[1];
+            if (extension) {
+                var aceExtension = supportedLanguages[extension];
+                if (aceExtension) {
+                    this.editor.getSession().setMode('ace/mode/' + aceExtension);
+                }
+                else {
+                    this.editor.getSession().setMode('ace/mode/plain_text');
+                }
+            }
         };
 
     }).call(Controller.prototype);
