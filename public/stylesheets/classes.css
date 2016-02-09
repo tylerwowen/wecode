@@ -1,16 +1,47 @@
 #newClassForm, #addNewClassForm {
     display: none;
 }
-#page {
-    position: absolute;
-    z-index: 999;
-    background-color: white;
-    height: 100vh;
-    width: 100vw;
+
+#navwrapper {
+    background-color: #B72C2C;
+    margin: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 50px;
+    width: 20%;
+    height: 100%;
+    float: left;
 }
-#form {
-    position: absolute;
-    z-index: 1000;
-    width: 100vw;
+
+#navbar {
+    list-style: none;
+    padding: 0 0 0 0 !important;
+    margin: 0 !important;
+    height: 100%;
+    width: 100%;
+}
+
+#navbar li {
+    padding: 5px !important;
+}
+
+#navbar li:hover {
+    background-color: #7D8792;
+}
+
+#navbar a {
+    color: white !important;
+    text-decoration: none;
+    display: block;
+}
+
+#classcontainer {
+    margin: 0 !important;
+    padding: 0 !important;
     height: 100vh;
+    width: 100vm;
+}
+
+#classcontent {
+    padding-top: 50px;
+    padding-bottom: 0px;
 }
