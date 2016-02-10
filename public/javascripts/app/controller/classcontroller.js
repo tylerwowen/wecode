@@ -74,13 +74,13 @@ define(function (require, exports, module) {
         this.showStudentClasses = function(classList) {
             $('#studentClassList').empty();
             classList.forEach(function (singleClass) {
+                var params = $.param({
+                    id: singleClass.id,
+                    name: singleClass.name
+                });
                 $('#studentClassList').append(
-                    //'<li>' +
-                    //'<a href="/main_student?' + singleClass.id + '">' +
-                    //singleClass.name+ '</a>' +
-                    //'</li>');
                     '<li>' +
-                    '<a href="/questionlist?' + singleClass.id + '">' +
+                    '<a href="/questionlist?' + params +'">' +
                     singleClass.name+ '</a>' +
                     '</li>');
             });
