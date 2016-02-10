@@ -2,17 +2,13 @@ var classes = [];
 
 var QuestionSocket = function(sio, socket) {
     socket.on('getQuestionCollection', function(classId) {
-        getClassesWithClassId(classId)
-            .then(function(questions) {
-                socket.emit('questions', getClassesWithClassId(classId));
-            });
+        socket.emit('questions', getClassesWithClassId(classId));
     });
 
     socket.on('addQuestion', function(classId, question) {
-        addQuestion(classId, question)
-            .then(function(){
-                socket.emit();
-            });
+        addQuestion(classId, question);
+        socket.emit();
+
     });
 
     socket.on('disconnect', function() {

@@ -42,6 +42,7 @@ define(function (require) {
             };
 
             socket.emit('addQuestion', that.getParam('name'), question);
+            $('#questionInput').val('');
             $('#questionFormPage').hide();
         };
 
@@ -77,11 +78,13 @@ define(function (require) {
         this.displayQuestionCollection = function() {
             if(this.qCollection == null) {
                 console.log("qCollection is null");
-            } else {
-                for (var q = 0; q < this.qCollection.length; q++) {
-                    var question =  '<tr><td id=' + this.qCollection[q]._id + '>' +
-                            this.qCollection[q].topic + '</td>' +
-                        '<td><a href="/main_student?id='+ that.getParam('id') + '&name='+ that.getParam('name') +'">' + this.qCollection[q].question +
+            } else if( this.qCollection[0] != undefined) {
+                var questions = this.qCollection[0].questions;
+                for (var q = 0; q < questions.length; q++) {
+
+                    var question =  '<tr><td>' + questions[q].topic + '</td>' +
+                        '<td><a href="/main_student?id='+ that.getParam('id') + '&name='+ that.getParam('name') +'">'
+                        + questions[q].question +
                         '</a></td></tr>';
                     $('#questionTableBody').append(question);
                 }
