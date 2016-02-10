@@ -14,17 +14,22 @@ define(function(require) {
     }
 
     $('#studentSelector').addClass('selected');
+    $('#TAselector').addClass('inactive');
 
     $('#studentSelector').on('click', function(){
-            $('li').removeClass('selected');
-            $(this).addClass('selected');
-            $('#student').show();
-            $('#instructor').hide();
+        $('li').addClass('inactive');
+        $('li').removeClass('selected');
+        $(this).addClass('selected');
+        $(this).removeClass('inactive');
+        $('#student').show();
+        $('#instructor').hide();
     });
 
     $('#TAselector').on('click', function(){
+        $('li').addClass('inactive');
         $('li').removeClass('selected');
         $(this).addClass('selected');
+        $(this).removeClass('inactive');
         $('#student').hide();
         $('#instructor').show();
     });
