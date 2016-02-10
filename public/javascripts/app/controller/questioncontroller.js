@@ -41,8 +41,7 @@ define(function (require) {
                 question: questiontext
             };
 
-            socket.emit('saveQuestionToDB', that.getParam('name'), question);
-            console.log(that.getParam('name'));
+            socket.emit('addQuestion', that.getParam('name'), question);
             $('#questionFormPage').hide();
         };
 
@@ -51,8 +50,8 @@ define(function (require) {
             socket.emit('getQuestionCollection', this.getParam('name'));
         };
 
-        socket.on('aclass', function(aclass) {
-            that.qCollection = aclass;
+        socket.on('questions', function(questions) {
+            that.qCollection = questions;
             that.displayQuestionCollection();
         });
 

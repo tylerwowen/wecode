@@ -1,16 +1,18 @@
-var classes = {};
+var classes = [];
 
-var QuestionSocket = function(socket) {
-
-    socket.on('getQuestionCollection', function(id) {
-        var aclass = classes[id];
-        socket.emit('aclass', aclass);
+var QuestionSocket = function(sio, socket) {
+    socket.on('getQuestionCollection', function(classId) {
+        getClassesWithClassId(classId)
+            .then(function(questions) {
+                socket.emit('questions', getClassesWithClassId(classId));
+            });
     });
 
-    socket.on('saveQuestionToDB', function(classId, question) {
-        console.log("save question is called");
-        classes[classId].append(question);
-        socket.emit();
+    socket.on('addQuestion', function(classId, question) {
+        addQuestion(classId, question)
+            .then(function(){
+                socket.emit();
+            });
     });
 
     socket.on('disconnect', function() {
@@ -21,3 +23,20 @@ var QuestionSocket = function(socket) {
 
 module.exports = QuestionSocket;
 
+function getClassesWithClassId(classId) {
+    return classes.filter(function (entry) {
+        return entry.classId === classId
+    });
+}
+function containClassId(classId) {
+    return getClassesWithClassId(classId).length != 0
+}
+
+function addQuestion(classId, question) {
+    if (containClassId(classId)) {
+        return getClassesWithClassId(classId)[0].questions.push(question)
+    }
+    else {
+        return classes.push({classId: classId, questions : [question]});
+    }
+}
