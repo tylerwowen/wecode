@@ -158,14 +158,6 @@ h5:after{
 
 .navbar {
     background: #404040!important;
-    border: none !important;
-    -webkit-box-shadow: 0 8px 6px -6px #999 !important;
-    -moz-box-shadow: 0 8px 6px -6px #999 !important;
-    box-shadow: 0 8px 6px -6px #999 !important;
-}
-
-.navbar-default{
-    border-color: transparent !important;
 }
 
 .nav.pull-right {

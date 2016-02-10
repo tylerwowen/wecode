@@ -38,17 +38,22 @@ define(function (require, exports, module) {
             });
 
             $('#StudentSelector').addClass('selected');
-
+            $('#TAselector').addClass('inactive');
+            
             $('#StudentSelector').click(function(){
+                $('li').addClass('inactive');
                 $('li').removeClass('selected');
                 $(this).addClass('selected');
+                $(this).removeClass('inactive');
                 $('#student').show();
                 $('#instructor').hide();
             });
 
             $('#TAselector').click(function(){
+                $('li').addClass('inactive');
                 $('li').removeClass('selected');
                 $(this).addClass('selected');
+                $(this).removeClass('inactive');
                 $('#student').hide();
                 $('#instructor').show();
             });
