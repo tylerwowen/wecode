@@ -1,7 +1,6 @@
 define(function (require) {
     "use strict";
 
-    require(['bootstrap']);
     var $ = require('jquery');
     var io = require('socketio');
     var socket = io.connect();

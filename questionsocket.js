@@ -12,6 +12,11 @@ var QuestionSocket = function(socket) {
         classes[classId].append(question);
         socket.emit();
     });
+
+    socket.on('disconnect', function() {
+        socket.removeAllListeners();
+    });
+
 };
 
 module.exports = QuestionSocket;
