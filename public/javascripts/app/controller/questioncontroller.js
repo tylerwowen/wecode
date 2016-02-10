@@ -5,6 +5,7 @@ define(function (require) {
     var $ = require('jquery');
     var io = require('socketio');
     var socket = io.connect();
+    var realTimeUtils = require('app/model/realtimedata');
 
     function Controller() {
         this.qCollection = null;
@@ -20,6 +21,24 @@ define(function (require) {
             this.getQuestionCollection();
             this.displayQuestionCollection();
         };
+
+        /**
+         * Examines url query parameters for a specific parameter.
+         * @param {!string} urlParam to search for in url parameters.
+         * @return {?(string)} returns match as a string of null if no match.
+         * @export
+         */
+        this.getParam = function(urlParam) {
+            var regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
+            var match = window.location.search.match(regExp);
+            if (match && match.length) {
+                match = match[0];
+                match = match.replace(urlParam + '=', '').replace('&', '');
+            } else {
+                match = null;
+            }
+            return match;
+        }
 
         this.connectToView = function() {
             var that = this;
@@ -62,7 +81,7 @@ define(function (require) {
                 for (var q = 0; q < this.qCollection.length; q++) {
                     var question =  '<tr><td id=' + this.qCollection[q]._id + '>' +
                             this.qCollection[q].topic + '</td>' +
-                            '<td><a href="/main_student?">' + this.qCollection[q].question +
+                            '<td><a href="/main_student?id='+ that.getParam('id') + '&name='+ that.getParam('name') +'">' + this.qCollection[q].question +
                             '</a></td></tr>';
                     $('#questionTableBody').append(question);
                 }
