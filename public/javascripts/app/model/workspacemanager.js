@@ -90,9 +90,11 @@ define(function(require) {
             var filePermissionID;
             var userPermissionID;
 
-            return userPermissionID = this.adapter.getUserPermissionID().then(function() {
-                return filePermissionID = that.adapter.getFilePermissionId(classID);
-            }).then(function () {
+             return this.adapter.getUserPermissionID().then(function(response) {
+                 userPermissionID = response;
+                 return that.adapter.getFilePermissionId(classID);
+            }).then(function (response) {
+                filePermissionID = response;
                 if(userPermissionID != filePermissionID){
                     return that.getStudentClassList(classID);
                 }
