@@ -66,6 +66,7 @@ function setupSSH(socket, remoteHost, roomId) {
     socket.on('disconnect', function() {
         if (existingConnections[roomId]) delete existingConnections[roomId];
         term.destroy();
+        socket.removeAllListeners();
     });
 
     downloadFile(socket, remoteHost.user, remoteHost.host, remoteHost.port)
