@@ -211,14 +211,11 @@ define(function (require) {
 
         this.setEditorMode = function(fileName) {
             var extension = fileName.split('.')[1];
-            if (extension) {
-                var aceExtension = supportedLanguages[extension];
-                if (aceExtension) {
-                    this.editor.getSession().setMode('ace/mode/' + aceExtension);
-                }
-                else {
-                    this.editor.getSession().setMode('ace/mode/plain_text');
-                }
+            if (extension && supportedLanguages[extension]) {
+                this.editor.getSession().setMode('ace/mode/' + supportedLanguages[extension]);
+            }
+            else {
+                this.editor.getSession().setMode('ace/mode/plain_text');
             }
         };
 
