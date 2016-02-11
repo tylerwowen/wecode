@@ -135,7 +135,7 @@ button:hover {
     color: white !important;
 }
 
-#TAClassList, #studentClassList {
+#TAClassList, #StudentClassList {
     list-style: none;
     min-height: 300px;
     overflow-y: auto;
@@ -152,7 +152,7 @@ button:hover {
     display: none;
 }
 
-#TAheader, #StudentHeader {
+#TAHeader, #StudentHeader {
     text-align: center;
     padding: 5px;
     display: block;

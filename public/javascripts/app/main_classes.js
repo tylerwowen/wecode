@@ -12,26 +12,4 @@ define(function(require) {
         var classController = new ClassController();
         classController.init();
     }
-
-    $('#studentSelector').addClass('selected');
-    $('#TAselector').addClass('inactive');
-
-    $('#studentSelector').on('click', function(){
-        $('li').addClass('inactive');
-        $('li').removeClass('selected');
-        $(this).addClass('selected');
-        $(this).removeClass('inactive');
-        $('#student').show();
-        $('#instructor').hide();
-    });
-
-    $('#TAselector').on('click', function(){
-        $('li').addClass('inactive');
-        $('li').removeClass('selected');
-        $(this).addClass('selected');
-        $(this).removeClass('inactive');
-        $('#student').hide();
-        $('#instructor').show();
-    });
-
 });
