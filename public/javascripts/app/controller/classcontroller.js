@@ -91,13 +91,13 @@ define(function (require, exports, module) {
         };
 
         this.showStudentClasses = function(classList) {
-            $('#studentClassList').empty();
+            $('#StudentClassList').empty();
             classList.forEach(function (singleClass) {
                 var params = $.param({
                     id: singleClass.id,
                     name: singleClass.name
                 });
-                $('#studentClassList').append(
+                $('#StudentClassList').append(
                     '<li>' +
                     '<a href="/questionlist?' + params +'">' +
                     singleClass.name+ '</a>' +

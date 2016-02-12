@@ -2,7 +2,8 @@ define(function(require) {
 
     var angular = require('angular'),
         $ = require('jquery'),
-        WorkSpaceManager = require('app/model/workspacemanager');
+        io = require('socketio'),
+        queue = new require('app/controller/questioncontroller')();
 
     angular.element(document).ready(function () {
         var app = angular.module("app", []);
@@ -29,40 +30,10 @@ define(function(require) {
         }
     });
 
-    var workspaceManager = WorkSpaceManager();
-
     function showWorkSpaceList() {
-
-        workspaceManager.init().then(function (workSpaceList) {
-            $('#workSpaceList').empty();
-            workSpaceList.forEach(function (workSpace) {
-                var params = $.param({
-                    id: workSpace.id,
-                    name: workSpace.name
-                });
-                $('#workSpaceList').append(
-                    '<li>' +
-                    '<a href="/main?' + params + '">' +
-                    workSpace.name+ '</a>' +
-                    '</li>');
-            })
-        }, function (error) {
-            console.error(error);
-        });
+        queue.displayQuestionList();
     }
     showWorkSpaceList();
-
-    $('#workSpaceButton').click(function() {
-        var name = $('#newWorkSpaceInput').val();
-        console.log(name);
-        workspaceManager.createWorkSpace(name)
-            .then(function(){
-                return workspaceManager.refreshWorkspaceList();
-            })
-            .then(function() {
-                showWorkSpaceList();
-            });
-    });
 
     $('#openTerminal').click(function () {
         if ($(this).hasClass('selected')) {
