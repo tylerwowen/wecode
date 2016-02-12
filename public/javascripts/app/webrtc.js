@@ -1,6 +1,7 @@
 define(function(require) {
     var $ = require('jquery'),
-        io = require('socketio');
+        io = require('socketio'),
+        UserManager = require('app/model/usermanager')();
     require('lib/adapter');
 
     var videoList = document.getElementById('vidwrapper');
@@ -77,7 +78,7 @@ define(function(require) {
     // Handle on browser close
     window.onbeforeunload = function (e) {
         sendMessage('bye');
-        socket.emit('quit message', globalUserName, room);
+        socket.emit('quit message', UserManager.userName, room);
     };
 
     /**
@@ -130,7 +131,7 @@ define(function(require) {
         });
 
         $('form').submit(function(){
-            socket.emit('print username', globalUserName, room);
+            socket.emit('print username', UserManager.userName, room);
             socket.emit('chat message', $('#m').val(), room);
             $('#m').val('');
         });
@@ -144,7 +145,7 @@ define(function(require) {
         });
 
         socket.on('joined', function (IdArray) {
-            socket.emit('joined message', globalUserName, room);
+            socket.emit('joined message', UserManager.userName, room);
             var promise = new Promise(function(resolve, reject) {
                 getUserMedia(constraints, successCallback, errorCallback);
                 socket.on('gotUserMedia', function(message) {

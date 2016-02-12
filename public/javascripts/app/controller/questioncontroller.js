@@ -1,7 +1,6 @@
 define(function (require) {
     "use strict";
 
-    require(['bootstrap']);
     var $ = require('jquery');
     var io = require('socketio');
     var socket = io.connect();
@@ -52,27 +51,48 @@ define(function (require) {
         };
 
         this.submitQuestion = function() {
+            var that = this;
             var topic = "github";
-            var question = $('#questionInput').val();
+            var questiontext = $('#questionInput').val();
 
-            var questionJson = {
+            var question = {
                 topic: topic,
-                question: question
+                question: questiontext
             };
 
-            socket.emit('saveQuestionToDB', questionJson);
+            socket.emit('addQuestion', that.getParam('name'), question);
+            $('#questionInput').val('');
             $('#questionFormPage').hide();
         };
 
         this.getQuestionCollection = function() {
             $("#questionTableBody tr").remove();
-            socket.emit('getQuestionCollection');
+            socket.emit('getQuestionCollection', this.getParam('name'));
         };
 
-        socket.on('questionCollection', function(questionCollection) {
-            that.qCollection = questionCollection;
+        socket.on('questions', function(questions) {
+            that.qCollection = questions;
             that.displayQuestionCollection();
         });
+
+        /**
+         * Examines url query parameters for a specific parameter.
+         * @param {!string} urlParam to search for in url parameters.
+         * @return {?(string)} returns match as a string of null if no match.
+         * @export
+         */
+        this.getParam = function(urlParam) {
+            var regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
+            var match = window.location.search.match(regExp);
+            if (match && match.length) {
+                match = match[0];
+                match = match.replace(urlParam + '=', '').replace('&', '');
+            } else {
+                match = null;
+            }
+            return match;
+        };
+
 
         this.displayQuestionCollection = function() {
             if(this.qCollection == null) {

@@ -1,4 +1,3 @@
-var globalUserName;
 define(function(require) {
     "use strict";
 
@@ -51,7 +50,6 @@ define(function(require) {
             console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
             this.gToken = googleUser.getAuthResponse().access_token;
             this.userName = googleUser.getBasicProfile().getName();
-            globalUserName = this.userName;
             if (this.authTimer) {
                 window.clearTimeout(this.authTimer);
             }
@@ -79,8 +77,6 @@ define(function(require) {
                     that.gToken = authResult.access_token;
                     that.auth2.then(function() {
                         that.userName = that.auth2.currentUser.get().getBasicProfile().getName();
-                        globalUserName = that.userName;
-
                     });
                     console.log('Authorization succeed');
                 }
