@@ -12,7 +12,7 @@ define(function (require) {
     ace.config.set("basePath", require.toUrl("ace"));
 
 
-    function Controller() {
+    function EditorController() {
 
         this.workspaceAdapter = new WorkspaceAdapter();
         this.fileAdapter = new FileAdapter();
@@ -28,8 +28,6 @@ define(function (require) {
 
     (function () {
 
-        this.constructor = Controller;
-
         this.workspace = null;
 
         this.init = function() {
@@ -42,14 +40,13 @@ define(function (require) {
         };
 
         this.loadWorkspace = function() {
-            var that = this;
-            var wsID = this.getParam('id');
-            var wsName = this.getParam('name');
+            var wsID = getParam('id');
+            var wsName = getParam('name');
             // Get a list of files from work space with wsID
             if (wsID != null) {
                 this.workspace = new Workspace(wsID, wsName, this.workspaceAdapter);
                 this.workspace.getContentsList().then(function (contents) {
-                    that.showList(contents);
+                    showList(contents);
                 });
             }
             else {
@@ -109,50 +106,13 @@ define(function (require) {
             });
         };
 
-        this.showList = function(contents) {
-            var that = this;
-
-            if (contents != null) {
-                for (var id in contents) {
-                    if (contents.hasOwnProperty(id)) {
-                        if (contents[id].constructor.name == 'File') {
-                            var file =  '<li style="color:white" class="content file" id=' + id + '>' +
-                                contents[id].name +
-                                '</li>';
-                            $('#files').append(file);
-                        } else if (contents[id].constructor.name == 'Folder') {
-                            var folder = '<li style="color:white" class="content folder" id="' + id + '">' +
-                                contents[id].name +
-                                '</li>';
-                            $('#files').append(folder);
-                        }
-                    }
-                }
-            }
-            else {
-                this.workspace.createFile(this.workspace.id, 'demo')
-                    .then(function (file) {
-                        that.addContentToList(file.id, file.name);
-                    });
-            }
-
-        };
-
-        this.addContentToList = function(contentId, fileName) {
-            $('#fileName').val('');
-            $('#files').append(
-                '<li style="color:white" class="file content" id="' + contentId + '">' +
-                fileName +
-                '</li>');
-        };
-
         this.createFile = function(fileName) {
             if (fileName) {
                 var that = this;
                 this.workspace.createFile(that.workspace.id, fileName)
                     .then(function (file) {
-                    that.addContentToList(file.id, file.name);
-                });
+                        addContentToList(file.id, file.name);
+                    });
             }
             else {
                 alert('Please input a file name!');
@@ -181,25 +141,60 @@ define(function (require) {
             });
         };
 
-        /**
-         * Examines url query parameters for a specific parameter.
-         * @param {!string} urlParam to search for in url parameters.
-         * @return {?(string)} returns match as a string of null if no match.
-         * @export
-         */
-        this.getParam = function(urlParam) {
-            var regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
-            var match = window.location.search.match(regExp);
-            if (match && match.length) {
-                match = match[0];
-                match = match.replace(urlParam + '=', '').replace('&', '');
-            } else {
-                match = null;
+    }).call(EditorController.prototype);
+
+    function showList(contents) {
+
+        if (contents != null) {
+            for (var id in contents) {
+                if (contents.hasOwnProperty(id)) {
+                    if (contents[id].constructor.name == 'File') {
+                        var file =  '<li style="color:white" class="content file" id=' + id + '>' +
+                            contents[id].name +
+                            '</li>';
+                        $('#files').append(file);
+                    } else if (contents[id].constructor.name == 'Folder') {
+                        var folder = '<li style="color:white" class="content folder" id="' + id + '">' +
+                            contents[id].name +
+                            '</li>';
+                        $('#files').append(folder);
+                    }
+                }
             }
-            return match;
-        };
+        }
+        else {
+            this.workspace.createFile(this.workspace.id, 'demo')
+                .then(function (file) {
+                    addContentToList(file.id, file.name);
+                });
+        }
+    }
 
-    }).call(Controller.prototype);
+    function addContentToList(contentId, fileName) {
+        $('#fileName').val('');
+        $('#files').append(
+            '<li style="color:white" class="file content" id="' + contentId + '">' +
+            fileName +
+            '</li>');
+    }
 
-    return Controller;
+    /**
+     * Examines url query parameters for a specific parameter.
+     * @param {!string} urlParam to search for in url parameters.
+     * @return {?(string)} returns match as a string of null if no match.
+     * @export
+     */
+    function getParam(urlParam) {
+        var regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
+        var match = window.location.search.match(regExp);
+        if (match && match.length) {
+            match = match[0];
+            match = match.replace(urlParam + '=', '').replace('&', '');
+        } else {
+            match = null;
+        }
+        return match;
+    }
+
+    return EditorController;
 });

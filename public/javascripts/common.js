@@ -17,12 +17,6 @@ requirejs.config({
         'gapi': {
             exports: 'gapi'
         },
-        'draggableObjects': {
-            deps: [
-                'jquery',
-                'jqueryui'
-            ]
-        },
         'angular': {
             exports: 'angular'
         }
