@@ -8,7 +8,6 @@ define(function (require, exports, module) {
         this.init = function() {
             self.createButtonListeners();
             self.showClasses();
-
         };
 
         this.createButtonListeners = function() {
@@ -17,17 +16,50 @@ define(function (require, exports, module) {
             });
 
             $('#TACreateClassButton').click(function() {
-                self.addClass();
+                self.createClass();
                 $('#newClassForm').hide();
             });
 
-            $('#return').click(function(){
+            $('#TAreturn').click(function(){
                 $('#newClassForm').hide();
+            });
+
+            $('#StudentAddClass').click(function(){
+                $('#addNewClassForm').show();
+            });
+
+            $('#studentAddClassButton').click(function(){
+                self.studentClass();
+                $('#addNewClassForm').hide();
+            });
+
+            $('#studentReturn').click(function(){
+                $('#addNewClassForm').hide();
+            });
+
+            $('#StudentSelector').addClass('selected');
+            $('#TAselector').addClass('inactive');
+            
+            $('#StudentSelector').click(function(){
+                $('li').addClass('inactive');
+                $('li').removeClass('selected');
+                $(this).addClass('selected');
+                $(this).removeClass('inactive');
+                $('#student').show();
+                $('#instructor').hide();
+            });
+
+            $('#TAselector').click(function(){
+                $('li').addClass('inactive');
+                $('li').removeClass('selected');
+                $(this).addClass('selected');
+                $(this).removeClass('inactive');
+                $('#student').hide();
+                $('#instructor').show();
             });
         };
 
-
-        this.addClass = function(){
+        this.createClass = function(){
             var name = $('#TANewClassInput').val();
             console.log(name);
             classManager.createWorkSpace(name)
@@ -55,6 +87,30 @@ define(function (require, exports, module) {
                 })
             }, function (error) {
                 console.error(error);
+            });
+        };
+
+        this.showStudentClasses = function(classList) {
+            $('#studentClassList').empty();
+            classList.forEach(function (singleClass) {
+                var params = $.param({
+                    id: singleClass.id,
+                    name: singleClass.name
+                });
+                $('#studentClassList').append(
+                    '<li>' +
+                    '<a href="/questionlist?' + params +'">' +
+                    singleClass.name+ '</a>' +
+                    '</li>');
+            });
+        };
+
+        this.studentClass = function() {
+            var that = this;
+            var name = $('#studentAddNewClassInput').val();
+            classManager.addClass(name).then(function (response){
+                if(response != null)
+                    that.showStudentClasses(response);
             });
         }
     };

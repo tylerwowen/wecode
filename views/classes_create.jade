@@ -1,8 +1,9 @@
 div#newClassForm
     div#page
     div#form
-        input#TANewClassInput.form-control(type='text', placeholder='Create New Class', autocomplete='off')
-        span.input-group-btn
-            button#TACreateClassButton.btn.btn-success
-                span.glyphicon.glyphicon-plus
-        button#return.btn-success Cancel
+        #addHeader Create New Class
+        input#TANewClassInput.form-control(type='text', placeholder='Class Name', autocomplete='off')
+        .btn-group.btn-group-md
+            button#TACreateClassButton.btn.btn-success Create
+            button#TAreturn.btn.btn-success Cancel
+

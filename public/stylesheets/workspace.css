@@ -14,6 +14,12 @@
     width: 100%;
     height: 100%;
     font-family: 'Muli', sans-serif;
+    padding-bottom: 15px;
+}
+
+#scrollws{
+    overflow-y: auto;
+    height: 100%;
 }
 
 #wsHeader {
@@ -54,7 +60,7 @@
 
 #wsblock ul {
     padding-left: 0;
-    margin: 10px;
+    margin: 0 10px 10px 10px;
 }
 
 #workSpaceList li a:hover {
@@ -67,7 +73,7 @@
 }
 
 #workspaceform {
-    padding: 10px 10px 0 10px;
+    padding: 10px;
 }
 
 .btn-success {

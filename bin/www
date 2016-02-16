@@ -11,6 +11,7 @@ var fs = require('fs');
 var io = require('socket.io');
 var rtcSockets = require('../socketio/rtcSockets');
 var terminalsocket = require('../socketio/terminalsocket');
+var questionsocket = require('../socketio/questionsocket');
 
 /**
  * Get port from environment and store in Express.
@@ -39,9 +40,10 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 var sio = io(server);
-sio.on('connection', function (socket) {
+sio.on('connection', function(socket) {
     rtcSockets(sio, socket);
     terminalsocket(sio, socket);
+    questionsocket(sio, socket);
 });
 
 /**

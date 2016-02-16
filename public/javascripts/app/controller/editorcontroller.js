@@ -11,6 +11,14 @@ define(function (require) {
     ace.config.set("packaged", true);
     ace.config.set("basePath", require.toUrl("ace"));
 
+    var supportedLanguages = {
+        'cpp': 'c_cpp',
+        'c': 'c_cpp',
+        'java': 'java',
+        'js': 'javascript',
+        'py': 'python',
+        'swift': 'swift'
+    };
 
     function EditorController() {
 
@@ -19,7 +27,7 @@ define(function (require) {
 
         this.editor = ace.edit('editor');
         this.editor.setTheme("ace/theme/monokai");
-        this.editor.getSession().setMode("ace/mode/javascript");
+        this.editor.getSession().setMode("ace/mode/plain_text");
         this.editor.getSession().setUseWrapMode(true);
         this.editor.$blockScrolling = Infinity;
 
@@ -65,7 +73,9 @@ define(function (require) {
                 that.createFile($('#fileName').val());
             });
 
-            $('#files').on('click', 'li.file', function(event) {
+            $('#files').on('click', 'li.file', function() {
+                var fileName = $(this).text();
+                that.setEditorMode(fileName);
                 var id = $(this).attr('id');
                 that.workspace.loadFile(id, that.aceAdapter, that.fileAdapter);
             });
@@ -141,6 +151,15 @@ define(function (require) {
             });
         };
 
+        this.setEditorMode = function(fileName) {
+            var extension = fileName.split('.')[1];
+            if (extension && supportedLanguages[extension]) {
+                this.editor.getSession().setMode('ace/mode/' + supportedLanguages[extension]);
+            }
+            else {
+                this.editor.getSession().setMode('ace/mode/plain_text');
+            }
+        };
     }).call(EditorController.prototype);
 
     function showList(contents) {
