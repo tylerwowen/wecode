@@ -3,6 +3,6 @@ define(function(require) {
     require('jqueryui');
 
     $('#vidwrapper').draggable({
-        containment: '.col-md-9'
+        containment: 'parent'
     });
 });
