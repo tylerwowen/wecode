@@ -10,11 +10,6 @@ var QuestionSocket = function(sio, socket) {
         socket.emit();
 
     });
-
-    socket.on('disconnect', function() {
-        socket.removeAllListeners();
-    });
-
 };
 
 module.exports = QuestionSocket;

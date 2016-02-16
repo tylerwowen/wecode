@@ -44,6 +44,9 @@ sio.on('connection', function(socket) {
     rtcSockets(sio, socket);
     terminalsocket(sio, socket);
     questionsocket(sio, socket);
+    socket.on('disconnect', function() {
+        socket.removeAllListeners();
+    });
 });
 
 /**

@@ -84,10 +84,6 @@ function rtcSockets(sio, socket) {
             return currentlyConnected;
         }
     });
-
-    socket.on('disconnect', function() {
-        socket.removeAllListeners();
-    });
 }
 
 module.exports = rtcSockets;
