@@ -79,8 +79,12 @@ define(function (require, exports, module) {
                     name: singleClass.name
                 });
                 $('#studentClassList').append(
+                    //'<li>' +
+                    //'<a href="/main_student?' + singleClass.id + '">' +
+                    //singleClass.name+ '</a>' +
+                    //'</li>');
                     '<li>' +
-                    '<a href="/main_student?' + params +'">' +
+                    '<a href="/questionlist?' + params +'">' +
                     singleClass.name+ '</a>' +
                     '</li>');
             });

@@ -96,6 +96,7 @@ define(function(require) {
             }).then(function (response) {
                 filePermissionID = response;
                 if(userPermissionID != filePermissionID){
+                    return that.
                     return that.getStudentClassList(classID);
                 }
                 else{

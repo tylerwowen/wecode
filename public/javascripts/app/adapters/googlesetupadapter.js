@@ -11,6 +11,7 @@ define(function (require) {
         this.constructor = SetupAdapter;
 
         this.rootFolderName = 'WeCodeApplicationData';
+        this.studentFolderName = 'StudentClasses';
         this.folderMimeType = 'application/vnd.google-apps.folder';
 
         this.load = function() {
@@ -161,6 +162,20 @@ define(function (require) {
 
         this.createRootFolder = function() {
             var folderName = this.rootFolderName;
+            var request = {
+                'resource': {
+                    mimeType: this.folderMimeType,
+                    name: folderName
+                }
+            };
+            return gapi.client.drive.files.create(request)
+                .then(function(response) {
+                    return response.result.id;
+                });
+        };
+
+        this.createStudentFolder = function() {
+            var folderName = this.studentFolderName;
             var request = {
                 'resource': {
                     mimeType: this.folderMimeType,
