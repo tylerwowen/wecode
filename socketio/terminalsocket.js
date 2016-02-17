@@ -4,10 +4,9 @@ var ss = require('socket.io-stream');
 
 var sshAuth = 'password';
 var existingConnections = {};
-var io, nsp;
+var nsp;
 
 function TerminalSocket(sio, socket, terminalNSP) {
-    io = sio;
     nsp = terminalNSP;
 
     socket.on('createSSHConnection', function(remoteHost, roomId) {
@@ -58,6 +57,8 @@ function setupSSH(socket, remoteHost, roomId) {
     term.on('exit', function(code) {
         if (existingConnections[roomId]) delete existingConnections[roomId];
         console.log((new Date()) + " PID=" + term.pid + " ENDED");
+        socket.removeAllListeners();
+        socket.disconnect();
     });
 
     socket.on('resize', function(data) {

@@ -2,55 +2,31 @@ define(function (require) {
     "use strict";
 
     var $ = require('jquery'),
-        socket = require('socketio')('/terminal'),
+        io = require('socketio'),
         ss = require('lib/socket.io-stream');
 
     require('lib/hterm_all');
 
-    var term;
+    var term, socket;
     var buf = '';
 
-    function Terminal(argv) {
-        this.argv_ = argv;
-        this.io = null;
-        this.pid_ = -1;
-    }
-
-    (function() {
-
-        this.run = function () {
-            this.io = this.argv_.io.push();
-
-            this.io.onVTKeystroke = this.sendString_.bind(this);
-            this.io.sendString = this.sendString_.bind(this);
-            this.io.onTerminalResize = this.onTerminalResize.bind(this);
-        };
-
-        this.sendString_ = function (str) {
-            socket.emit('input', str);
-        };
-
-        this.onTerminalResize = function (col, row) {
-            socket.emit('resize', {col: col, row: row});
-        };
-
-    }).call(Terminal.prototype);
-
     function TerminalController() {
-        addSocketListeners();
         this.connectToView();
     }
 
     (function () {
         this.connectToView = function() {
-            $('#connectButton').on('click', function() {
-                var remoteHost = {
-                    user: $('input[name="user"]').val(),
-                    host: $('input[name="host"]').val(),
-                    port: $('input[name="port"]').val()
-                };
-                var roomId = $('input[name="roomid"]').val();
-                socket.emit('createSSHConnection', remoteHost, roomId);
+            $('#openTerminal').on('click', function() {
+                if (!term) {
+                    addSocketListeners();
+                    var remoteHost = {
+                        user: $('input[name="user"]').val() || 'ouyang',
+                        host: $('input[name="host"]').val() || 'csil.cs.ucsb.edu',
+                        port: $('input[name="port"]').val() || '22'
+                    };
+                    var roomId = $('input[name="roomid"]').val();
+                    socket.emit('createSSHConnection', remoteHost, roomId);
+                }
             });
 
             $('#joinButton').on('click', function() {
@@ -72,6 +48,8 @@ define(function (require) {
     }).call(TerminalController.prototype);
 
     function addSocketListeners() {
+        socket = io('/terminal');
+
         socket.on('connect', function () {
             lib.init(setupTerminal);
         });
@@ -85,6 +63,7 @@ define(function (require) {
         });
 
         socket.on('disconnect', function () {
+            term = null;
             console.log("Socket.io connection closed");
         });
     }
@@ -106,7 +85,7 @@ define(function (require) {
         term.prefs_.set('ctrl-v-paste', true);
         term.prefs_.set('use-default-window-copy', true);
 
-        term.runCommandClass(Terminal, null);
+        term.runCommandClass(CommandClass, null);
         socket.emit('resize', {
             col: term.screenSize.width,
             row: term.screenSize.height
@@ -146,6 +125,34 @@ define(function (require) {
             console.log(fileData);
         });
     }
+
+    function CommandClass(argv) {
+        this.argv_ = argv;
+        this.io = null;
+        this.pid_ = -1;
+    }
+
+    (function() {
+
+        this.run = function () {
+            this.io = this.argv_.io.push();
+
+            this.io.onVTKeystroke = this.sendString_.bind(this);
+            this.io.sendString = this.sendString_.bind(this);
+            this.io.onTerminalResize = this.onTerminalResize.bind(this);
+        };
+
+        this.sendString_ = function (str) {
+            socket.emit('input', str);
+        };
+
+        this.onTerminalResize = function (col, row) {
+            socket.emit('resize', {col: col, row: row});
+        };
+
+    }).call(CommandClass.prototype);
+
+
 
     return TerminalController;
 });

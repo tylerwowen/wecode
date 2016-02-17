@@ -50,7 +50,6 @@ sio.on('connection', function(socket) {
 
 var terminalNSP = sio.of('/terminal');
 terminalNSP.on('connection', function(socket){
-    console.log('terminal connection', socket.id);
     terminalsocket(sio, socket, terminalNSP);
 });
 

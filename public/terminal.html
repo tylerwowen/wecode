@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src='javascripts/lib/hterm_all.js'></script>
-    <script src='/socket.io/socket.io.js'></script>
-    <script src='javascripts/lib/socket.io-stream.js'></script>
-    <script src='//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.js' data-main='javascripts/app'></script>
 
 </head>
 <body>
@@ -32,9 +29,13 @@
 
     Path:
     <br>
-    <input type="text" name="path" value="~/cs176b/hw1/ouyang/homework1A_1.txt"><br>
+    <input type="text" name="path" value="~/tmp/wecode"><br>
     <button type="button" id="loadButton">
         Load file to editor
+    </button>
+    <br>
+    <button type="button" id="uploadButton">
+        Upload file to remote host
     </button>
     <br>
 </div>
@@ -42,7 +43,10 @@
      style="position:relative; width:500px; height:600px;">
 
 </div>
-<script src='javascripts/app/controller/terminalcontroller.js'></script>
 
+<div id='editor'>
+</div>
+<div id='vidwrapper'>
+</div>
 </body>
 </html>
