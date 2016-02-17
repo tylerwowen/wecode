@@ -42,11 +42,16 @@ server.on('listening', onListening);
 var sio = io(server);
 sio.on('connection', function(socket) {
     rtcSockets(sio, socket);
-    terminalsocket(sio, socket);
     questionsocket(sio, socket);
     socket.on('disconnect', function() {
         socket.removeAllListeners();
     });
+});
+
+var terminalNSP = sio.of('/terminal');
+terminalNSP.on('connection', function(socket){
+    console.log('terminal connection', socket.id);
+    terminalsocket(sio, socket, terminalNSP);
 });
 
 /**

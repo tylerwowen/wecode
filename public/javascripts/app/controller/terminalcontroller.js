@@ -1,33 +1,96 @@
-var term;
-var socket = io.connect();
-var buf = '';
+define(function (require) {
+    "use strict";
 
-function Terminal(argv) {
-    this.argv_ = argv;
-    this.io = null;
-    this.pid_ = -1;
-}
+    var $ = require('jquery'),
+        socket = require('socketio')('/terminal'),
+        ss = require('lib/socket.io-stream');
 
-Terminal.prototype.run = function() {
-    this.io = this.argv_.io.push();
+    require('lib/hterm_all');
 
-    this.io.onVTKeystroke = this.sendString_.bind(this);
-    this.io.sendString = this.sendString_.bind(this);
-    this.io.onTerminalResize = this.onTerminalResize.bind(this);
-};
+    var term;
+    var buf = '';
 
-Terminal.prototype.sendString_ = function(str) {
-    socket.emit('input', str);
-};
+    function Terminal(argv) {
+        this.argv_ = argv;
+        this.io = null;
+        this.pid_ = -1;
+    }
 
-Terminal.prototype.onTerminalResize = function(col, row) {
-    socket.emit('resize', { col: col, row: row });
-};
+    (function() {
 
-socket.on('connect', function() {
-    lib.init(function() {
+        this.run = function () {
+            this.io = this.argv_.io.push();
+
+            this.io.onVTKeystroke = this.sendString_.bind(this);
+            this.io.sendString = this.sendString_.bind(this);
+            this.io.onTerminalResize = this.onTerminalResize.bind(this);
+        };
+
+        this.sendString_ = function (str) {
+            socket.emit('input', str);
+        };
+
+        this.onTerminalResize = function (col, row) {
+            socket.emit('resize', {col: col, row: row});
+        };
+
+    }).call(Terminal.prototype);
+
+    function TerminalController() {
+        addSocketListeners();
+        this.connectToView();
+    }
+
+    (function () {
+        this.connectToView = function() {
+            $('#connectButton').on('click', function() {
+                var remoteHost = {
+                    user: $('input[name="user"]').val(),
+                    host: $('input[name="host"]').val(),
+                    port: $('input[name="port"]').val()
+                };
+                var roomId = $('input[name="roomid"]').val();
+                socket.emit('createSSHConnection', remoteHost, roomId);
+            });
+
+            $('#joinButton').on('click', function() {
+                var roomId = $('input[name="roomid"]').val();
+                socket.emit('joinSSHConnection', roomId);
+            });
+
+            $('#loadButton').on('click', function() {
+                var path = $('input[name="path"]').val();
+                downloadFile(path);
+            });
+
+            $('#uploadButton').on('click', function() {
+                var path = $('input[name="path"]').val();
+                uploadFile(path);
+            });
+        };
+
+    }).call(TerminalController.prototype);
+
+    function addSocketListeners() {
+        socket.on('connect', function () {
+            lib.init(setupTerminal);
+        });
+
+        socket.on('output', function (data) {
+            if (!term) {
+                buf += data;
+                return;
+            }
+            term.io.writeUTF16(data);
+        });
+
+        socket.on('disconnect', function () {
+            console.log("Socket.io connection closed");
+        });
+    }
+
+    function setupTerminal() {
         hterm.defaultStorage = new lib.Storage.Local();
-
         /**
          * opt_profileName is the name of the terminal profile to load, or "default" if
          * not specified.  If you're using one of the persistent storage
@@ -35,7 +98,7 @@ socket.on('connect', function() {
          * name.
          */
         term = new hterm.Terminal();
-        term.decorate(document.querySelector('#terminal'));
+        term.decorate($('#terminal')[0]);
 
         term.setCursorPosition(0, 0);
         term.setCursorVisible(true);
@@ -43,7 +106,7 @@ socket.on('connect', function() {
         term.prefs_.set('ctrl-v-paste', true);
         term.prefs_.set('use-default-window-copy', true);
 
-        term.runCommandClass(Terminal, document.location.hash.substr(1));
+        term.runCommandClass(Terminal, null);
         socket.emit('resize', {
             col: term.screenSize.width,
             row: term.screenSize.height
@@ -53,89 +116,36 @@ socket.on('connect', function() {
             term.io.writeUTF16(buf);
             buf = '';
         }
-    });
-});
-
-socket.on('output', function(data) {
-    if (!term) {
-        buf += data;
-        return;
     }
-    term.io.writeUTF16(data);
+
+    function downloadFile(path) {
+        var stream = ss.createStream();
+        var fileData = "";
+
+        ss(socket).emit('downloadFile', stream, {path: path});
+
+        stream.on('data', function(data) {
+            for (var i = 0; i < data.length; i++) {
+                fileData += String.fromCharCode(data[i]);
+            }
+        });
+
+        stream.on('end', function () {
+            console.log(fileData);
+        });
+    }
+
+    function uploadFile(path, fileData) {
+        var blob = new Blob([fileData]);
+        var stream = ss.createStream();
+
+        ss(socket).emit('uploadFile', stream, {path: path});
+        ss.createBlobReadStream(blob).pipe(stream);
+
+        stream.on('end', function () {
+            console.log(fileData);
+        });
+    }
+
+    return TerminalController;
 });
-
-socket.on('disconnect', function() {
-    console.log("Socket.io connection closed");
-});
-
-$('#connectButton').on('click', function() {
-    var remoteHost = {
-        user: $('input[name="user"]').val(),
-        host: $('input[name="host"]').val(),
-        port: $('input[name="port"]').val()
-    };
-    var roomId = $('input[name="roomid"]').val();
-    socket.emit('createSSHConnection', remoteHost, roomId);
-});
-
-$('#joinButton').on('click', function() {
-    var roomId = $('input[name="roomid"]').val();
-    socket.emit('joinSSHConnection', roomId);
-});
-
-$('#loadButton').on('click', function() {
-    var path = $('input[name="path"]').val();
-    downloadFile(path);
-});
-
-function downloadFile(path) {
-    var stream = ss.createStream();
-    var fileData = "";
-
-    ss(socket).emit('downloadFile', stream, {path: path});
-
-    stream.on('data', function(data) {
-        for (var i = 0; i < data.length; i++) {
-            fileData += String.fromCharCode(data[i]);
-        }
-    });
-
-    stream.on('end', function () {
-        console.log(fileData);
-    });
-}
-
-//var t = new hterm.Terminal();
-//
-//t.onTerminalReady = function() {
-//
-//    // Create a new terminal IO object and give it the foreground.
-//    // (The default IO object just prints warning messages about unhandled
-//    // things to the the JS console.)
-//    var io = t.io.push();
-//
-//    io.onVTKeystroke = function(str) {
-//        // Do something useful with str here.
-//        // For example, Secure Shell forwards the string onto the NaCl plugin.
-//        t.io.print(str);
-//        console.log(str);
-//    };
-//
-//    io.sendString = function(str) {
-//        // Just like a keystroke, except str was generated by the
-//        // terminal itself.
-//        // Most likely you'll do the same this as onVTKeystroke.
-//        console.log(str);
-//    };
-//
-//    io.onTerminalResize = function(columns, rows) {
-//        // React to size changes here.
-//        // Secure Shell pokes at NaCl, which eventually results in
-//        // some ioctls on the host.
-//    };
-//
-//    // You can call io.push() to foreground a fresh io context, which can
-//    // be uses to give control of the terminal to something else.  When that
-//    // thing is complete, should call io.pop() to restore control to the
-//    // previous io object.
-//};

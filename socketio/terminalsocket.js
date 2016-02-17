@@ -1,14 +1,14 @@
-var fs = require('fs');
 var pty = require('pty.js');
 var spawn = require('child_process').spawn;
 var ss = require('socket.io-stream');
 
 var sshAuth = 'password';
 var existingConnections = {};
-var io;
+var io, nsp;
 
-function TerminalSocket(sio, socket) {
+function TerminalSocket(sio, socket, terminalNSP) {
     io = sio;
+    nsp = terminalNSP;
 
     socket.on('createSSHConnection', function(remoteHost, roomId) {
         console.log(remoteHost, roomId);
@@ -16,7 +16,6 @@ function TerminalSocket(sio, socket) {
             socket.emit('connectionAlreadyCreated', roomId);
         }
         else if (isRemoteHostValid(remoteHost)) {
-            // WARNING: should be deleted after integrated
             socket.join(roomId);
             setupSSH(socket, remoteHost, roomId);
         }
@@ -29,6 +28,10 @@ function TerminalSocket(sio, socket) {
         else {
             joinSSHConnection(socket, roomId)
         }
+    });
+
+    socket.on('disconnect', function() {
+        socket.removeAllListeners();
     });
 }
 
@@ -50,7 +53,7 @@ function setupSSH(socket, remoteHost, roomId) {
 
     console.log((new Date()) + " PID=" + term.pid + " STARTED on behalf of user=" + sshUser);
     term.on('data', function(data) {
-        io.sockets.in(roomId).emit('output', data);
+        nsp.to(roomId).emit('output', data);
     });
     term.on('exit', function(code) {
         if (existingConnections[roomId]) delete existingConnections[roomId];
@@ -66,10 +69,10 @@ function setupSSH(socket, remoteHost, roomId) {
     socket.on('disconnect', function() {
         if (existingConnections[roomId]) delete existingConnections[roomId];
         term.destroy();
-        socket.removeAllListeners();
     });
 
-    downloadFile(socket, remoteHost.user, remoteHost.host, remoteHost.port)
+    downloadFile(socket, remoteHost.user, remoteHost.host, remoteHost.port);
+    uploadFile(socket, remoteHost.user, remoteHost.host, remoteHost.port);
 }
 
 function joinSSHConnection(socket, roomId) {
@@ -78,18 +81,34 @@ function joinSSHConnection(socket, roomId) {
 
     socket.join(roomId);
 
-    socket.on('input', function(data) {
-        term.write(data);
-    });
+    if (term.readonly == false) {
+        socket.on('input', function(data) {
+            term.write(data);
+        });
+    }
 }
 
 function downloadFile(socket, user, host, port) {
     ss(socket).on('downloadFile', function(stream, opts) {
-        var scp = spawn('scp',['-P', port, user+'@'+host+':'+opts.path, '/dev/stdout']);
+        var ssh = spawn('ssh',['-p', port, user+'@'+host, 'cat ' + opts.path]);
         console.log('downloading');
-        scp.stdout.pipe(stream);
 
-        scp.stderr.on('data', function(data) {
+        ssh.stdout.pipe(stream);
+
+        ssh.stderr.on('data', function(data) {
+            console.log('stderr: ', data);
+        });
+    });
+}
+
+function uploadFile(socket, user, host, port) {
+    ss(socket).on('uploadFile', function(stream, opts) {
+        var ssh = spawn('ssh',['-p', port, user+'@'+host, 'cat > ' + opts.path]);
+        console.log('uploading');
+
+        stream.pipe(ssh.stdin);
+
+        ssh.stderr.on('data', function(data) {
             console.log('stderr: ', data);
         });
     });
