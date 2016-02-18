@@ -2,7 +2,13 @@
 <html>
 <head>
     <script src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.js' data-main='javascripts/app'></script>
-
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            height: 200px;
+            width: 200px;
+        }
+    </style>
 </head>
 <body>
 <div>
@@ -14,7 +20,7 @@
         Port: <br>
         <input type="number" name="port" value="22"><br>
     </form>
-    <button type="button" id="connectButton">
+    <button type="button" id="openTerminal">
         Connect to remote host...
     </button>
     <br>
@@ -46,7 +52,7 @@
 
 <div id='editor'>
 </div>
-<div id='vidwrapper'>
+<div id='vidwrapper' style="display:none;">
 </div>
 </body>
 </html>

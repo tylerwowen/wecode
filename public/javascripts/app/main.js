@@ -7,7 +7,7 @@ define(function(require) {
 
     var editorController = new EditorController(),
         userController = new UserController(),
-        terminalController = new TerminalController();
+        terminalController = new TerminalController(editorController);
 
     userController.init(onEventuallySuccess);
 
@@ -15,5 +15,4 @@ define(function(require) {
         requirejs(['app/webrtc', 'app/widgets','app/controller/draggableObjects']);
         editorController.init();
     }
-
 });

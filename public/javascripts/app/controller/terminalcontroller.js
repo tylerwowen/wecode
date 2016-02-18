@@ -2,6 +2,7 @@ define(function (require) {
     "use strict";
 
     var $ = require('jquery'),
+        Q = require('q'),
         io = require('socketio'),
         ss = require('lib/socket.io-stream');
 
@@ -10,12 +11,14 @@ define(function (require) {
     var term, socket;
     var buf = '';
 
-    function TerminalController() {
+    function TerminalController(editorController) {
+        this.editorController = editorController;
         this.connectToView();
     }
 
     (function () {
         this.connectToView = function() {
+            var that = this;
             $('#openTerminal').on('click', function() {
                 if (!term) {
                     addSocketListeners();
@@ -36,15 +39,45 @@ define(function (require) {
 
             $('#loadButton').on('click', function() {
                 var path = $('input[name="path"]').val();
-                downloadFile(path);
+                that.downloadFile(path);
             });
 
             $('#uploadButton').on('click', function() {
                 var path = $('input[name="path"]').val();
-                uploadFile(path);
+                that.uploadFile(path);
             });
         };
 
+        this.downloadFile = function(path) {
+            var stream = ss.createStream();
+            var fileData = "";
+            var that = this;
+
+            ss(socket).emit('downloadFile', stream, {path: path});
+
+            stream.on('data', function(data) {
+                for (var i = 0; i < data.length; i++) {
+                    fileData += String.fromCharCode(data[i]);
+                }
+            });
+
+            stream.on('end', function () {
+                that.editorController.resetEditorText(fileData);
+            });
+        };
+
+        this.uploadFile = function(path) {
+            var fileData = this.editorController.getEditorText();
+            var blob = new Blob([fileData]);
+            var stream = ss.createStream();
+
+            ss(socket).emit('uploadFile', stream, {path: path});
+            ss.createBlobReadStream(blob).pipe(stream);
+
+            stream.on('end', function () {
+                alert('Your file is saved.');
+            });
+        };
     }).call(TerminalController.prototype);
 
     function addSocketListeners() {
@@ -95,35 +128,6 @@ define(function (require) {
             term.io.writeUTF16(buf);
             buf = '';
         }
-    }
-
-    function downloadFile(path) {
-        var stream = ss.createStream();
-        var fileData = "";
-
-        ss(socket).emit('downloadFile', stream, {path: path});
-
-        stream.on('data', function(data) {
-            for (var i = 0; i < data.length; i++) {
-                fileData += String.fromCharCode(data[i]);
-            }
-        });
-
-        stream.on('end', function () {
-            console.log(fileData);
-        });
-    }
-
-    function uploadFile(path, fileData) {
-        var blob = new Blob([fileData]);
-        var stream = ss.createStream();
-
-        ss(socket).emit('uploadFile', stream, {path: path});
-        ss.createBlobReadStream(blob).pipe(stream);
-
-        stream.on('end', function () {
-            console.log(fileData);
-        });
     }
 
     function CommandClass(argv) {

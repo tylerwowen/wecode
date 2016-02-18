@@ -37,6 +37,7 @@ define(function (require) {
     (function () {
 
         this.workspace = null;
+        this.currentFile = null;
 
         this.init = function() {
             var that = this;
@@ -50,11 +51,21 @@ define(function (require) {
         this.loadWorkspace = function() {
             var wsID = getParam('id');
             var wsName = getParam('name');
+            var that = this;
             // Get a list of files from work space with wsID
-            if (wsID != null) {
+            if (wsID) {
                 this.workspace = new Workspace(wsID, wsName, this.workspaceAdapter);
-                this.workspace.getContentsList().then(function (contents) {
-                    showList(contents);
+                this.workspace.getContentsList()
+                .then(function(contents) {
+                    if (Object.keys(contents).length > 0) {
+                        showList(contents);
+                    }
+                    else {
+                        that.workspace.createFile(that.workspace.id, 'demo.js')
+                        .then(function (file) {
+                            addContentToList(file.id, file.name);
+                        });
+                    }
                 });
             }
             else {
@@ -74,9 +85,14 @@ define(function (require) {
             });
 
             $('#files').on('click', 'li.file', function() {
+                if (that.currentFile) {
+                    that.workspace.unloadFile(that.currentFile);
+                    that.editor.setValue('loading...');
+                }
                 var fileName = $(this).text();
                 that.setEditorMode(fileName);
                 var id = $(this).attr('id');
+                that.currentFile = id;
                 that.workspace.loadFile(id, that.aceAdapter, that.fileAdapter);
             });
 
@@ -122,6 +138,7 @@ define(function (require) {
                 this.workspace.createFile(that.workspace.id, fileName)
                     .then(function (file) {
                         addContentToList(file.id, file.name);
+                        $('#'+file.id).click();
                     });
             }
             else {
@@ -147,7 +164,9 @@ define(function (require) {
         this.deleteFile = function(id) {
             var that = this;
             this.workspaceAdapter.deleteFile(id).then(function (res) {
-                that.refreshWorkSpace();
+                if (res.status == 204) {
+                    $('#' + id).remove();
+                }
             });
         };
 
@@ -160,32 +179,37 @@ define(function (require) {
                 this.editor.getSession().setMode('ace/mode/plain_text');
             }
         };
+
+        this.resetEditorText = function(text) {
+            this.editor.setValue(text);
+            this.editor.moveCursorTo(0,0);
+        };
+
+        this.getEditorText = function() {
+            return this.editor.getValue();
+        };
     }).call(EditorController.prototype);
 
     function showList(contents) {
-
-        if (contents != null) {
-            for (var id in contents) {
-                if (contents.hasOwnProperty(id)) {
-                    if (contents[id].constructor.name == 'File') {
-                        var file =  '<li style="color:white" class="content file" id=' + id + '>' +
-                            contents[id].name +
-                            '</li>';
-                        $('#files').append(file);
-                    } else if (contents[id].constructor.name == 'Folder') {
-                        var folder = '<li style="color:white" class="content folder" id="' + id + '">' +
-                            contents[id].name +
-                            '</li>';
-                        $('#files').append(folder);
+        var first = true;
+        for (var id in contents) {
+            if (contents.hasOwnProperty(id)) {
+                if (contents[id].constructor.name == 'File') {
+                    var file =  '<li style="color:white" class="content file" id=' + id + '>' +
+                        contents[id].name +
+                        '</li>';
+                    $('#files').append(file);
+                    if (first) {
+                        $('#' + id).click();
+                        first = false;
                     }
+                } else if (contents[id].constructor.name == 'Folder') {
+                    var folder = '<li style="color:white" class="content folder" id="' + id + '">' +
+                        contents[id].name +
+                        '</li>';
+                    $('#files').append(folder);
                 }
             }
-        }
-        else {
-            this.workspace.createFile(this.workspace.id, 'demo')
-                .then(function (file) {
-                    addContentToList(file.id, file.name);
-                });
         }
     }
 
