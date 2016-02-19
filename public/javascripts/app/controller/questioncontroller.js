@@ -4,9 +4,11 @@ define(function (require) {
     var $ = require('jquery');
     var io = require('socketio');
     var socket = io.connect();
+    var SimilarQuestions = require('app/model/similarquestions');
 
     function Controller() {
         this.qCollection = null;
+        this.similarQuestions = new SimilarQuestions();
     }
 
     (function () {
@@ -44,6 +46,20 @@ define(function (require) {
             socket.emit('addQuestion', that.getParam('name'), question);
             $('#questionInput').val('');
             $('#questionFormPage').hide();
+
+            var questionCol = [
+                {topic: "github", question: "How to change commit message"},
+                {topic: "github", question: "Edit commit history"},
+                {topic: "github", question: "How to revert a commit"},
+            ];
+
+            that.displaySimilarQuestions(question, questionCol);
+
+        };
+
+        this.displaySimilarQuestions = function(question, questionCol) {
+            var simQuestion = this.similarQuestions.getSimilarQuestions(question, questionCol);
+            console.log(simQuestion);
         };
 
         this.getQuestionCollection = function() {
