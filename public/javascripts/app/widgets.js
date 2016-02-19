@@ -15,6 +15,7 @@ define(function(require) {
     var browser = false;
     var workspace = false;
     var textchat = false;
+    var terminal = false;
     var mute = true;
     var camera = true;
 
@@ -25,14 +26,14 @@ define(function(require) {
         $("#framewrapper").animate({
             right: "4%",
             width: "toggle"
-        }, 1000, function () {
+        }, 250, function () {
         });
         browser = !browser;
         if (workspace==true){
             $("#workwrapper").animate({
                 right: "4%",
                 width: "toggle"
-            }, 1000, function () {
+            }, 250, function () {
             });
             workspace = false;
         }
@@ -40,9 +41,17 @@ define(function(require) {
             $("#chatwrapper").animate({
                 right: "4%",
                 width: "toggle"
-            }, 1000, function () {
+            }, 250, function () {
             });
             textchat = false;
+        }
+        else if (terminal==true){
+            $("#termwrapper").animate({
+                right: "4%",
+                width: "toggle"
+            }, 250, function () {
+            });
+            terminal = false;
         }
     });
 
@@ -52,14 +61,14 @@ define(function(require) {
         $("#workwrapper").animate({
             right: "4%",
             width: "toggle"
-        }, 1000, function () {
+        }, 250, function () {
         });
         workspace = !workspace;
         if (browser==true){
             $("#framewrapper").animate({
                 right: "4%",
                 width: "toggle"
-            }, 1000, function () {
+            }, 250, function () {
             });
             browser = false;
         }
@@ -67,9 +76,17 @@ define(function(require) {
             $("#chatwrapper").animate({
                 right: "4%",
                 width: "toggle"
-            }, 1000, function () {
+            }, 250, function () {
             });
             textchat = false;
+        }
+        else if (terminal==true){
+            $("#termwrapper").animate({
+                right: "4%",
+                width: "toggle"
+            }, 250, function () {
+            });
+            terminal = false;
         }
     });
 
@@ -115,14 +132,14 @@ define(function(require) {
         $("#chatwrapper").animate({
             right: "4%",
             width: "toggle"
-        }, 1000, function () {
+        }, 250, function () {
         });
         textchat = !textchat;
         if (workspace==true){
             $("#workwrapper").animate({
                 right: "4%",
                 width: "toggle"
-            }, 1000, function () {
+            }, 250, function () {
             });
             workspace = false;
         }
@@ -130,9 +147,52 @@ define(function(require) {
             $("#framewrapper").animate({
                 right: "4%",
                 width: "toggle"
-            }, 1000, function () {
+            }, 250, function () {
             });
             browser = false;
+        }
+        else if (terminal==true){
+            $("#termwrapper").animate({
+                right: "4%",
+                width: "toggle"
+            }, 250, function () {
+            });
+            terminal = false;
+        }
+    });
+
+    $("#openTerminal").click(function () {
+        camera = false;
+        mute = false;
+        $("#termwrapper").animate({
+            right: "4%",
+            width: "toggle"
+        }, 250, function () {
+        });
+        terminal = !terminal;
+        if (workspace==true){
+            $("#workwrapper").animate({
+                right: "4%",
+                width: "toggle"
+            }, 250, function () {
+            });
+            workspace = false;
+        }
+        else if (browser==true){
+            $("#framewrapper").animate({
+                right: "4%",
+                width: "toggle"
+            }, 250, function () {
+            });
+            browser = false;
+        }
+        else if (textchat==true){
+            $("#chatwrapper").animate({
+                right: "4%",
+                width: "toggle"
+            }, 250, function () {
+            });
+            textchat = false;
         }
     });
 
@@ -150,7 +210,7 @@ define(function(require) {
         if (!mute && !camera) {
             $('.sidebar li').removeClass('selected');
         }
-        if ((workspace || browser || textchat) && !mute && !camera) {
+        if ((workspace || browser || textchat || terminal) && !mute && !camera) {
             $(this).addClass('selected');
         }
     });

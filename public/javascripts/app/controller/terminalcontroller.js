@@ -21,7 +21,6 @@ define(function (require) {
         this.connectToView = function() {
             var that = this;
             $('#openTerminal').on('click', function() {
-                $('#termwrapper').toggle();
                 if (!connected){
                     $('#terminalForm').submit(function() {
                         if (!term) {
