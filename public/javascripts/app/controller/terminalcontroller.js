@@ -10,6 +10,7 @@ define(function (require) {
 
     var term, socket;
     var buf = '';
+    var connected = false;
 
     function TerminalController(editorController) {
         this.editorController = editorController;
@@ -20,15 +21,22 @@ define(function (require) {
         this.connectToView = function() {
             var that = this;
             $('#openTerminal').on('click', function() {
-                if (!term) {
-                    addSocketListeners();
-                    var remoteHost = {
-                        user: $('input[name="user"]').val() || 'ouyang',
-                        host: $('input[name="host"]').val() || 'csil.cs.ucsb.edu',
-                        port: $('input[name="port"]').val() || '22'
-                    };
-                    var roomId = $('input[name="roomid"]').val();
-                    socket.emit('createSSHConnection', remoteHost, roomId);
+                $('#termwrapper').toggle();
+                if (!connected){
+                    $('#terminalForm').submit(function() {
+                        if (!term) {
+                            addSocketListeners();
+                            var remoteHost = {
+                                user: $('#terminalUser').val(),
+                                host: $('#terminalHost').val(),
+                                port: $('#terminalPort').val()
+                            };
+                            $('#connectionForm').hide();
+                            var roomId = $('input[name="roomid"]').val();
+                            socket.emit('createSSHConnection', remoteHost, roomId);
+                            connected = true;
+                        }
+                    });
                 }
             });
 
@@ -98,6 +106,7 @@ define(function (require) {
         socket.on('disconnect', function () {
             term = null;
             console.log("Socket.io connection closed");
+            connected = false;
         });
     }
 

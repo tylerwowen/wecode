@@ -2,7 +2,7 @@
 .row,
 html,
 body {
-    font-family: 'Muli', sans-serif;
+    font-family: 'Muli', sans-serif !important;
     height: 100vh;
     width: 100vw;
     padding: 0 !important;
@@ -22,14 +22,7 @@ a {
     position:   absolute;
     z-index:    50;
     height:     100vh;
-    width:      55%;
-}
-
-#terminal {
-    position: absolute;
-    right: 0;
-    width: 45%;
-    height: 100vh;
+    width:      100%;
 }
 
 #rmenu {
