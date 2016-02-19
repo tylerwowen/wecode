@@ -3,13 +3,12 @@ define(function (require) {
 
     var $ = require('jquery');
     var io = require('socketio');
-    require(['bootstrap']);
     var socket = io.connect();
-    //var SimilarQuestions = require('app/model/similarquestions');
+    var SimilarQuestions = require('app/model/similarquestions');
 
     function Controller() {
         this.qCollection = null;
-        //this.similarQuestions = SimilarQuestions();
+        this.similarQuestions = new SimilarQuestions();
     }
 
     (function () {
@@ -22,24 +21,6 @@ define(function (require) {
             this.getQuestionCollection();
             this.displayQuestionCollection();
         };
-
-        /**
-         * Examines url query parameters for a specific parameter.
-         * @param {!string} urlParam to search for in url parameters.
-         * @return {?(string)} returns match as a string of null if no match.
-         * @export
-         */
-        this.getParam = function(urlParam) {
-            var regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
-            var match = window.location.search.match(regExp);
-            if (match && match.length) {
-                match = match[0];
-                match = match.replace(urlParam + '=', '').replace('&', '');
-            } else {
-                match = null;
-            }
-            return match;
-        }
 
         this.connectToView = function() {
             var that = this;
@@ -65,7 +46,20 @@ define(function (require) {
             socket.emit('addQuestion', that.getParam('name'), question);
             $('#questionInput').val('');
             $('#questionFormPage').hide();
-            //this.similarQuestions.getSimilarQuestions(question, null);
+
+            var questionCol = [
+                {topic: "github", question: "How to change commit message"},
+                {topic: "github", question: "Edit commit history"},
+                {topic: "github", question: "How to revert a commit"},
+            ];
+
+            that.displaySimilarQuestions(question, questionCol);
+
+        };
+
+        this.displaySimilarQuestions = function(question, questionCol) {
+            var simQuestion = this.similarQuestions.getSimilarQuestions(question, questionCol);
+            console.log(simQuestion);
         };
 
         this.getQuestionCollection = function() {
@@ -100,12 +94,14 @@ define(function (require) {
         this.displayQuestionCollection = function() {
             if(this.qCollection == null) {
                 console.log("qCollection is null");
-            } else {
-                for (var q = 0; q < this.qCollection.length; q++) {
-                    var question =  '<tr><td id=' + this.qCollection[q]._id + '>' +
-                            this.qCollection[q].topic + '</td>' +
-                            '<td><a href="/main_student?id='+ that.getParam('id') + '&name='+ that.getParam('name') +'">' + this.qCollection[q].question +
-                            '</a></td></tr>';
+            } else if( this.qCollection[0] != undefined) {
+                var questions = this.qCollection[0].questions;
+                for (var q = 0; q < questions.length; q++) {
+
+                    var question =  '<tr><td>' + questions[q].topic + '</td>' +
+                        '<td><a href="/main_student?id='+ that.getParam('id') + '&name='+ that.getParam('name') +'">'
+                        + questions[q].question +
+                        '</a></td></tr>';
                     $('#questionTableBody').append(question);
                 }
             }
