@@ -3,11 +3,13 @@ define(function (require) {
 
     var $ = require('jquery');
     var io = require('socketio');
+    require(['bootstrap']);
     var socket = io.connect();
-    var realTimeUtils = require('app/model/realtimedata');
+    //var SimilarQuestions = require('app/model/similarquestions');
 
     function Controller() {
         this.qCollection = null;
+        //this.similarQuestions = SimilarQuestions();
     }
 
     (function () {
@@ -63,6 +65,7 @@ define(function (require) {
             socket.emit('addQuestion', that.getParam('name'), question);
             $('#questionInput').val('');
             $('#questionFormPage').hide();
+            //this.similarQuestions.getSimilarQuestions(question, null);
         };
 
         this.getQuestionCollection = function() {

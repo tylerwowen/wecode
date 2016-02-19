@@ -55,9 +55,10 @@ define(function(require) {
     });
 
     require([
-        '../../tests/frontendtests/gfileadapter.test',
-        '../../tests/frontendtests/gworkspaceadapter.test',
-        '../../tests/frontendtests/gsetupadapter.test'
+        //'../../tests/frontendtests/gfileadapter.test',
+        //'../../tests/frontendtests/gworkspaceadapter.test',
+        //'../../tests/frontendtests/gsetupadapter.test',
+        '../../tests/frontendtests/simquestions.test'
     ], function(require) {
         mocha.run();
     });

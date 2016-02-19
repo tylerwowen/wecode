@@ -1,14 +1,7 @@
 define(function (require) {
     "use strict";
 
-    var $ = require('jquery');
-    var io = require('socketio');
-    var socket = io.connect();
-
-    function SimilarQuestions(questionJson, queueJson) {
-        this.question = JSON.parse(questionJson).question;
-        this.topic = JSON.parse(questionJson).topic;
-        this.queue = JSON.parse(queueJson).list;
+    function SimilarQuestions() {
     }
 
     (function () {
@@ -24,14 +17,27 @@ define(function (require) {
             var that = this;
         };
 
-        this.getSimilarQuestions = function() {
-            var array = this.question.split(" ");
-            var newList;
-            for (var i = 0; i < this.queue.length; i++) {
-
-            }
+        this.getSimilarQuestions = function(currentquestion, queue) {
+            console.log("here");
+            //this.ques = currentquestion.question;
+            //this.topic = currentquestion.topic;
+            //this.queue = queue;
+            //var array = this.ques.split(" ");
+            //var counter = 0;
+            //var queueQues;
+            //var countQuestArray = [];
+            //for (var k = 0; k < this.queue.length; k++) {
+            //    queueQues = this.queue[k].split(" ");
+            //    for (var i = 0; i < array.length; i++) {
+            //        for (var j = 0; j < this.queueQues.length; j++) {
+            //            if(array[i] == queueQues[j]){
+            //                counter++;
+            //            }
+            //        }
+            //    }
+            //    countQuestArray.push(counter);
+            //}
         };
-
     }).call(SimilarQuestions.prototype);
 
     return SimilarQuestions;
