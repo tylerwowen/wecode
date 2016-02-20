@@ -1,7 +1,7 @@
 doctype html
 html
     head
-        title
+        title Classes
         link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
         link(rel='stylesheet', href='/stylesheets/classes.css')
         link(rel='stylesheet', href='/stylesheets/login.css')
@@ -10,17 +10,24 @@ html
         include login
         include classes_create
         include classes_add
-        .container
-            .row
-                .col-md-6
-                    |I'm a TA
+        .container#classcontainer
+            .navbar.navbar-default.navbar-fixed-top
+                a(href="/").navbar-brand WeCode
+            .navwrapper
+                ul#navbar
+                    li#StudentSelector Student
+                    li#TAselector Instructor
+            .row#classcontent
+                .col-md-8#instructor
+                    #TAHeader Classes
                     br
-                    ul#TAClassList.elements
+                    ol#TAClassList.elements
                     br
-                    button#TAClassFormButton.btn.btn-success.btn-xl Create Class
-                .col-md-6
-                    |I'm a student ;)
+                    #TAButtonWrapper
+                        button#TAClassFormButton.btn.btn-success.btn-xl Create Class
+                .col-md-8#student
+                    #StudentHeader Classes
                     br
-                    ul#studentClassList.elements
+                    ol#StudentClassList.elements
                     br
                     button#StudentAddClass.btn.btn-success.btn-xl Add Class

@@ -33,12 +33,31 @@ define(function (require, exports, module) {
                 $('#addNewClassForm').hide();
             });
 
-
             $('#studentReturn').click(function(){
                 $('#addNewClassForm').hide();
             });
-        };
 
+            $('#StudentSelector').addClass('selected');
+            $('#TAselector').addClass('inactive');
+            
+            $('#StudentSelector').click(function(){
+                $('li').addClass('inactive');
+                $('li').removeClass('selected');
+                $(this).addClass('selected');
+                $(this).removeClass('inactive');
+                $('#student').show();
+                $('#instructor').hide();
+            });
+
+            $('#TAselector').click(function(){
+                $('li').addClass('inactive');
+                $('li').removeClass('selected');
+                $(this).addClass('selected');
+                $(this).removeClass('inactive');
+                $('#student').hide();
+                $('#instructor').show();
+            });
+        };
 
         this.createClass = function(){
             var name = $('#TANewClassInput').val();
@@ -80,7 +99,7 @@ define(function (require, exports, module) {
                 });
                 $('#studentClassList').append(
                     '<li>' +
-                    '<a href="/main_student?' + params +'">' +
+                    '<a href="/questionlist?' + params +'">' +
                     singleClass.name+ '</a>' +
                     '</li>');
             });
