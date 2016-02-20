@@ -10,7 +10,6 @@ define(function (require) {
 
     var term, socket;
     var buf = '';
-    var connected = false;
 
     function TerminalController(editorController) {
         this.editorController = editorController;
@@ -20,23 +19,19 @@ define(function (require) {
     (function () {
         this.connectToView = function() {
             var that = this;
-            $('#openTerminal').on('click', function() {
-                if (!connected){
-                    $('#terminalForm').submit(function() {
-                        if (!term) {
-                            addSocketListeners();
-                            var remoteHost = {
-                                user: $('#terminalUser').val(),
-                                host: $('#terminalHost').val(),
-                                port: $('#terminalPort').val()
-                            };
-                            $('#connectionForm').hide();
-                            var roomId = $('input[name="roomid"]').val();
-                            socket.emit('createSSHConnection', remoteHost, roomId);
-                            connected = true;
-                        }
-                    });
+
+            $('#terminalForm').submit(function() {
+                if (!term) {
+                    addSocketListeners();
                 }
+                var remoteHost = {
+                    user: $('#terminalUser').val(),
+                    host: $('#terminalHost').val(),
+                    port: $('#terminalPort').val()
+                };
+                $('#connectionForm').hide();
+                var roomId = getParam('id');
+                socket.emit('createSSHConnection', remoteHost, roomId);
             });
 
             $('#joinButton').on('click', function() {
@@ -104,8 +99,9 @@ define(function (require) {
 
         socket.on('disconnect', function () {
             term = null;
+            $('#connectionForm').show();
+            $('#terminal').empty();
             console.log("Socket.io connection closed");
-            connected = false;
         });
     }
 
@@ -164,7 +160,23 @@ define(function (require) {
 
     }).call(CommandClass.prototype);
 
-
+    /**
+     * Examines url query parameters for a specific parameter.
+     * @param {!string} urlParam to search for in url parameters.
+     * @return {?(string)} returns match as a string of null if no match.
+     * @export
+     */
+    function getParam(urlParam) {
+        var regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
+        var match = window.location.search.match(regExp);
+        if (match && match.length) {
+            match = match[0];
+            match = match.replace(urlParam + '=', '').replace('&', '');
+        } else {
+            match = null;
+        }
+        return match;
+    }
 
     return TerminalController;
 });

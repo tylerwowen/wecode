@@ -12,84 +12,22 @@ define(function(require) {
         angular.bootstrap(document, ["app"]);
     });
 
-    var browser = false;
-    var workspace = false;
-    var textchat = false;
-    var terminal = false;
-    var mute = true;
-    var camera = true;
-
-
-    $("#search").click(function () {
-        camera = false;
-        mute = false;
-        $("#framewrapper").animate({
+    $(".non-psersistent").click(function() {
+        var presenting = $('.non-psersistent.selected');
+        $(presenting.attr('associated')).animate({
             right: "4%",
             width: "toggle"
-        }, 250, function () {
-        });
-        browser = !browser;
-        if (workspace==true){
-            $("#workwrapper").animate({
+        }, 250);
+        presenting.removeClass('selected');
+
+        if (presenting && presenting[0] != $(this)[0]) {
+            $($(this).attr('associated')).animate({
                 right: "4%",
                 width: "toggle"
-            }, 250, function () {
-            });
-            workspace = false;
-        }
-        else if (textchat==true){
-            $("#chatwrapper").animate({
-                right: "4%",
-                width: "toggle"
-            }, 250, function () {
-            });
-            textchat = false;
-        }
-        else if (terminal==true){
-            $("#termwrapper").animate({
-                right: "4%",
-                width: "toggle"
-            }, 250, function () {
-            });
-            terminal = false;
+            }, 250);
+            $(this).addClass('selected');
         }
     });
-
-    $("#workspace").click(function () {
-        camera = false;
-        mute = false;
-        $("#workwrapper").animate({
-            right: "4%",
-            width: "toggle"
-        }, 250, function () {
-        });
-        workspace = !workspace;
-        if (browser==true){
-            $("#framewrapper").animate({
-                right: "4%",
-                width: "toggle"
-            }, 250, function () {
-            });
-            browser = false;
-        }
-        else if (textchat==true){
-            $("#chatwrapper").animate({
-                right: "4%",
-                width: "toggle"
-            }, 250, function () {
-            });
-            textchat = false;
-        }
-        else if (terminal==true){
-            $("#termwrapper").animate({
-                right: "4%",
-                width: "toggle"
-            }, 250, function () {
-            });
-            terminal = false;
-        }
-    });
-
 
     var workspaceManager = WorkSpaceManager();
 
@@ -126,92 +64,14 @@ define(function(require) {
             });
     });
 
-    $("#chat").click(function () {
-        camera = false;
-        mute = false;
-        $("#chatwrapper").animate({
-            right: "4%",
-            width: "toggle"
-        }, 250, function () {
-        });
-        textchat = !textchat;
-        if (workspace==true){
-            $("#workwrapper").animate({
-                right: "4%",
-                width: "toggle"
-            }, 250, function () {
-            });
-            workspace = false;
-        }
-        else if (browser==true){
-            $("#framewrapper").animate({
-                right: "4%",
-                width: "toggle"
-            }, 250, function () {
-            });
-            browser = false;
-        }
-        else if (terminal==true){
-            $("#termwrapper").animate({
-                right: "4%",
-                width: "toggle"
-            }, 250, function () {
-            });
-            terminal = false;
-        }
-    });
-
     $("#openTerminal").click(function () {
-        camera = false;
-        mute = false;
-        $("#termwrapper").animate({
-            right: "4%",
-            width: "toggle"
-        }, 250, function () {
-        });
-        terminal = !terminal;
-        if (workspace==true){
-            $("#workwrapper").animate({
-                right: "4%",
-                width: "toggle"
-            }, 250, function () {
-            });
-            workspace = false;
+        if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected');
+            $("#termwrapper").hide();
         }
-        else if (browser==true){
-            $("#framewrapper").animate({
-                right: "4%",
-                width: "toggle"
-            }, 250, function () {
-            });
-            browser = false;
-        }
-        else if (textchat==true){
-            $("#chatwrapper").animate({
-                right: "4%",
-                width: "toggle"
-            }, 250, function () {
-            });
-            textchat = false;
-        }
-    });
-
-    $("#microphone").on('click', function(){
-        camera = true;
-        mute = true;
-    });
-
-    $("#videoButton").on('click', function(){
-        camera = true;
-        mute = true;
-    });
-
-    $('.sidebar li').on('click', function(){
-        if (!mute && !camera) {
-            $('.sidebar li').removeClass('selected');
-        }
-        if ((workspace || browser || textchat || terminal) && !mute && !camera) {
+        else {
             $(this).addClass('selected');
+            $("#termwrapper").toggle();
         }
     });
 
