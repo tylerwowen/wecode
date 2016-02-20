@@ -4,7 +4,7 @@
     right: 4%;
     width: 25%;
     height: 100%;
-    z-index: 101;
+    z-index: 105;
     display: none;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .sidebar { /*actual side bar*/
-    z-index: 102;
+    z-index: 110;
     overflow: auto;
     font-size: 16px;
     font-weight: 200;

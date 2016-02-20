@@ -1,8 +1,8 @@
 #termwrapper {
     position: absolute;
     top: 0;
-    right: 4%;
-    width: 30%;
+    right: 0;
+    width: 45%;
     height: 100%;
     z-index: 103;
     display: none;
@@ -24,6 +24,7 @@
 }
 
 #terminal {
+    height:100%;
     width: 100%;
     z-index: 101;
 }

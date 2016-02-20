@@ -80,7 +80,12 @@ define(function (require) {
 
         this.connectToView = function() {
             var that = this;
-            $('#fileButton').click(function() {
+
+            $('#editor').on('resize', function() {
+                that.editor.resize();
+            });
+
+            $('#fileButton').on('click', function() {
                 that.createFile($('#fileName').val());
             });
 

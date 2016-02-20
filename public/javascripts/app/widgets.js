@@ -64,14 +64,18 @@ define(function(require) {
             });
     });
 
-    $("#openTerminal").click(function () {
+    $('#openTerminal').click(function () {
         if ($(this).hasClass('selected')) {
             $(this).removeClass('selected');
-            $("#termwrapper").hide();
+            $('#termwrapper').hide();
+            $('#editor').css('width', '100%');
+            $('#editor').trigger('resize');
         }
         else {
             $(this).addClass('selected');
-            $("#termwrapper").toggle();
+            $('#editor').css('width', '55%');
+            $('#termwrapper').toggle();
+            $('#editor').trigger('resize');
         }
     });
 
