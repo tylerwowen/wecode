@@ -30,7 +30,7 @@ define(function (require) {
                     port: $('#terminalPort').val()
                 };
                 $('#connectionForm').hide();
-                var roomId = getParam('id');
+                var roomId = that.editorController.workspace.id;
                 socket.emit('createSSHConnection', remoteHost, roomId);
             });
 
@@ -159,24 +159,6 @@ define(function (require) {
         };
 
     }).call(CommandClass.prototype);
-
-    /**
-     * Examines url query parameters for a specific parameter.
-     * @param {!string} urlParam to search for in url parameters.
-     * @return {?(string)} returns match as a string of null if no match.
-     * @export
-     */
-    function getParam(urlParam) {
-        var regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
-        var match = window.location.search.match(regExp);
-        if (match && match.length) {
-            match = match[0];
-            match = match.replace(urlParam + '=', '').replace('&', '');
-        } else {
-            match = null;
-        }
-        return match;
-    }
 
     return TerminalController;
 });

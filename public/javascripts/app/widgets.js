@@ -68,20 +68,13 @@ define(function(require) {
         if ($(this).hasClass('selected')) {
             $(this).removeClass('selected');
             $('#termwrapper').hide();
-            $('#editor').css('width', '100%');
-            $('#editor').trigger('resize');
+            $('#editor').css('width', '100%').trigger('resize');
         }
         else {
             $(this).addClass('selected');
-            $('#editor').css('width', '55%');
             $('#termwrapper').toggle();
-            $('#editor').trigger('resize');
+            $('#editor').css('width', '55%').trigger('resize');
         }
-    });
-
-    $('ul').on('click', 'li', function() {
-        $('#files li.current').removeClass('current');
-        $(this).addClass('current');
     });
 
     $('#inviteEmail').on('click', function() {
