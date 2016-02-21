@@ -2,7 +2,6 @@ define(function (require) {
     "use strict";
 
     var $ = require('jquery'),
-        Q = require('q'),
         io = require('socketio'),
         ss = require('lib/socket.io-stream');
 
@@ -19,17 +18,19 @@ define(function (require) {
     (function () {
         this.connectToView = function() {
             var that = this;
-            $('#openTerminal').on('click', function() {
+
+            $('#terminalForm').submit(function() {
                 if (!term) {
                     addSocketListeners();
-                    var remoteHost = {
-                        user: $('input[name="user"]').val() || 'ouyang',
-                        host: $('input[name="host"]').val() || 'csil.cs.ucsb.edu',
-                        port: $('input[name="port"]').val() || '22'
-                    };
-                    var roomId = $('input[name="roomid"]').val();
-                    socket.emit('createSSHConnection', remoteHost, roomId);
                 }
+                var remoteHost = {
+                    user: $('#terminalUser').val(),
+                    host: $('#terminalHost').val(),
+                    port: $('#terminalPort').val()
+                };
+                $('#connectionForm').hide();
+                var roomId = that.editorController.workspace.id;
+                socket.emit('createSSHConnection', remoteHost, roomId);
             });
 
             $('#joinButton').on('click', function() {
@@ -37,13 +38,13 @@ define(function (require) {
                 socket.emit('joinSSHConnection', roomId);
             });
 
-            $('#loadButton').on('click', function() {
-                var path = $('input[name="path"]').val();
+            $('#downloadButton').on('click', function() {
+                var path = $('#terminalGroup').find('input').val();
                 that.downloadFile(path);
             });
 
             $('#uploadButton').on('click', function() {
-                var path = $('input[name="path"]').val();
+                var path = $('#terminalGroup').find('input').val();
                 that.uploadFile(path);
             });
         };
@@ -97,6 +98,9 @@ define(function (require) {
 
         socket.on('disconnect', function () {
             term = null;
+            $('#connectionForm').show();
+            $('#terminal').empty();
+            $('#terminalGroup').hide();
             console.log("Socket.io connection closed");
         });
     }
@@ -111,6 +115,7 @@ define(function (require) {
          */
         term = new hterm.Terminal();
         term.decorate($('#terminal')[0]);
+        $('#terminalGroup').show();
 
         term.setCursorPosition(0, 0);
         term.setCursorVisible(true);
@@ -155,8 +160,6 @@ define(function (require) {
         };
 
     }).call(CommandClass.prototype);
-
-
 
     return TerminalController;
 });

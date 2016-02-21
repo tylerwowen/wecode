@@ -51,9 +51,11 @@ function setupSSH(socket, remoteHost, roomId) {
     existingConnections[roomId] = term;
 
     console.log((new Date()) + " PID=" + term.pid + " STARTED on behalf of user=" + sshUser);
+
     term.on('data', function(data) {
         nsp.to(roomId).emit('output', data);
     });
+
     term.on('exit', function(code) {
         if (existingConnections[roomId]) delete existingConnections[roomId];
         console.log((new Date()) + " PID=" + term.pid + " ENDED");

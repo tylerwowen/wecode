@@ -1,13 +1,16 @@
 .sidebar
     ul
-        li#search
-            i.fa.fa-search.fa-lg
+        li.non-psersistent#search(associated='#framewrapper')
+            i.fa.fa-search.fa-lg.n
             br
-        li#workspace
+        li.non-psersistent#workspace(associated='#workwrapper')
             i.fa.fa-archive.fa-lg
             br
-        li#chat
+        li.non-psersistent#chat(associated='#chatwrapper')
             i.fa.fa-comments.fa-lg
+            br
+        li#openTerminal
+            i.fa.fa-terminal.fa-lg
             br
         li#microphone
             i.fa.fa-microphone.fa-lg
@@ -17,9 +20,6 @@
             br
         li#inviteEmail
             i.fa.fa-envelope.fa-lg
-            br
-        li#openTerminal
-            i.fa.fa-terminal.fa-lg
             br
 #framewrapper
     iframe#frame(src='//duckduckgo.com')

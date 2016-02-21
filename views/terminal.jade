@@ -1,0 +1,23 @@
+#termwrapper
+    #connectionForm
+        #terminalHeader Terminal
+        #terminalOps
+            #topTerminal
+                button#joinButton.btn.btn-success Join Existing Session
+            #separator
+                #line
+                    span OR
+            form#terminalForm
+                .input-group
+                    .formHeader Terminal Login
+                    input#terminalUser.form-control(type='text', placeholder='Username', autocomplete='off')
+                    input#terminalHost.form-control(type='text', placeholder='Host', autocomplete='off')
+                    input#terminalPort.form-control(type='text', placeholder='Port', autocomplete='off')
+                    button#connectTerminal.btn.btn-success Connect
+    #terminalGroup
+        .input-group
+            input.form-control(type='text', placeholder='File path')
+            span.input-group-btn
+                button#downloadButton.btn.btn-primary(type='button') Download
+                button#uploadButton.btn.btn-info(type='button') Upload
+        #terminal

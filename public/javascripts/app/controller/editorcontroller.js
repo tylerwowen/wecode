@@ -56,17 +56,17 @@ define(function (require) {
             if (wsID) {
                 this.workspace = new Workspace(wsID, wsName, this.workspaceAdapter);
                 this.workspace.getContentsList()
-                .then(function(contents) {
-                    if (Object.keys(contents).length > 0) {
-                        showList(contents);
-                    }
-                    else {
-                        that.workspace.createFile(that.workspace.id, 'demo.js')
-                        .then(function (file) {
-                            addContentToList(file.id, file.name);
-                        });
-                    }
-                });
+                    .then(function(contents) {
+                        if (Object.keys(contents).length > 0) {
+                            showList(contents);
+                        }
+                        else {
+                            that.workspace.createFile(that.workspace.id, 'demo.js')
+                                .then(function (file) {
+                                    addContentToList(file.id, file.name);
+                                });
+                        }
+                    });
             }
             else {
                 $('#workwrapper').show();
@@ -80,41 +80,49 @@ define(function (require) {
 
         this.connectToView = function() {
             var that = this;
-            $('#fileButton').click(function() {
+
+            $('#editor').on('resize', function() {
+                that.editor.resize();
+            });
+
+            $('#fileButton').on('click', function() {
                 that.createFile($('#fileName').val());
             });
 
-            $('#files').on('click', 'li.file', function() {
-                if (that.currentFile) {
-                    that.workspace.unloadFile(that.currentFile);
-                    that.editor.setValue('loading...');
-                }
-                var fileName = $(this).text();
-                that.setEditorMode(fileName);
-                var id = $(this).attr('id');
-                that.currentFile = id;
-                that.workspace.loadFile(id, that.aceAdapter, that.fileAdapter);
-            });
+            $('#files')
+                .on('click', 'li.file', function() {
+                    $('#files').find('li.current').removeClass('current');
+                    $(this).addClass('current');
+                    if (that.currentFile) {
+                        that.workspace.unloadFile(that.currentFile);
+                        that.editor.setValue('loading...');
+                    }
+                    var fileName = $(this).text();
+                    that.setEditorMode(fileName);
+                    var id = $(this).attr('id');
+                    that.currentFile = id;
+                    that.workspace.loadFile(id, that.aceAdapter, that.fileAdapter);
+                })
+                .on('click', 'li.folder', function() {
+                    var id = $(this).attr('id');
+                    that.workspace.loadFolderContents(id);
+                })
+                .on('contextmenu','li.content', function(event) {
+                    console.log('right clicked');
+                    var id = $(this).attr('id');
+                    $("#rmenu")
+                        .css('top', event.pageY)
+                        .css('left', event.pageX)
+                        .attr('contentId', id)
+                        .show();
 
-            $('#files').on('click', 'li.folder', function() {
-                var id = $(this).attr('id');
-                that.workspace.loadFolderContents(id);
-            });
-
-            $('#files').on('contextmenu','li.content', function(event) {
-                console.log('right clicked');
-                var id = $(this).attr('id');
-                $("#rmenu").css('top', event.pageY);
-                $("#rmenu").css('left', event.pageX);
-                $("#rmenu").attr('contentId', id);
-                $("#rmenu").show();
-
-                window.event.returnValue = false;
-            });
+                    window.event.returnValue = false;
+                });
 
             $(document).on('click', function() {
-                $("#rmenu").hide();
-                $("#rmenu").removeAttr('contentId');
+                $("#rmenu")
+                    .hide()
+                    .removeAttr('contentId');
             });
 
             $('#refreshButton').on('click', function() {
