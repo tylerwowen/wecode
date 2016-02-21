@@ -72,7 +72,7 @@ define(function(require) {
         }
         else {
             $(this).addClass('selected');
-            $('#termwrapper').toggle();
+            $('#termwrapper').show();
             $('#editor').css('width', '55%').trigger('resize');
         }
     });

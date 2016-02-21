@@ -2,7 +2,6 @@ define(function (require) {
     "use strict";
 
     var $ = require('jquery'),
-        Q = require('q'),
         io = require('socketio'),
         ss = require('lib/socket.io-stream');
 
@@ -39,13 +38,13 @@ define(function (require) {
                 socket.emit('joinSSHConnection', roomId);
             });
 
-            $('#loadButton').on('click', function() {
-                var path = $('input[name="path"]').val();
+            $('#downloadButton').on('click', function() {
+                var path = $('#terminalGroup').find('input').val();
                 that.downloadFile(path);
             });
 
             $('#uploadButton').on('click', function() {
-                var path = $('input[name="path"]').val();
+                var path = $('#terminalGroup').find('input').val();
                 that.uploadFile(path);
             });
         };
@@ -101,6 +100,7 @@ define(function (require) {
             term = null;
             $('#connectionForm').show();
             $('#terminal').empty();
+            $('#terminalGroup').hide();
             console.log("Socket.io connection closed");
         });
     }
@@ -115,6 +115,7 @@ define(function (require) {
          */
         term = new hterm.Terminal();
         term.decorate($('#terminal')[0]);
+        $('#terminalGroup').show();
 
         term.setCursorPosition(0, 0);
         term.setCursorVisible(true);

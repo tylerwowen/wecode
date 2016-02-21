@@ -14,4 +14,10 @@
                     input#terminalHost.form-control(type='text', placeholder='Host', autocomplete='off')
                     input#terminalPort.form-control(type='text', placeholder='Port', autocomplete='off')
                     button#connectTerminal.btn.btn-success Connect
-    #terminal
+    #terminalGroup
+        .input-group
+            input.form-control(type='text', placeholder='File path')
+            span.input-group-btn
+                button#downloadButton.btn.btn-primary(type='button') Download
+                button#uploadButton.btn.btn-info(type='button') Upload
+        #terminal

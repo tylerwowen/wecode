@@ -1,6 +1,5 @@
 #termwrapper {
     position: absolute;
-    top: 0;
     right: 0;
     width: 45%;
     height: 100%;
@@ -23,10 +22,17 @@
     text-align: center !important;
 }
 
+#terminalGroup {
+    position: absolute;
+    height: 100%;
+    display: none;
+    background-color: #111111;
+}
+
 #terminal {
-    height:100%;
+    position: relative;
+    height: calc(100% - 34px);
     width: 100%;
-    z-index: 101;
 }
 
 #terminalForm:hover {
