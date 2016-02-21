@@ -9,6 +9,7 @@
 
 #terminalOps {
     padding: 20px 10px 10px 10px;
+    display: none;
 }
 
 #terminalForm {
@@ -25,8 +26,13 @@
 #terminalGroup {
     position: absolute;
     height: 100%;
+    width: 100%;
     display: none;
     background-color: #111111;
+}
+
+#terminalGroup > .input-group {
+    display: none;
 }
 
 #terminal {
@@ -37,36 +43,6 @@
 
 #terminalForm:hover {
     background-color: #363B40 !important;
-}
-
-#joinButton {
-    padding: 15px !important;
-    font-size: 20px !important;
-    width: 100%;
-    line-height: 30vh;
-    border-radius: 15px;
-}
-
-#separator {
-    padding: 10px;
-}
-
-#line {
-    width: 100%;
-    text-align: center;
-    border-bottom: 1px solid #000;
-    line-height: 7px;
-    margin: 20px 0 20px;
-    font-size: 30px;
-}
-
-#line span {
-    background:#fff;
-    padding:0 10px;
-}
-
-#terminalUser, #terminalHost, #terminalPort {
-    margin-bottom: 5px;
 }
 
 #terminalHeader {
@@ -97,4 +73,24 @@
 
 #connectTerminal {
     margin-top: 5px !important;
+}
+
+#connectionForm > .glyphicon {
+    font-size: 40px;
+    position: absolute;
+    top: 50%;
+    left: calc(50% - 20px);
+}
+.glyphicon-refresh-animate {
+    -webkit-animation: spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
 }

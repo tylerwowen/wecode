@@ -17,6 +17,7 @@ function TerminalSocket(sio, socket, terminalNSP) {
         else if (isRemoteHostValid(remoteHost)) {
             socket.join(roomId);
             setupSSH(socket, remoteHost, roomId);
+            socket.emit('createSucceed', roomId);
         }
     });
 
@@ -25,12 +26,9 @@ function TerminalSocket(sio, socket, terminalNSP) {
             socket.emit('connectionNotExist', roomId);
         }
         else {
-            joinSSHConnection(socket, roomId)
+            joinSSHConnection(socket, roomId);
+            socket.emit('joinSucceed', roomId);
         }
-    });
-
-    socket.on('disconnect', function() {
-        socket.removeAllListeners();
     });
 }
 
@@ -57,7 +55,10 @@ function setupSSH(socket, remoteHost, roomId) {
     });
 
     term.on('exit', function(code) {
-        if (existingConnections[roomId]) delete existingConnections[roomId];
+        if (existingConnections[roomId]) {
+            disconnectAllInRoom(nsp.adapter.rooms[roomId].sockets);
+            delete existingConnections[roomId];
+        }
         console.log((new Date()) + " PID=" + term.pid + " ENDED");
         socket.removeAllListeners();
         socket.disconnect();
@@ -66,16 +67,25 @@ function setupSSH(socket, remoteHost, roomId) {
     socket.on('resize', function(data) {
         term.resize(data.col, data.row);
     });
+
     socket.on('input', function(data) {
         term.write(data);
     });
+
     socket.on('disconnect', function() {
-        if (existingConnections[roomId]) delete existingConnections[roomId];
         term.destroy();
+        socket.removeAllListeners();
     });
 
     downloadFile(socket, remoteHost.user, remoteHost.host, remoteHost.port);
     uploadFile(socket, remoteHost.user, remoteHost.host, remoteHost.port);
+}
+
+function disconnectAllInRoom(room) {
+    for (var client in room) {
+        if (!room.hasOwnProperty(client)) continue;
+        nsp.connected[client].disconnect();
+    }
 }
 
 function joinSSHConnection(socket, roomId) {

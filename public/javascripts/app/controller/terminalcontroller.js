@@ -19,6 +19,15 @@ define(function (require) {
         this.connectToView = function() {
             var that = this;
 
+            $('#openTerminal').click(function () {
+                if (!$(this).hasClass('selected') && !term) {
+                    console.log('try join');
+                    addSocketListeners();
+                    var roomId = that.editorController.workspace.id;
+                    socket.emit('joinSSHConnection', roomId);
+                }
+            });
+
             $('#terminalForm').submit(function() {
                 if (!term) {
                     addSocketListeners();
@@ -28,14 +37,8 @@ define(function (require) {
                     host: $('#terminalHost').val(),
                     port: $('#terminalPort').val()
                 };
-                $('#connectionForm').hide();
                 var roomId = that.editorController.workspace.id;
                 socket.emit('createSSHConnection', remoteHost, roomId);
-            });
-
-            $('#joinButton').on('click', function() {
-                var roomId = $('input[name="roomid"]').val();
-                socket.emit('joinSSHConnection', roomId);
             });
 
             $('#downloadButton').on('click', function() {
@@ -85,7 +88,7 @@ define(function (require) {
         socket = io('/terminal');
 
         socket.on('connect', function () {
-            lib.init(setupTerminal);
+
         });
 
         socket.on('output', function (data) {
@@ -96,16 +99,33 @@ define(function (require) {
             term.io.writeUTF16(data);
         });
 
+        socket.on('connectionNotExist', function() {
+            $('#connectionForm').find('.glyphicon').hide();
+            $('#terminalOps').show();
+        });
+
+        socket.on('createSucceed', function() {
+            $('#connectionForm').hide();
+            $('#terminalGroup').find('.input-group').css('display', 'table');
+            lib.init(function() {});
+            setupTerminal(true);
+        });
+
+        socket.on('joinSucceed', function() {
+            $('#connectionForm').hide();
+            lib.init(setupTerminal);
+        });
+
         socket.on('disconnect', function () {
             term = null;
             $('#connectionForm').show();
             $('#terminal').empty();
-            $('#terminalGroup').hide();
+            $('#terminalGroup').hide().find('.input-group').hide();
             console.log("Socket.io connection closed");
         });
     }
 
-    function setupTerminal() {
+    function setupTerminal(forCreate) {
         hterm.defaultStorage = new lib.Storage.Local();
         /**
          * opt_profileName is the name of the terminal profile to load, or "default" if
@@ -124,10 +144,16 @@ define(function (require) {
         term.prefs_.set('use-default-window-copy', true);
 
         term.runCommandClass(CommandClass, null);
-        socket.emit('resize', {
-            col: term.screenSize.width,
-            row: term.screenSize.height
-        });
+
+        if (forCreate) {
+            socket.emit('resize', {
+                col: term.screenSize.width,
+                row: term.screenSize.height
+            });
+        }
+        else {
+            term.onTerminalResize = null;
+        }
 
         if (buf && buf != '') {
             term.io.writeUTF16(buf);
