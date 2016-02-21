@@ -21,23 +21,39 @@ define(function(require) {
         });
 
         describe("Test Similar questions feature", function () {
-            it('Successfully reads questions from file', function (done) {
+            it('Reads questions from file', function (done) {
                 readTextFile("questions.txt");
-                expect(queue.length).to.be.equal(50);
+                expect(queueTemp.length).to.be.equal(50);
                 done();
             });
 
-            it('Successfully returns similar queston 1', function (done) {
-                var currentQuestion = "JavaScript function that returns AJAX call data";
+            it('Removes punctuation', function (done) {
+                var s = "This., -/ is #! an $ % ^ & * example ;: {} of a = -_ string with `~)()hello's punctuation";
+                var array = similarQuestions.getStringArray(s);
+                expect(array).to.deep.equal(["this", "is", "an", "example", "of", "a", "string", "with", "hellos", "punctuation"]);
+                done();
+            });
+
+            it('Checks stop word', function (done) {
+                var s = "this is that to be if anything is here";
+                var array = similarQuestions.getStringArray(s);
+                for(var i = 0; i < array.length; i++) {
+                    expect(similarQuestions.isStopWord(array[i])).to.be.equal(true);
+                }
+                done();
+            });
+
+            it('Returns similar queston 1', function (done) {
+                var currentQuestion = "JavaScript function that return AJAX call data";
                 // How to call javascript validate function before form submit on an ajax call
-                var simQuestion = similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queue);
+                var simQuestion = similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp);
                 console.log(simQuestion);
                 //expect(simQuestion).to.be.equal("Return data after ajax call success");
                 done();
             });
+
+
         });
-
-
     });
 
     function readTextFile(file) {
@@ -46,7 +62,7 @@ define(function(require) {
         rawFile.onreadystatechange = function () {
             if(rawFile.readyState === 4) {
                 if(rawFile.status === 200 || rawFile.status == 0) {
-                    queue = String(rawFile.responseText).split('\n');
+                    queueTemp = String(rawFile.responseText).split('\n');
                 }
             }
         };
