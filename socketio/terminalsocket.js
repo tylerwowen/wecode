@@ -55,8 +55,10 @@ function setupSSH(socket, remoteHost, roomId) {
     });
 
     term.on('exit', function(code) {
-        if (existingConnections[roomId]) {
+        if (nsp.adapter.rooms[roomId]) {
             disconnectAllInRoom(nsp.adapter.rooms[roomId].sockets);
+        }
+        if (existingConnections[roomId]) {
             delete existingConnections[roomId];
         }
         console.log((new Date()) + " PID=" + term.pid + " ENDED");
