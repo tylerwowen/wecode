@@ -50,6 +50,10 @@ define(function (require) {
             return this.contentList[fileId].load(aceAdapter, fileAdapter);
         };
 
+        this.unloadFile = function(fileId) {
+            return this.contentList[fileId].removeAllListeners();
+        };
+
         this.deleteFile = function(fileId) {
             var that = this;
             return this.adapter.deleteFile(fileId).then(function() {

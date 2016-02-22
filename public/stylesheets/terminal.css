@@ -1,0 +1,96 @@
+#termwrapper {
+    position: absolute;
+    right: 0;
+    width: 45%;
+    height: 100%;
+    z-index: 103;
+    display: none;
+}
+
+#terminalOps {
+    padding: 20px 10px 10px 10px;
+    display: none;
+}
+
+#terminalForm {
+    z-index: 1000;
+    background-color: #4f5b69;
+    padding: 10px 15px 15px 15px;
+    border-radius: 15px;
+    border-color: #4f5b69;
+    border-width: 5px;
+    box-shadow:0 1px 0 #cfcfcf;
+    text-align: center !important;
+}
+
+#terminalGroup {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: none;
+    background-color: #111111;
+}
+
+#terminalGroup > .input-group {
+    display: none;
+}
+
+#terminal {
+    position: relative;
+    height: calc(100% - 34px);
+    width: 100%;
+}
+
+#terminalForm:hover {
+    background-color: #363B40 !important;
+}
+
+#terminalHeader {
+    font-family: 'Muli', sans-serif;
+    background-color: #B72C2C;
+    line-height: 50px;
+    display: block;
+    text-align: center;
+    font-size: 18px;
+    color: white;
+}
+
+.formHeader {
+    text-align: center;
+    padding: 5px;
+    font-weight: bold;
+    color: white;
+    font-size: 16px;
+}
+
+#connectionForm {
+    background-color: white;
+    border: 5px solid white;
+    height: 100vh;
+    width: 100%;
+    text-align: center;
+}
+
+#connectTerminal {
+    margin-top: 5px !important;
+}
+
+#connectionForm > .glyphicon {
+    font-size: 40px;
+    position: absolute;
+    top: 50%;
+    left: calc(50% - 20px);
+}
+.glyphicon-refresh-animate {
+    -webkit-animation: spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}

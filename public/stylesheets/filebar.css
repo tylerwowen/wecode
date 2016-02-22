@@ -28,7 +28,7 @@
 }
 
 #files li {
-    background-color: #1c1c1c;
+    background-color: #404040;
     font-family: Verdana, sans-serif;
     border: none;
     line-height: 28px;
@@ -36,7 +36,7 @@
 }
 
 #files li.current {
-    background-color: #404040;
+    background-color: #1c1c1c;
 }
 
 #files li:before {
@@ -77,8 +77,4 @@
 
 #fileForm {
     padding: 10px;
-}
-
-.btn-success {
-    color: #4f5b69 !important;
 }

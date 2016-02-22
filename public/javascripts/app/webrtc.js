@@ -130,7 +130,7 @@ define(function(require) {
             console.debug('Room ' + room + ' is full');
         });
 
-        $('form').submit(function(){
+        $('#textform').submit(function(){
             socket.emit('print username', UserManager.userName, room);
             socket.emit('chat message', $('#m').val(), room);
             $('#m').val('');
