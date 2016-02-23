@@ -1,0 +1,33 @@
+doctype html
+html
+    head
+        title Classes
+        link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
+        link(rel='stylesheet', href='/stylesheets/classes.css')
+        link(rel='stylesheet', href='/stylesheets/login.css')
+        script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.min.js', data-main='javascripts/classes')
+    body
+        include login
+        include classes_create
+        include classes_add
+        .container#classcontainer
+            .navbar.navbar-default.navbar-fixed-top
+                a(href="/").navbar-brand WeCode
+            .navwrapper
+                ul#navbar
+                    li#StudentSelector Student
+                    li#TAselector Instructor
+            .row#classcontent
+                .col-md-8#instructor
+                    #TAHeader Classes
+                    br
+                    ol#TAClassList.elements
+                    br
+                    #TAButtonWrapper
+                        button#TAClassFormButton.btn.btn-success.btn-xl Create Class
+                .col-md-8#student
+                    #StudentHeader Classes
+                    br
+                    ol#StudentClassList.elements
+                    br
+                    button#StudentAddClass.btn.btn-success.btn-xl Add Class

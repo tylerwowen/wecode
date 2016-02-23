@@ -1,7 +1,8 @@
 define(function(require) {
-    var $ = require('jquery');
+    var $ = require('jquery'),
+        io = require('socketio'),
+        UserManager = require('app/model/usermanager')();
     require('lib/adapter');
-    require('socketio');
 
     var videoList = document.getElementById('vidwrapper');
     var localStream;
@@ -52,7 +53,7 @@ define(function(require) {
      */
     function successCallback(stream) {
         // Create a video element for the DOM
-        myId = socket.socket.sessionid;
+        myId = '/#' + socket.id;
         var myVideo = document.createElement('video');
         myVideo.autoplay = true;
         myVideo.muted = true;
@@ -71,12 +72,13 @@ define(function(require) {
      * Error handler for getUserMedia for when things go wrong
      */
     function errorCallback(error) {
-        console.log("getUserMedia error: ", error);
+        console.error("getUserMedia error: ", error);
     }
 
     // Handle on browser close
     window.onbeforeunload = function (e) {
         sendMessage('bye');
+        socket.emit('quit message', UserManager.userName, room);
     };
 
     /**
@@ -128,8 +130,8 @@ define(function(require) {
             console.debug('Room ' + room + ' is full');
         });
 
-        $('form').submit(function(){
-            socket.emit('print username', myId, room);
+        $('#textform').submit(function(){
+            socket.emit('print username', UserManager.userName, room);
             socket.emit('chat message', $('#m').val(), room);
             $('#m').val('');
         });
@@ -143,6 +145,7 @@ define(function(require) {
         });
 
         socket.on('joined', function (IdArray) {
+            socket.emit('joined message', UserManager.userName, room);
             var promise = new Promise(function(resolve, reject) {
                 getUserMedia(constraints, successCallback, errorCallback);
                 socket.on('gotUserMedia', function(message) {
@@ -151,10 +154,7 @@ define(function(require) {
             }).then(function(result) {
                 for(var i = 0; i < IdArray.length; i++) {
                     var remoteId = IdArray[i];
-                    if(myId === remoteId){
-
-                    }
-                    else{
+                    if(remoteId != myId){
                         createPeerConnection(remoteId);
                         doCall(remoteId);
                     }
@@ -171,28 +171,29 @@ define(function(require) {
          */
         socket.on('message', function (message, remoteId) {
             if (message.type === 'offer') { //Handle when a user sends an offer
-                console.debug('Received an offer from a peer, setting sdp as the remote');
                 createPeerConnection(remoteId);
-                $('#messages').append($('<li>').text(remoteId + " has joined the room."));
-                $('#messages').append($('<li>').text(""));
                 pcs[remoteId].setRemoteDescription(new RTCSessionDescription(message));
                 doAnswer(remoteId);
             } else if (message.type === 'answer') {
-                console.debug('Received an answer from a peer, setting sdp as the remote');
                 pcs[remoteId].setRemoteDescription(new RTCSessionDescription(message));
             } else if (message.type === 'candidate') {
-                console.debug('Received a remote candidate from a peer, adding the ice candidate to the peer connection');
                 var candidate = new RTCIceCandidate({sdpMLineIndex: message.label, candidate: message.candidate});
                 pcs[remoteId].addIceCandidate(candidate);
             } else if (message === 'bye') {
                 handleRemoteHangup(remoteId);
-                $('#messages').append($('<li>').text(remoteId + " has left the room."));
-                $('#messages').append($('<li>').text(""));
-
             } else if (message === 'room')
                 console.log('room');
         });
-        
+
+        socket.on('joined message', function(data){
+            $('#messages').append($('<li>').text(data + " has joined the room."));
+            $('#messages').append($('<li>').text(""));
+        });
+
+        socket.on('quit message', function(data){
+            $('#messages').append($('<li>').text(data + " has left the room."));
+            $('#messages').append($('<li>').text(""));
+        });
 
         /**
          * Sends message to the server to send to the other clients
@@ -200,10 +201,12 @@ define(function(require) {
          */
         function sendMessage(message, remoteId) {
             var size = arguments.length;
-            if(size === 1)
+            if(size === 1) {
                 socket.emit('message', message, room);
-            else if(size === 2)
+            }
+            else if(size === 2) {
                 socket.emit('message', message, room, remoteId);
+            }
         }
 
         /**
@@ -211,7 +214,6 @@ define(function(require) {
          */
         function createPeerConnection(remoteId) {
             try {
-                console.debug('Create peer connection');
                 var pc = new RTCPeerConnection(pc_config, pc_constraints);
                 pc.onicecandidate = handleIceCandidate;
             } catch (e) {
@@ -232,8 +234,6 @@ define(function(require) {
          * that you would like to create a connection with
          */
         function handleIceCandidate(event) {
-
-            console.debug('Handling ice candidate');
             if (event.candidate) {
                 sendMessage({
                     type: 'candidate',
@@ -260,9 +260,7 @@ define(function(require) {
                 }
             }
             constraints = mergeConstraints(constraints, sdpConstraints);
-            console.debug('Sending offer to peer');
             function setLocalAndSendMessage(sessionDescription) {
-                console.debug('Set Local and send message');
                 sessionDescription.sdp = preferOpus(sessionDescription.sdp);
                 pcs[remoteId].setLocalDescription(sessionDescription);
                 sendMessage(sessionDescription, remoteId);
@@ -275,9 +273,7 @@ define(function(require) {
          * to the remote peer
          */
         function doAnswer(remoteId) {
-            console.debug('Sending answer to peer');
             function setLocalAndSendMessage(sessionDescription) {
-                console.debug('Set Local and send message');
                 sessionDescription.sdp = preferOpus(sessionDescription.sdp);
                 pcs[remoteId].setLocalDescription(sessionDescription);
                 sendMessage(sessionDescription, remoteId);

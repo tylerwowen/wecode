@@ -1,0 +1,13 @@
+extends layout
+
+block content
+   include login
+   include textchat
+   include sidebar_student
+   .container
+      .row
+         .col-md-2
+            include filebar_student
+         .col-md-9
+            #editor
+            #vidwrapper

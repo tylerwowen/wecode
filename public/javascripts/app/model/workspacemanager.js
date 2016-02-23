@@ -4,9 +4,16 @@ define(function(require) {
     var Q = require('q'),
         Adapter = require('app/adapters/googlesetupadapter');
 
+    var instance = null;
+
     function WorkspaceManager() {
+        if (instance != null) {
+            throw new Error('Cannot instantiate more than one WorkspaceManager, ' +
+                'use WorkspaceManager.sharedInstance')
+        }
         this.rootFolderId = null;
         this.workspaceList = [];
+        this.classList = [];
         this.adapter = new Adapter();
     }
 
@@ -23,7 +30,7 @@ define(function(require) {
                 }).then(function(rootFolderId) {
                     that.rootFolderId = rootFolderId;
                     return that.getWorkspaceList();
-            });
+                });
         };
 
         this.loadConfiguration = function() {
@@ -34,8 +41,12 @@ define(function(require) {
                 }
                 // first time, create rootFolder and configuration
                 return that.adapter.createRootFolder().then(function(rootFolderId) {
-                    that.adapter.createConfigurationFile(rootFolderId);
-                    return rootFolderId;
+                    return Q.all([
+                        rootFolderId,
+                        that.adapter.createConfigurationFile(rootFolderId)
+                    ]).spread(function(rootFolderId) {
+                        return rootFolderId;
+                    });
                 });
             });
         };
@@ -59,11 +70,47 @@ define(function(require) {
         };
 
         this.createWorkSpace = function(workSpaceName) {
-            console.log(this);
-            return this.adapter.createWorkSpace(this.rootFolderId, workSpaceName);
+            var that = this;
+            return this.adapter.createWorkSpace(this.rootFolderId, workSpaceName)
+                .then(function(workspace) {
+                    return that.adapter.addPublicPermissions(workspace.id);
+                });
+        };
+
+        this.getStudentClassList = function (classID) {
+            var that = this;
+            return this.adapter.getClassList(classID).then(function(contents){
+                that.classList.push(contents);
+                return that.classList;
+            })
+        };
+
+        this.addClass = function(classID) {
+            var that = this;
+            var filePermissionID;
+            var userPermissionID;
+
+            return userPermissionID = this.adapter.getUserPermissionID().then(function() {
+                return filePermissionID = that.adapter.getFilePermissionId(classID);
+            }).then(function () {
+                if(userPermissionID != filePermissionID){
+                    return that.getStudentClassList(classID);
+                }
+                else{
+                    console.log("Can't be a student and a TA in the same class");
+                    return null;
+                }
+            });
         };
 
     }).call(WorkspaceManager.prototype);
 
-    return WorkspaceManager;
+    WorkspaceManager.sharedInstance = function() {
+        if (instance == null) {
+            instance = new WorkspaceManager();
+        }
+        return instance;
+    };
+
+    return WorkspaceManager.sharedInstance;
 });

@@ -9,6 +9,9 @@ var fs = require('fs');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var main = require('./routes/main');
+var main_student = require('./routes/main_student');
+var classes = require('./routes/classes');
+var questionlist = require('./routes/questionlist');
 
 var options = {
     key: fs.readFileSync('key.pem').toString(),
@@ -21,7 +24,6 @@ var app = express(options);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public/images', 'favicon.ico')));
 if(process.env.CUCUMBER === true)
     app.use(logger('dev'));
@@ -33,6 +35,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/main', main);
+app.use('/main_student', main_student);
+
+app.use('/classes', classes);
+app.use('/questionlist', questionlist);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

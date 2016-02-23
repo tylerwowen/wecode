@@ -85,6 +85,55 @@ define(function (require) {
         };
 
         /**
+         * Create a link to a file in google that allows the file to be edited by anyone
+         * @param {object} fileId - the file in google to add permissions to
+         * @returns a promise for the passed file
+         */
+        this.addPublicPermissions = function(fileId) {
+            return gapi.client.drive.permissions.create({
+                fileId: fileId,
+                resource: {
+                    type: 'anyone',
+                    role: 'writer',
+                    withLink: true
+                }
+            });
+        };
+
+        this.getUserPermissionID = function (){
+            return gapi.client.drive.about.get(
+                {fields:'user'}
+            ).then(function(response) {
+                    return response.result.user.permissionId;
+                });
+        };
+
+        this.getFilePermissionId = function (classID){
+            return gapi.client.drive.permissions.list({
+                fileId: classID
+            }).then(function(response) {
+                return response.result.permissions[0].id;
+            }).then(function(permissionsId) {
+                return permissionsId;
+            });
+        };
+
+        this.getClassList = function(folderId) {
+            console.log("in classList");
+            var that = this;
+
+            return gapi.client.drive.files.get(
+                {fileId: folderId}
+            ).then(function(response) {
+                    var contentList ={
+                        id: response.result.id,
+                        name: response.result.name
+                    };
+                return contentList;
+            });
+        };
+
+        /**
          * Fetches all the workspace
          * @param {!string} folderId is the ID of the root folder.
          * @return {!promise} returns a promise

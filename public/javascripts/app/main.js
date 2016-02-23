@@ -1,19 +1,18 @@
 define(function(require) {
-    var $ = require('jquery'),
-        EditorController = require('app/controller/editorcontroller'),
+    var EditorController = require('app/controller/editorcontroller'),
         UserController = require('app/controller/userscontroller'),
-        UserManager = require('app/model/usermanager');
+        TerminalController = require('app/controller/terminalcontroller');
 
     require(['bootstrap']);
 
     var editorController = new EditorController(),
-        userController = new UserController();
+        userController = new UserController(),
+        terminalController = new TerminalController(editorController);
 
     userController.init(onEventuallySuccess);
 
     function onEventuallySuccess() {
-        requirejs(['app/webrtc', 'app/widgets','draggableObjects']);
+        requirejs(['app/webrtc', 'app/widgets','app/controller/draggableObjects']);
         editorController.init();
     }
-
 });

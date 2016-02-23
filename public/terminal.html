@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.js' data-main='javascripts/app'></script>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            height: 200px;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <form>
+        User:<br>
+        <input type="text" name="user" value="ouyang"><br>
+        Host:<br>
+        <input type="text" name="host" value="csil.cs.ucsb.edu"><br>
+        Port: <br>
+        <input type="number" name="port" value="22"><br>
+    </form>
+    <button type="button" id="openTerminal">
+        Connect to remote host...
+    </button>
+    <br>
+
+    RoomId: <br>
+    <input type="number" name="roomid" value="1"><br>
+
+    <button type="button" id="joinButton">
+        Join an existing SSH session
+    </button>
+    <br>
+
+    Path:
+    <br>
+    <input type="text" name="path" value="~/tmp/wecode"><br>
+    <button type="button" id="loadButton">
+        Load file to editor
+    </button>
+    <br>
+    <button type="button" id="uploadButton">
+        Upload file to remote host
+    </button>
+    <br>
+</div>
+<div id="terminal"
+     style="position:relative; width:500px; height:600px;">
+
+</div>
+
+<div id='editor'>
+</div>
+<div id='vidwrapper' style="display:none;">
+</div>
+</body>
+</html>

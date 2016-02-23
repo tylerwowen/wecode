@@ -2,7 +2,7 @@
 .row,
 html,
 body {
-    font-family: 'Muli', sans-serif;
+    font-family: 'Muli', sans-serif !important;
     height: 100vh;
     width: 100vw;
     padding: 0 !important;
@@ -21,7 +21,7 @@ a {
 #editor {
     position:   absolute;
     z-index:    50;
-    height:     100%;
+    height:     100vh;
     width:      100%;
 }
 
@@ -36,10 +36,10 @@ a {
     height:     15%;
     display: inline-block;
     white-space: nowrap;
-    z-index:    100;
+    z-index:    105;
     position: absolute;
-    bottom: 0%;
-    right: 0%;
+    bottom: 0;
+    right: 0;
 }
 
 #vidwrapper > video:nth-of-type(n) {
