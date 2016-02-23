@@ -8,6 +8,9 @@ define(function (require) {
 
     function Controller() {
         this.qCollection = null;
+        this.question = null;
+        this.questiontext = null;
+        this.topic = null;
         this.similarQuestions = new SimilarQuestions();
     }
 
@@ -22,11 +25,15 @@ define(function (require) {
             this.displayQuestionCollection();
         };
 
+        var questionCol = ["How to change commit message", "Edit commit history", "How to revert a commit"];
+
         this.connectToView = function() {
             var that = this;
+
             $('#questionSubmitButton').on('click', function() {
                 that.submitQuestion();
                 that.getQuestionCollection();
+                that.displaySimilarQuestions(that.question.question, questionCol);
             });
             $('#questionAddButton').on('click', function() {
                 that.displayAddQuestionForm();
@@ -35,31 +42,24 @@ define(function (require) {
 
         this.submitQuestion = function() {
             var that = this;
-            var topic = "github";
-            var questiontext = $('#questionInput').val();
+            that.topic = "github";
+            that.questiontext = $('#questionInput').val();
 
-            var question = {
-                topic: topic,
-                question: questiontext
+            that.question = {
+                topic: that.topic,
+                question: that.questiontext
             };
-
-            socket.emit('addQuestion', that.getParam('name'), question);
+            console.log(that.question.question);
+            socket.emit('addQuestion', that.getParam('name'), that.question);
             $('#questionInput').val('');
             $('#questionFormPage').hide();
-
-            var questionCol = [
-                {topic: "github", question: "How to change commit message"},
-                {topic: "github", question: "Edit commit history"},
-                {topic: "github", question: "How to revert a commit"},
-            ];
-
-            that.displaySimilarQuestions(question, questionCol);
 
         };
 
         this.displaySimilarQuestions = function(question, questionCol) {
-            var simQuestion = this.similarQuestions.getSimilarQuestions(question, questionCol);
-            console.log(simQuestion);
+            var simQuestion = this.similarQuestions.getSimilarQuestionsWOTopics(question, questionCol, function(){
+                console.log("hello");
+            });
         };
 
         this.getQuestionCollection = function() {

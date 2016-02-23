@@ -18,10 +18,10 @@ define(function (require) {
             var that = this;
         };
 
-        this.getSimilarQuestions = function(currentquestion, queue) {
+        this.getSimilarQuestions = function(currentquestion, queue, callback) {
             this.ques = currentquestion.question.toLowerCase();
             this.topic = currentquestion.topic;
-            this.queueTemp = queueTemp;
+            this.queueTemp = queue;
 
             var array = this.ques.split(" ");
             var counter = 0;
@@ -48,7 +48,7 @@ define(function (require) {
                     max = countQuestArray[i];
                 }
             }
-
+            if (callback) callback();
             return this.queueTemp[maxIndex].question;
         };
 
@@ -59,8 +59,9 @@ define(function (require) {
             var array = this.getStringArray(question);
             var counter = 0;
             var queueQuestion;
-            var countQuestArray = [];
+            var rankQuestionsArray = [];
             for (var k = 0; k < queueTemp.length; k++) {
+                rankQuestionsArray[k] = [];
                 queueQuestion = this.getStringArray(queueTemp[k]);
                 counter = 0;
                 for (var i = 0; i < array.length; i++) {
@@ -73,33 +74,29 @@ define(function (require) {
                         }
                     }
                 }
-                countQuestArray.push(counter);
+                rankQuestionsArray[k][0] = k;
+                rankQuestionsArray[k][1] = counter;
             }
 
+            rankQuestionsArray.sort(this.sortByCounter);
 
+            var similarQuestionsArray = [];
 
-            var max = countQuestArray[0];
-            var maxTwo = countQuestArray[0];
-            var maxIndex = 0;
-            var secondMaxIndex = 0;
-
-            for (var i = 0; i < countQuestArray.length; i++) {
-                console.log(i, countQuestArray[i]);
-                if (countQuestArray[i] > max) {
-                    secondMaxIndex = maxIndex;
-                    maxIndex = i;
-                    max = countQuestArray[i];
-                } else if(countQuestArray[i] > maxTwo){
-                    maxTwo = countQuestArray[i];
-                    secondMaxIndex = i;
+            for (k = 0; k < rankQuestionsArray.length / 10; k++) {
+                if(rankQuestionsArray[k][1]!=0) {
+                    similarQuestionsArray.push(queueTemp[rankQuestionsArray[k][0]]);
                 }
             }
-            var arr = [queueTemp[maxIndex], queueTemp[secondMaxIndex]];
-            return arr;
+
+            return similarQuestionsArray;
         };
 
         this.isStopWord = function(word) {
             return stopwords.includes(word);
+        };
+
+        this.sortByCounter = function(a, b){
+            return (a[1] > b[1] ? -1 : (a[1] < b[1] ? 1 : 0));
         };
 
         this.getStringArray = function(string) {

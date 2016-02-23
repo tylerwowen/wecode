@@ -43,7 +43,24 @@ define(function(require) {
                 done();
             });
 
-            it('Returns similar queston 1', function (done) {
+            it('Sort by word count example', function (done) {
+                var arr = [[0, 10], [3, 9], [1, 8], [9, 7]];
+                var resArr = [[9, 7], [1, 8], [3, 9], [0, 10]];
+                arr.sort(function(a, b) { return (a[1] < b[1] ? -1 : (a[1] > b[1] ? 1 : 0)); });
+                expect(arr).to.deep.equal(resArr);
+                done();
+            });
+
+            //it('Sort by word count questions', function (done) {
+            //    var currentQuestion = "JavaScript function that return AJAX call data";
+            //    // How to call javascript validate function before form submit on an ajax call
+            //    var simQuestion = similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp);
+            //    console.log(simQuestion);
+            //    //expect(simQuestion).to.be.equal("Return data after ajax call success");
+            //    done();
+            //});
+
+            it('Returns similar questons 1', function (done) {
                 var currentQuestion = "JavaScript function that return AJAX call data";
                 // How to call javascript validate function before form submit on an ajax call
                 var simQuestion = similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp);
