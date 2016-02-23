@@ -49,7 +49,7 @@ define(function (require) {
                 topic: that.topic,
                 question: that.questiontext
             };
-            console.log(that.question.question);
+
             socket.emit('addQuestion', that.getParam('name'), that.question);
             $('#questionInput').val('');
             $('#questionFormPage').hide();
@@ -57,8 +57,13 @@ define(function (require) {
         };
 
         this.displaySimilarQuestions = function(question, questionCol) {
-            var simQuestion = this.similarQuestions.getSimilarQuestionsWOTopics(question, questionCol, function(){
-                console.log("hello");
+            this.similarQuestions.getSimilarQuestionsWOTopics(question, questionCol, function(similarQuestionsArray){
+                for (var q = 0; q < similarQuestionsArray.length; q++) {
+                    var question =  '<tr><td>' + similarQuestionsArray[q] + '</td></tr>';
+                    $('#simquestionTableBody').append(question);
+                }
+                console.log(similarQuestionsArray);
+                $('#similarQuestionsPage').show();
             });
         };
 

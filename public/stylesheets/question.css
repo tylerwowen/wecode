@@ -14,7 +14,7 @@
     height: 100vh;
 }
 
-#similarQuesionsPage {
+#similarQuestionsPage {
     display: none;
     position: absolute;
     z-index: 999;

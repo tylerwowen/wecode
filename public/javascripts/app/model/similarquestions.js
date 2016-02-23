@@ -52,10 +52,10 @@ define(function (require) {
             return this.queueTemp[maxIndex].question;
         };
 
-        this.getSimilarQuestionsWOTopics = function(currentquestion, queue) {
+        this.getSimilarQuestionsWOTopics = function(currentquestion, queue, callback) {
             var question = currentquestion.toLowerCase();
             var queueTemp = queue;
-
+            
             var array = this.getStringArray(question);
             var counter = 0;
             var queueQuestion;
@@ -87,8 +87,7 @@ define(function (require) {
                     similarQuestionsArray.push(queueTemp[rankQuestionsArray[k][0]]);
                 }
             }
-
-            return similarQuestionsArray;
+            if (callback) callback(similarQuestionsArray);
         };
 
         this.isStopWord = function(word) {
