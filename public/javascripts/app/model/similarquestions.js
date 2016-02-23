@@ -55,7 +55,7 @@ define(function (require) {
         this.getSimilarQuestionsWOTopics = function(currentquestion, queue, callback) {
             var question = currentquestion.toLowerCase();
             var queueTemp = queue;
-            
+
             var array = this.getStringArray(question);
             var counter = 0;
             var queueQuestion;

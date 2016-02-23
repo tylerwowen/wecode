@@ -58,12 +58,13 @@ define(function (require) {
 
         this.displaySimilarQuestions = function(question, questionCol) {
             this.similarQuestions.getSimilarQuestionsWOTopics(question, questionCol, function(similarQuestionsArray){
-                for (var q = 0; q < similarQuestionsArray.length; q++) {
-                    var question =  '<tr><td>' + similarQuestionsArray[q] + '</td></tr>';
-                    $('#simquestionTableBody').append(question);
+                if(similarQuestionsArray.length != 0) {
+                    for (var q = 0; q < similarQuestionsArray.length; q++) {
+                        var question =  '<tr><td>' + similarQuestionsArray[q] + '</td></tr>';
+                        $('#simquestionTableBody').append(question);
+                    }
+                    $('#similarQuestionsPage').show();
                 }
-                console.log(similarQuestionsArray);
-                $('#similarQuestionsPage').show();
             });
         };
 
