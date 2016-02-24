@@ -4,14 +4,15 @@ define(function(require) {
     var ace = require('ace/ace');
 
     var SimilarQuestions = require('app/model/similarquestions');
-    var queue;
 
     describe("Similar Questions tests ", function () {
 
         this.timeout(5000);
 
         var similarQuestions = null;
-
+        var totalQuestionsCount = 0;
+        var score = 0;
+        
         before(function() {
             similarQuestions = new SimilarQuestions();
         });
@@ -23,7 +24,7 @@ define(function(require) {
         describe("Test Similar questions feature", function () {
             it('Reads questions from file', function (done) {
                 readTextFile("questions.txt");
-                expect(queueTemp.length).to.be.equal(50);
+                expect(queueTemp.length).to.be.equal(83);
                 done();
             });
 
@@ -51,25 +52,187 @@ define(function(require) {
                 done();
             });
 
-            //it('Sort by word count questions', function (done) {
-            //    var currentQuestion = "JavaScript function that return AJAX call data";
-            //    // How to call javascript validate function before form submit on an ajax call
-            //    var simQuestion = similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp);
-            //    console.log(simQuestion);
-            //    //expect(simQuestion).to.be.equal("Return data after ajax call success");
-            //    done();
-            //});
+            it('Returns similar queston 1', function (done) {
+                var currentQuestion = "Return data after ajax call success";
+                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
 
-            it('Returns similar questons 1', function (done) {
-                var currentQuestion = "JavaScript function that return AJAX call data";
-                // How to call javascript validate function before form submit on an ajax call
-                var simQuestion = similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp);
-                console.log(simQuestion);
-                //expect(simQuestion).to.be.equal("Return data after ajax call success");
+                    var len = similarQuestionsArray.length;
+                    console.log(similarQuestionsArray, len);
+                    totalQuestionsCount =+ len;
+                    if( len != 0) {
+                        for(var i = 0; i < len; i++) {
+                            if(similarQuestionsArray[i] === "How to return data to variable after ajax call success") {
+                                score +=((len - i) / len);
+                            }
+                        }
+                        console.log(score);
+                    }
+                });
                 done();
             });
 
+            it('Returns similar queston 2', function (done) {
+                var currentQuestion = "How to change commit message?";
+                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
 
+                    var len = similarQuestionsArray.length;
+                    console.log(similarQuestionsArray, len);
+                    if( len != 0) {
+                        for(var i = 0; i < len; i++) {
+                            if(similarQuestionsArray[i] === "Edit an incorrect commit message in command line Git") {
+                                score +=((len - i) / len);
+                            }
+                        }
+                        console.log(score);
+                    }
+                });
+                done();
+            });
+
+            it('Returns similar queston 3', function (done) {
+                var currentQuestion = "A simple explanation of Naive Bayes Classification";
+                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
+
+                    var len = similarQuestionsArray.length;
+                    console.log(similarQuestionsArray, len);
+                    if( len != 0) {
+                        for(var i = 0; i < len; i++) {
+                            if(similarQuestionsArray[i] === "Explain Naive Bayes classifier") {
+                                score +=((len - i) / len);
+                            }
+                        }
+                        console.log(score);
+                    }
+                });
+                done();
+            });
+
+            it('Returns similar queston 4', function (done) {
+                var currentQuestion = "How to create a generic array in Java?";
+                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
+
+                    var len = similarQuestionsArray.length;
+                    console.log(similarQuestionsArray, len);
+                    if( len != 0) {
+                        for(var i = 0; i < len; i++) {
+                            if(similarQuestionsArray[i] === "How to create an array of a generic object in java") {
+                                score +=((len - i) / len);
+                            }
+                        }
+                        console.log(score);
+                    }
+                });
+                done();
+            });
+
+            it('Returns similar queston 5', function (done) {
+                var currentQuestion = "Replacing all occurrences of a string in JavaScript";
+                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
+
+                    var len = similarQuestionsArray.length;
+                    console.log(similarQuestionsArray, len);
+                    if( len != 0) {
+                        for(var i = 0; i < len; i++) {
+                            if(similarQuestionsArray[i] === "How to replace all occurrences of a string in a HTML page using Javascript") {
+                                score +=((len - i) / len);
+                            }
+                        }
+                        console.log(score);
+                    }
+                });
+                done();
+            });
+
+            it('Returns similar queston 6', function (done) {
+                var currentQuestion = "What is an efficient way to implement a singleton pattern in Java?";
+                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
+
+                    var len = similarQuestionsArray.length;
+                    console.log(similarQuestionsArray, len);
+                    if( len != 0) {
+                        for(var i = 0; i < len; i++) {
+                            if(similarQuestionsArray[i] === "How to implement a singleton in java") {
+                                score +=((len - i) / len);
+                            }
+                        }
+                        console.log(score);
+                    }
+                });
+                done();
+            });
+
+            it('Returns similar queston 7', function (done) {
+                var currentQuestion = "Regular Expression split with white spaces";
+                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
+
+                    var len = similarQuestionsArray.length;
+                    console.log(similarQuestionsArray, len);
+                    if( len != 0) {
+                        for(var i = 0; i < len; i++) {
+                            if(similarQuestionsArray[i] === "How to split regex with soaces") {
+                                score +=((len - i) / len);
+                            }
+                        }
+                        console.log(score);
+                    }
+                });
+                done();
+            });
+
+            it('Returns similar queston 8', function (done) {
+                var currentQuestion = "Sort array of objects by string property value in JavaScript";
+                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
+
+                    var len = similarQuestionsArray.length;
+                    console.log(similarQuestionsArray, len);
+                    if( len != 0) {
+                        for(var i = 0; i < len; i++) {
+                            if(similarQuestionsArray[i] === "how to sort array of objects in javascript?") {
+                                score +=((len - i) / len);
+                            }
+                        }
+                        console.log(score);
+                    }
+                });
+                done();
+            });
+
+            it('Returns similar queston 9', function (done) {
+                var currentQuestion = "How to revert to previous commit";
+                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
+
+                    var len = similarQuestionsArray.length;
+                    console.log(similarQuestionsArray, len);
+                    if( len != 0) {
+                        for(var i = 0; i < len; i++) {
+                            if(similarQuestionsArray[i] === "How do you undo the last commit?"
+                            || similarQuestionsArray[i] === "Remove or revert previous commit in master from local") {
+                                score +=((len - i) / len);
+                            }
+                        }
+                        console.log(score);
+                    }
+                });
+                done();
+            });
+
+            it('Returns similar queston 10', function (done) {
+                var currentQuestion = "How to create a file and write to a file in Java?";
+                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
+
+                    var len = similarQuestionsArray.length;
+                    console.log(similarQuestionsArray, len);
+                    if( len != 0) {
+                        for(var i = 0; i < len; i++) {
+                            if(similarQuestionsArray[i] === "How to create and write a .Txt file in Java?") {
+                                score +=((len - i) / len);
+                            }
+                        }
+                        console.log(score/10);
+                    }
+                });
+                done();
+            });
         });
     });
 
@@ -85,6 +248,4 @@ define(function(require) {
         };
         rawFile.send(null);
     }
-
-
 });
