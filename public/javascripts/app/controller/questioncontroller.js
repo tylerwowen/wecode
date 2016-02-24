@@ -138,5 +138,10 @@ define(function (require, exports, module) {
         return that;
     };
 
+        $('#questionReturn').click(function(){
+            $('#questionFormPage').hide();
+        });
+
+
     module.exports = QuestionController;
 });

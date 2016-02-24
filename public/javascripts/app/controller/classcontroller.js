@@ -36,9 +36,6 @@ define(function (require, exports, module) {
             $('#studentReturn').click(function(){
                 $('#addNewClassForm').hide();
             });
-
-            $('#StudentSelector').addClass('selected');
-            $('#TAselector').addClass('inactive');
             
             $('#StudentSelector').click(function(){
                 $('li').addClass('inactive');
