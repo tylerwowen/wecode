@@ -36,7 +36,7 @@ define(function(require) {
         this.initGapi = function() {
             var that = this;
             var deferred = Q.defer();
-            gapi.load('signin2', function(){
+            gapi.load('auth2', function(){
                 that.auth2 = gapi.auth2.init({
                     client_id: clientId,
                     scope: scopes
