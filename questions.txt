@@ -4,7 +4,6 @@ How to call javascript validate function before form submit on an ajax call
 java regular expression split pattern
 json to javascript array and storing for outside ajax call use
 Gaussian Naive Bayes classification
-Regular Expression split with white spaces
 How to list all the files in a commit?
 Github rebase upstream/master with origin/master
 What is a JavaScript Promise?
@@ -14,14 +13,13 @@ Training Naive Bayes Classifier
 R and object oriented programming
 How do you undo the last commit?
 Undefined javascript variable using kineticjs
-Edit an incorrect commit message in Git
+Edit an incorrect commit message in command line Git
 GitHub synchronize failure result in rebase - how to get back the committed file
 AJAX query works 50+ times then crashes javascript
 Javascript Promise node.js?
 github pull request branch rebase detection
-How do you undo the last commit?
-Edit an incorrect commit message in Git
 How to you rebase a GitHub fork?
+Remove or revert previous commit in master from local
 JQuery inside function call another function = undefined?
 Undo 'git add' before commit
 Using a regular expression to validate an email address
@@ -31,8 +29,6 @@ Aspect Oriented / Object Oriented Programming?
 Aspect Oriented Programming vs. Object-Oriented Programming
 How to rebase commits in Git (Github)
 JavaScript promise confusion
-Return data after ajax call success
-A simple explanation of Naive Bayes Classification
 Regular expression to match line that doesn't contain a word?
 Implement Gaussian Naive Bayes
 Naive Bayes implementation
@@ -48,3 +44,40 @@ Normalization- Naive bayes
 Change commit author at one specific commit
 Functional programming vs Object Oriented programming
 Get int value from enum
+Understanding how to reverse a Linked List?
+How to fix null pointer exception?
+How do I return the response from an asynchronous call?
+How do I compare strings in Java?
+Is Java “pass-by-reference” or “pass-by-value”?
+How can I get query string values in JavaScript?
+what is a rule of three?
+What does this regex mean?
+How do JavaScript closures work?
+Can a local variable's memory be accessed outside its scope?
+Passing Data between View Controllers
+How can I upload files asynchronously?
+Split a string in C++?
+What is the scope of variables in JavaScript?
+Parse JSON in JavaScript?
+How to remove the space between inline-block elements?
+How do you split a list into evenly sized chunks in Python?
+Java String.equals versus
+What is the explicit promise construction?
+Include a JavaScript file in another JavaScript file?
+How to return value from an asynchronous callback function?
+Sort Multi-dimensional Array by Value
+What is the difference between a definition and a declaration?
+What's the difference between passing by reference vs. passing by value?
+How to append text to an existing file in Java
+How can I check if one string contains another substring?
+How to return data to variable after ajax call success
+Explain Naive Bayes classifier
+How to create an array of a generic object in java
+How to replace all occurrences of a string in a HTML page using Javascript
+How to implement a singleton in java
+How to split regex with soaces
+What is JavaScript's highest integer value that a Number can go to without losing precision?
+how to sort array of objects in javascript?
+What is the correct JSON content type?
+How can I access an array/object?
+How to create and write a .Txt file in Java?
