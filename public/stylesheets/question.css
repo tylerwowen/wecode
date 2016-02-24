@@ -218,6 +218,7 @@ ol > li {
     list-style:none;
     background:#f6f6f6;
 }
+
 ol > li:before {
     content:counter(li);
     counter-increment:li;
@@ -235,9 +236,14 @@ ol > li:before {
     font-family:"Helvetica Neue", Arial, sans-serif;
     text-align:center;
 }
+
 li ol,
-li ul {margin-top:6px;}
-ol ol li:last-child {margin-bottom:0;}
+li ul {
+    margin-top:6px;
+}
+ol ol li:last-child {
+    margin-bottom:0;
+}
 
 ol:empty:after {
     content: "The questions list is currently empty!";

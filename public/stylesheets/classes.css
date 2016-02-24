@@ -175,9 +175,23 @@ button {
     bottom: 0;
 }
 
+#StudentClassList:empty:after {
+    content: "You are not a student in any classes!";
+    color: black;
+    display: block;
+    text-align: center;
+}
+
+#TAClassList:empty:after {
+    content: "You are not an instructor in any classes!";
+    color: black;
+    display: block;
+    text-align: center;
+}
+
 ol a {
     display: block;
-    padding:4px 8px; /* Add some spacing around the content */
+    padding:4px 8px;
     color:#666;
 }
 
@@ -188,28 +202,25 @@ ol a:hover {
 }
 
 ol {
-    counter-reset:li; /* Initiate a counter */
-    margin-left:0; /* Remove the default left margin */
-    padding-left:0; /* Remove the default left padding */
+    counter-reset:li;
+    margin-left:0;
+    padding-left:0;
 }
 ol > li {
-    position:relative; /* Create a positioning context */
-    margin:0 0 6px 2em; /* Give each list item a left margin to make room for the numbers */
-    list-style:none; /* Disable the normal item numbering */
+    position:relative;
+    margin:0 0 6px 2em;
+    list-style:none;
     background:#f6f6f6;
 }
 ol > li:before {
-    content:counter(li); /* Use the counter as content */
-    counter-increment:li; /* Increment the counter by 1 */
-    /* Position and style the number */
+    content:counter(li);
+    counter-increment:li;
     position:absolute;
     left:-2em;
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
     box-sizing:border-box;
     width:2em;
-    /* Some space between the number and the content in browsers that support
-       generated content but not positioning it (Camino 2 is one example) */
     margin-right:8px;
     padding:4px;
     color:#fff;
@@ -219,13 +230,9 @@ ol > li:before {
     text-align:center;
 }
 li ol,
-li ul {margin-top:6px;}
-ol ol li:last-child {margin-bottom:0;}
-
-ol:empty:after {
-    content: "You do not have any classes!";
-    color: black;
-    display: block;
-    text-align: center;
+li ul {
+    margin-top:6px;
 }
-
+ol ol li:last-child {
+    margin-bottom:0;
+}
