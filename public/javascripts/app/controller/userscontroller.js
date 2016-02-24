@@ -52,13 +52,16 @@ define(function (require) {
         };
 
         this.attachSignin = function() {
-            gapi.signin2.render('signin-button', {
-                'height': 50,
-                'width': 220,
-                'longtitle': true,
-                'theme': 'dark',
-                'onsuccess': this.onGapiSuccess,
-                'onfailure': this.onGapiFailure
+            var that = this;
+            gapi.load('signin2', function(){
+                gapi.signin2.render('signin-button', {
+                    'height': 50,
+                    'width': 220,
+                    'longtitle': true,
+                    'theme': 'dark',
+                    'onsuccess': that.onGapiSuccess,
+                    'onfailure': that.onGapiFailure
+                });
             });
         };
 
