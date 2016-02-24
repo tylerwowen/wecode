@@ -1,3 +1,19 @@
+#similarQuestionsPage {
+    display: none;
+    position: absolute;
+    z-index: 999;
+    background-color: white;
+    height: 100vh;
+    width: 100vw;
+}
+
+#similarQuestionsForm {
+    position: absolute;
+    z-index: 1000;
+    width: 100vw;
+    height: 100vh;
+}
+
 body {
     background-color: #404040 !important;
 }
@@ -36,6 +52,12 @@ body {
     padding: 5px;
     font-weight: bold;
     color: white;
+}
+
+#questionInput {
+    width: 330px;
+    height: 110px;
+    resize: none;
 }
 
 .btn-group  {
