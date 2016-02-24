@@ -197,7 +197,7 @@ button {
 
 ol a {
     display: block;
-    padding:4px 8px; /* Add some spacing around the content */
+    padding:4px 8px;
     color:#666;
 }
 
@@ -208,28 +208,25 @@ ol a:hover {
 }
 
 ol {
-    counter-reset:li; /* Initiate a counter */
-    margin-left:0; /* Remove the default left margin */
-    padding-left:0; /* Remove the default left padding */
+    counter-reset:li;
+    margin-left:0;
+    padding-left:0;
 }
 ol > li {
-    position:relative; /* Create a positioning context */
-    margin:0 0 6px 2em; /* Give each list item a left margin to make room for the numbers */
-    list-style:none; /* Disable the normal item numbering */
+    position:relative;
+    margin:0 0 6px 2em;
+    list-style:none;
     background:#f6f6f6;
 }
 ol > li:before {
-    content:counter(li); /* Use the counter as content */
-    counter-increment:li; /* Increment the counter by 1 */
-    /* Position and style the number */
+    content:counter(li);
+    counter-increment:li;
     position:absolute;
     left:-2em;
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
     box-sizing:border-box;
     width:2em;
-    /* Some space between the number and the content in browsers that support
-       generated content but not positioning it (Camino 2 is one example) */
     margin-right:8px;
     padding:4px;
     color:#fff;
