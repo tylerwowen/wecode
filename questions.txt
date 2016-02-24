@@ -1,0 +1,50 @@
+Jquery Javascript Function Undefined
+JavaScript Seems to Stop After AJAX Call
+How to call javascript validate function before form submit on an ajax call
+java regular expression split pattern
+json to javascript array and storing for outside ajax call use
+Gaussian Naive Bayes classification
+Regular Expression split with white spaces
+How to list all the files in a commit?
+Github rebase upstream/master with origin/master
+What is a JavaScript Promise?
+Using multiple ajax calls in one javascript function
+How to modify a specified commit in git?
+Training Naive Bayes Classifier
+R and object oriented programming
+How do you undo the last commit?
+Undefined javascript variable using kineticjs
+Edit an incorrect commit message in Git
+GitHub synchronize failure result in rebase - how to get back the committed file
+AJAX query works 50+ times then crashes javascript
+Javascript Promise node.js?
+github pull request branch rebase detection
+How do you undo the last commit?
+Edit an incorrect commit message in Git
+How to you rebase a GitHub fork?
+JQuery inside function call another function = undefined?
+Undo 'git add' before commit
+Using a regular expression to validate an email address
+Regular Expression Split on nᵗʰ occurrence
+How do you access the matched groups in a JavaScript regular expression?
+Aspect Oriented / Object Oriented Programming?
+Aspect Oriented Programming vs. Object-Oriented Programming
+How to rebase commits in Git (Github)
+JavaScript promise confusion
+Return data after ajax call success
+A simple explanation of Naive Bayes Classification
+Regular expression to match line that doesn't contain a word?
+Implement Gaussian Naive Bayes
+Naive Bayes implementation
+Javascript promise not delaying function execution
+Regular expression split
+Rebase on github branch
+Jquery Ajax Call Return
+Undefined javascript function error
+Multinomial Naive Bayes Classifier
+Rebase local branch on top of github branch
+Can you make an AJAX call inside of another AJAX call in jquery?
+Normalization- Naive bayes
+Change commit author at one specific commit
+Functional programming vs Object Oriented programming
+Get int value from enum
