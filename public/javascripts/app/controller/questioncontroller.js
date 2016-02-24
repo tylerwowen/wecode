@@ -4,14 +4,9 @@ define(function (require) {
     var $ = require('jquery');
     var io = require('socketio');
     var socket = io.connect();
-    var SimilarQuestions = require('app/model/similarquestions');
 
     function Controller() {
         this.qCollection = null;
-        this.question = null;
-        this.questiontext = null;
-        this.topic = null;
-        this.similarQuestions = new SimilarQuestions();
     }
 
     (function () {
@@ -25,15 +20,11 @@ define(function (require) {
             this.displayQuestionCollection();
         };
 
-        var questionCol = ["How to change commit message", "Edit commit history", "How to revert a commit"];
-
         this.connectToView = function() {
             var that = this;
-
             $('#questionSubmitButton').on('click', function() {
                 that.submitQuestion();
                 that.getQuestionCollection();
-                that.displaySimilarQuestions(that.question.question, questionCol);
             });
             $('#questionAddButton').on('click', function() {
                 that.displayAddQuestionForm();
@@ -42,30 +33,17 @@ define(function (require) {
 
         this.submitQuestion = function() {
             var that = this;
-            that.topic = "github";
-            that.questiontext = $('#questionInput').val();
+            var topic = "github";
+            var questiontext = $('#questionInput').val();
 
-            that.question = {
-                topic: that.topic,
-                question: that.questiontext
+            var question = {
+                topic: topic,
+                question: questiontext
             };
 
-            socket.emit('addQuestion', that.getParam('name'), that.question);
+            socket.emit('addQuestion', that.getParam('name'), question);
             $('#questionInput').val('');
             $('#questionFormPage').hide();
-
-        };
-
-        this.displaySimilarQuestions = function(question, questionCol) {
-            this.similarQuestions.getSimilarQuestionsWOTopics(question, questionCol, function(similarQuestionsArray){
-                if(similarQuestionsArray.length != 0) {
-                    for (var q = 0; q < similarQuestionsArray.length; q++) {
-                        var question =  '<tr><td>' + similarQuestionsArray[q] + '</td></tr>';
-                        $('#simquestionTableBody').append(question);
-                    }
-                    $('#similarQuestionsPage').show();
-                }
-            });
         };
 
         this.getQuestionCollection = function() {
