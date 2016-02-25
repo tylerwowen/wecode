@@ -57,7 +57,7 @@ define(function (require) {
                 },
                 'body': body
             }).then(function(response) {
-                console.log(response);
+                //console.log(response);
                 return response;
             }, function(error) {
                 console.error(error);
@@ -68,7 +68,7 @@ define(function (require) {
             var body = JSON.stringify(config);
 
             return gapi.client.request({
-                'path': '/upload/drive/v3/files/'+configFileId,
+                'path': '/upload/drive/v3/files/' + configFileId,
                 'method': 'PATCH',
                 'params': {
                     'uploadType': 'media'
@@ -78,7 +78,6 @@ define(function (require) {
                 },
                 'body': body
             }).then(function(response) {
-                console.log(response);
                 return response;
             }, function(error) {
                 console.error(error);
@@ -86,23 +85,25 @@ define(function (require) {
         };
 
         this.loadConfiguration = function() {
+
+            console.log("loading config");
             var request = {
                 spaces: 'appDataFolder',
                 q: 'name = "config.json"'
             };
             return gapi.client.drive.files.list(request)
                 .then(function(response) {
+                    var config = response.result.files[0];
                     if (response.result.files.length < 1) {
                         return null;
                     }
                     if (response.result.files[0].name == 'config.json') {
-                        console.log(response.result.files);
-                        console.log(response.result.files[0].id);
                         return gapi.client.drive.files.get({
                             fileId: response.result.files[0].id,
                             alt: 'media'
                         }).then(function(json) {
-                            return JSON.parse(json.result).rootFolderId;
+                            console.log([json,config]);
+                            return [json, config];
                         });
                     }
                 });
@@ -125,11 +126,20 @@ define(function (require) {
         };
 
         this.getUserPermissionID = function (){
+
             return gapi.client.drive.about.get(
                 {fields:'user'}
             ).then(function(response) {
                     return response.result.user.permissionId;
                 });
+        };
+
+        this.getClassName = function(fileId){
+            return gapi.client.drive.files.get({
+                'fileId': fileId
+            }).then(function(response){
+                return response.result.name;
+            });
         };
 
         this.getFilePermissionId = function (classID){
@@ -164,6 +174,7 @@ define(function (require) {
          * @export
          */
         this.getWorkspaceList = function(folderId) {
+            console.log("getting workspaces");
             var that = this;
             var request = {
                 q: "'" + folderId + "'" + ' in parents'
@@ -182,6 +193,14 @@ define(function (require) {
                 return contentList;
             });
         };
+
+        this.getStudentList = function() {
+            var that = this;
+
+            return this.loadConfiguration().then(function(config){
+                console.log(config);
+            });
+        }
 
         this.createRootFolder = function() {
             var folderName = this.rootFolderName;
