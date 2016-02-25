@@ -69,6 +69,19 @@ define(function(require) {
         });
 
 
+        describe("Adapter update configuration file", function () {
+
+            it('change root folder to another', function (done) {
+                var condifFileId = '1M0cRqU5zQp0fcrkyMG4k2NDTSxD86Q_wavF06UQbtfEY';
+                var configuration = JSON.stringify({
+                    'rootFolderId': '0B51JBDPDXbmhc2N0OTh4ekY0QTA'
+                });
+                adapter.updateConfigurationFile(configuration, condifFileId)
+                    .then(function() {
+                    done();
+                });
+            });
+        });
     });
 
 });
