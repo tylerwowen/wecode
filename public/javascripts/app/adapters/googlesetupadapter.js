@@ -35,7 +35,8 @@ define(function (require) {
             };
 
             var configuration = JSON.stringify({
-                'rootFolderId': rootFolderId
+                rootFolderId: rootFolderId,
+                joinedClasses: []
             });
 
             var body =
@@ -67,14 +68,13 @@ define(function (require) {
             var body = JSON.stringify(config);
 
             return gapi.client.request({
-                'path': '/upload/drive/v3/files',
+                'path': '/upload/drive/v3/files/'+configFileId,
                 'method': 'PATCH',
                 'params': {
-                    'fileId': configFileId,
                     'uploadType': 'media'
                 },
                 'headers': {
-                    'Content-Type': 'Content-Type: application/json\r\n\r\n'
+                    'Content-Type': 'application/json; charset=UTF-8'
                 },
                 'body': body
             }).then(function(response) {
@@ -102,7 +102,7 @@ define(function (require) {
                             fileId: response.result.files[0].id,
                             alt: 'media'
                         }).then(function(json) {
-                            return JSON.parse(json.body).rootFolderId;
+                            return JSON.parse(json.result).rootFolderId;
                         });
                     }
                 });
