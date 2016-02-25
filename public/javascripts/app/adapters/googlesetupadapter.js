@@ -102,7 +102,7 @@ define(function (require) {
                             fileId: response.result.files[0].id,
                             alt: 'media'
                         }).then(function(json) {
-                            console.log([json,config]);
+                            //console.log([json,config]);
                             return [json, config];
                         });
                     }
@@ -198,7 +198,7 @@ define(function (require) {
             var that = this;
 
             return this.loadConfiguration().then(function(config){
-                console.log(config);
+                return config[0].result.joinedClasses;
             });
         }
 

@@ -8,6 +8,7 @@ define(function (require, exports, module) {
         this.init = function() {
             self.createButtonListeners();
             self.showClasses();
+            self.showStudentClasses();
         };
 
         this.createButtonListeners = function() {
@@ -36,6 +37,9 @@ define(function (require, exports, module) {
             $('#studentReturn').click(function(){
                 $('#addNewClassForm').hide();
             });
+
+            $('#StudentSelector').addClass('selected');
+            $('#TAselector').addClass('inactive');
             
             $('#StudentSelector').click(function(){
                 $('li').addClass('inactive');
@@ -69,7 +73,8 @@ define(function (require, exports, module) {
         };
 
         this.showClasses = function() {
-            classManager.init().then(function (classList) {
+            classManager.init().then(function (response) {
+                var classList = response[0];
                 $('#TAClassList').empty();
                 classList.forEach(function (singleClass) {
                     var params = $.param({
@@ -87,19 +92,38 @@ define(function (require, exports, module) {
             });
         };
 
-        this.showStudentClasses = function(classList) {
-            $('#StudentClassList').empty();
-            classList.forEach(function (singleClass) {
-                var params = $.param({
-                    id: singleClass.id,
-                    name: singleClass.name
+        this.showStudentClasses = function() {
+            classManager.init().then(function (response) {
+                var classList = response[1];
+                $('#StudentClassList').empty();
+                classList.forEach(function (singleClass) {
+                    console.log(singleClass);
+                    var params = $.param({
+                        id: singleClass.id,
+                        name: singleClass.name
+                    });
+                    $('#StudentClassList').append(
+                        '<li>' +
+                        '<a href="/questionlist?' + params +'">' +
+                        singleClass.name+ '</a>' +
+                        '</li>');
                 });
-                $('#StudentClassList').append(
-                    '<li>' +
-                    '<a href="/questionlist?' + params +'">' +
-                    singleClass.name+ '</a>' +
-                    '</li>');
+            }, function (error) {
+                console.error(error);
             });
+
+            //$('#studentClassList').empty();
+            //classList.forEach(function (singleClass) {
+            //    var params = $.param({
+            //        id: singleClass.id,
+            //        name: singleClass.name
+            //    });
+            //    $('#studentClassList').append(
+            //        '<li>' +
+            //        '<a href="/questionlist?' + params +'">' +
+            //        singleClass.name+ '</a>' +
+            //        '</li>');
+            //});
         };
 
         this.studentClass = function() {
@@ -107,7 +131,7 @@ define(function (require, exports, module) {
             var name = $('#studentAddNewClassInput').val();
             classManager.addClass(name).then(function (response){
                 if(response != null)
-                    that.showStudentClasses(response);
+                    that.showStudentClasses();
             });
         }
     };
