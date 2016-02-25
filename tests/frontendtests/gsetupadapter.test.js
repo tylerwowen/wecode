@@ -72,11 +72,13 @@ define(function(require) {
         describe("Adapter update configuration file", function () {
 
             it('change root folder to another', function (done) {
-                var condifFileId = '1M0cRqU5zQp0fcrkyMG4k2NDTSxD86Q_wavF06UQbtfEY';
+                var configFileId = '16kUSjSTRRc52DNpPOw2FG3PUb-2FicDksu8e92mCL7mC';
                 var configuration = JSON.stringify({
-                    'rootFolderId': '0B51JBDPDXbmhc2N0OTh4ekY0QTA'
+                    rootFolderId: '0B51JBDPDXbmhVXVBdEtlR0p5U2M',
+                    joinedClasses: []
                 });
-                adapter.updateConfigurationFile(configuration, condifFileId)
+
+                adapter.updateConfigurationFile(configuration, configFileId)
                     .then(function() {
                     done();
                 });
