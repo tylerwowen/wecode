@@ -13,7 +13,7 @@ define(function(require) {
         }
         this.rootFolderId = null;
         this.workspaceList = [];
-        this.classList = [];
+        this.configId = null;
         this.adapter = new Adapter();
     }
 
@@ -28,7 +28,10 @@ define(function(require) {
                 .then(function() {
                     return that.loadConfiguration();
                 }).then(function(rootFolderId) {
-                    that.rootFolderId = rootFolderId;
+                    that.configId = rootFolderId[1].id;
+                    that.rootFolderId = rootFolderId[0].result.rootFolderId;
+                    console.log(that.configId);
+                    console.log(that.rootFolderId);
                     return that.getWorkspaceList();
                 });
         };
@@ -43,7 +46,9 @@ define(function(require) {
                 return that.adapter.createRootFolder().then(function(rootFolderId) {
                     return Q.all([
                         rootFolderId,
-                        that.adapter.createConfigurationFile(rootFolderId)
+                        that.adapter.createConfigurationFile(rootFolderId).then(function(response) {
+
+                        })
                     ]).spread(function(rootFolderId) {
                         return rootFolderId;
                     });
@@ -77,30 +82,57 @@ define(function(require) {
                 });
         };
 
-        this.getStudentClassList = function (classID) {
+        this.getStudentClassList = function () {
             var that = this;
-            return this.adapter.getClassList(classID).then(function(contents){
-                that.classList.push(contents);
-                return that.classList;
-            })
+
+            return this.adapter.getStudentList();
+            //return this.adapter.getClassList(classID).then(function(contents){
+            //    that.classList.push(contents);
+            //    return that.classList;
+            //})
         };
 
         this.addClass = function(classID) {
             var that = this;
             var filePermissionID;
             var userPermissionID;
+            var className;
 
-            return userPermissionID = this.adapter.getUserPermissionID().then(function() {
-                return filePermissionID = that.adapter.getFilePermissionId(classID);
-            }).then(function () {
-                if(userPermissionID != filePermissionID){
-                    return that.getStudentClassList(classID);
-                }
-                else{
-                    console.log("Can't be a student and a TA in the same class");
-                    return null;
-                }
-            });
+            return this.adapter.getUserPermissionID()
+                .then( function (response) {
+                    userPermissionID = response;
+
+                    return that.adapter.getFilePermissionId(classID);
+                }).then( function (response) {
+                    console.log(response);
+                    filePermissionID = response;
+
+                    if(userPermissionID != filePermissionID){
+                        return that.adapter.getClassName(classID)
+                            .then( function(response) {
+                                return className = response;
+                            }).then( function (){
+                                return that.adapter.loadConfiguration().then(function(response){
+                                    var config = response[0];
+                                    console.log(response);
+                                    console.log("pushing " + classID + " " + className);
+                                    config.result.joinedClasses.push({
+                                        'id': classID,
+                                        'name': className
+                                    });
+                                    console.log(config);
+                                    return that.adapter.updateConfigurationFile(config.result,that.configId).then(function(response){
+                                        console.log(response)
+                                        return that.getStudentClassList()
+                                    });
+                                });
+                            });
+                    }
+                    else{
+                        console.log("Can't be a student and a TA in the same class");
+                        return null;
+                    }
+                });
         };
 
     }).call(WorkspaceManager.prototype);
