@@ -56,11 +56,12 @@ define(function (require) {
             var question = currentquestion.toLowerCase();
             var queueTemp = queue;
 
+            var len = queueTemp.length;
             var array = this.getStringArray(question);
             var counter = 0;
             var queueQuestion;
             var rankQuestionsArray = [];
-            for (var k = 0; k < queueTemp.length; k++) {
+            for (var k = 0; k < len; k++) {
                 rankQuestionsArray[k] = [];
                 queueQuestion = this.getStringArray(queueTemp[k]);
                 counter = 0;
@@ -82,7 +83,11 @@ define(function (require) {
 
             var similarQuestionsArray = [];
 
-            for (k = 0; k < rankQuestionsArray.length / 10; k++) {
+            var coef = 0;
+            if(len > 10) coef = 10;
+            else coef = 1;
+
+            for (k = 0; k < len / coef; k++) {
                 if(rankQuestionsArray[k][1]!=0) {
                     similarQuestionsArray.push(queueTemp[rankQuestionsArray[k][0]]);
                 }
