@@ -1,21 +1,8 @@
 div#questionFormPage
-   div#questionForm
-      .container
-         h3
-            | Please enter your topic
-         .dropdown
-            button#topicDropdown.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='true')
-               | Dropdown
-               span.caret
-            ul.dropdown-menu(aria-labelledby='topicDropdown')
-               li
-                  a(href='#') GiHub
-               li
-                  a(href='#') Javascript
-               li
-                  a(href='#') Artificial intelligence
-         h3
-            | Please enter your question
-         .input-group.input-group-lg
-            input#questionInput.form-control(type='text')
-         button#questionSubmitButton.btn.btn-success(type='button') Submit
+    div#page
+    div#questionForm
+        #addHeader Add Question
+        textarea#questionInput.form-control(rows="5", type='text', placeholder='Type your question here...', autocomplete='off')
+        .btn-group
+            button#questionSubmitButton.btn.btn-success(type='button') Add
+            button#questionReturn.btn.btn-success(type='button') Cancel

@@ -26,7 +26,7 @@ define(function (require, exports, module) {
         };
 
         this.createButtonListeners = function() {
-            var isStudent = $("#questionsTableBody") ? true : false; // Check if I'm a student
+            var isStudent = $("#questionsList") ? true : false; // Check if I'm a student
             if(isStudent) {
                 $('#questionSubmitButton').on('click', function () {
                     that.submitQuestion();
@@ -34,6 +34,10 @@ define(function (require, exports, module) {
 
                 $('#questionAddButton').on('click', function () {
                     $('#questionFormPage').show();
+                });
+
+                $('#questionReturn').click(function(){
+                    $('#questionFormPage').hide();
                 });
             } else { //If instructor
                 // Add button listeners if you need to
@@ -113,8 +117,8 @@ define(function (require, exports, module) {
                 });
 
                 // variable = booleanExpression ? setIfTrue : setIfFalse;
-                var isStudent = $('#questionTableBody').length ? true : false; // Check if I'm a student
-                var questionBody = isStudent ? $('#questionTableBody') : $('#workSpaceList');
+                var isStudent = $('#questionList').length ? true : false; // Check if I'm a student
+                var questionBody = isStudent ? $('#questionList') : $('#workSpaceList');
                 var updateQuestionList = isStudent ? updateStudentQuestionList : updateTAQuestionList;
                 var url = "/main_student?" + params;
 
@@ -129,7 +133,7 @@ define(function (require, exports, module) {
                 if(similarQuestionsArray.length != 0) {
                     for (var q = 0; q < similarQuestionsArray.length; q++) {
                         var question =  '<tr><td>' + similarQuestionsArray[q] + '</td></tr>';
-                        $('#simquestionTableBody').append(question);
+                        $('#simquestionList').append(question);
                     }
                     $('#similarQuestionsPage').show();
                 }
