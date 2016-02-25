@@ -75,7 +75,7 @@ Explain Naive Bayes classifier
 How to create an array of a generic object in java
 How to replace all occurrences of a string in a HTML page using Javascript
 How to implement a singleton in java
-How to split regex with soaces
+How to split regular expression with spaces
 What is JavaScript's highest integer value that a Number can go to without losing precision?
 how to sort array of objects in javascript?
 What is the correct JSON content type?

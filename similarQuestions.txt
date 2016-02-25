@@ -1,0 +1,10 @@
+How to return data to variable after ajax call success
+Edit an incorrect commit message in command line Git
+Explain Naive Bayes classifier
+How to create an array of a generic object in java
+How to replace all occurrences of a string in a HTML page using Javascript
+How to implement a singleton in java
+How to split regular expression with spaces
+how to sort array of objects in javascript?
+Remove or revert previous commit in master from local
+How to create and write a .Txt file in Java?
