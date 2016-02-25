@@ -30,6 +30,7 @@ define(function(require) {
 
         this.auth2 = null;
         this.userName = null;
+        this.email = null;
         this.gToken = null;
         this.refreshInterval = 1800000;
 
@@ -77,6 +78,7 @@ define(function(require) {
                     that.gToken = authResult.access_token;
                     that.auth2.then(function() {
                         that.userName = that.auth2.currentUser.get().getBasicProfile().getName();
+                        that.email = that.auth2.currentUser.get().getBasicProfile().getEmail();
                     });
                     console.log('Authorization succeed');
                 }

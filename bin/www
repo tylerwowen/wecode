@@ -41,16 +41,17 @@ server.on('listening', onListening);
 
 var sio = io(server);
 sio.on('connection', function(socket) {
-    rtcSockets(sio, socket);
-    questionsocket(sio, socket);
-    socket.on('disconnect', function() {
-        socket.removeAllListeners();
-    });
+  rtcSockets(sio, socket);
 });
 
 var terminalNSP = sio.of('/terminal');
 terminalNSP.on('connection', function(socket){
     terminalsocket(sio, socket, terminalNSP);
+});
+
+var questionNSP = sio.of('/questions');
+questionNSP.on('connection', function(socket) {
+    questionsocket(sio, socket, questionNSP);
 });
 
 /**
