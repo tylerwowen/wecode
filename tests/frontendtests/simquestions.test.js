@@ -4,17 +4,24 @@ define(function(require) {
     var ace = require('ace/ace');
 
     var SimilarQuestions = require('app/model/similarquestions');
+    var similarQuestions = null;
+
+
+    var queueTemp = null;
+    var queriesTemp = null;
+    var simTemp = null;
 
     describe("Similar Questions tests ", function () {
 
         this.timeout(5000);
 
-        var similarQuestions = null;
-        var totalQuestionsCount = 0;
-        var score = 0;
-        
+
+
         before(function() {
             similarQuestions = new SimilarQuestions();
+            readTextFile("queueQuestions.txt");
+            readTextFile("queryQuestions.txt");
+            readTextFile("similarQuestions.txt");
         });
 
         it('testing 1 is equal to 1', function () {
@@ -22,11 +29,6 @@ define(function(require) {
         });
 
         describe("Test Similar questions feature", function () {
-            it('Reads questions from file', function (done) {
-                readTextFile("questions.txt");
-                expect(queueTemp.length).to.be.equal(83);
-                done();
-            });
 
             it('Removes punctuation', function (done) {
                 var s = "This., -/ is #! an $ % ^ & * example ;: {} of a = -_ string with `~)()hello's punctuation";
@@ -52,197 +54,51 @@ define(function(require) {
                 done();
             });
 
-            it('Returns similar queston 1', function (done) {
-                var currentQuestion = "Return data after ajax call success";
-                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
+            it('Calculate similar questions accuracy', function (done) {
 
-                    var len = similarQuestionsArray.length;
-                    console.log(similarQuestionsArray, len);
-                    totalQuestionsCount =+ len;
-                    if( len != 0) {
-                        for(var i = 0; i < len; i++) {
-                            if(similarQuestionsArray[i] === "How to return data to variable after ajax call success") {
-                                score +=((len - i) / len);
+                var queryCount = queriesTemp.length;
+                var currentQuestion, simArrayLength;
+                var totalQuestionsCount = 0, score = 0;
+
+                for(var q = 0; q < queryCount; q++) {
+                    currentQuestion = queriesTemp[q];
+                    similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray) {
+                        //console.log(similarQuestionsArray);
+                        simArrayLength = similarQuestionsArray.length;
+                        totalQuestionsCount += simArrayLength;
+                        if( simArrayLength != 0) {
+                            for(var i = 0; i < simArrayLength; i++) {
+                                if(similarQuestionsArray[i] === simTemp[q]) {
+                                    score += (simArrayLength - i);
+                                }
                             }
+                            //console.log("Total returned question" , totalQuestionsCount);
+                            //console.log("Total score" , score);
+                            console.log("");
                         }
-                        console.log(score);
-                    }
-                });
-                done();
-            });
+                    });
+                }
+                console.log("Total accuracy: ", (score/totalQuestionsCount*100).toFixed(2),"%");
 
-            it('Returns similar queston 2', function (done) {
-                var currentQuestion = "How to change commit message?";
-                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
-
-                    var len = similarQuestionsArray.length;
-                    console.log(similarQuestionsArray, len);
-                    if( len != 0) {
-                        for(var i = 0; i < len; i++) {
-                            if(similarQuestionsArray[i] === "Edit an incorrect commit message in command line Git") {
-                                score +=((len - i) / len);
-                            }
-                        }
-                        console.log(score);
-                    }
-                });
-                done();
-            });
-
-            it('Returns similar queston 3', function (done) {
-                var currentQuestion = "A simple explanation of Naive Bayes Classification";
-                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
-
-                    var len = similarQuestionsArray.length;
-                    console.log(similarQuestionsArray, len);
-                    if( len != 0) {
-                        for(var i = 0; i < len; i++) {
-                            if(similarQuestionsArray[i] === "Explain Naive Bayes classifier") {
-                                score +=((len - i) / len);
-                            }
-                        }
-                        console.log(score);
-                    }
-                });
-                done();
-            });
-
-            it('Returns similar queston 4', function (done) {
-                var currentQuestion = "How to create a generic array in Java?";
-                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
-
-                    var len = similarQuestionsArray.length;
-                    console.log(similarQuestionsArray, len);
-                    if( len != 0) {
-                        for(var i = 0; i < len; i++) {
-                            if(similarQuestionsArray[i] === "How to create an array of a generic object in java") {
-                                score +=((len - i) / len);
-                            }
-                        }
-                        console.log(score);
-                    }
-                });
-                done();
-            });
-
-            it('Returns similar queston 5', function (done) {
-                var currentQuestion = "Replacing all occurrences of a string in JavaScript";
-                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
-
-                    var len = similarQuestionsArray.length;
-                    console.log(similarQuestionsArray, len);
-                    if( len != 0) {
-                        for(var i = 0; i < len; i++) {
-                            if(similarQuestionsArray[i] === "How to replace all occurrences of a string in a HTML page using Javascript") {
-                                score +=((len - i) / len);
-                            }
-                        }
-                        console.log(score);
-                    }
-                });
-                done();
-            });
-
-            it('Returns similar queston 6', function (done) {
-                var currentQuestion = "What is an efficient way to implement a singleton pattern in Java?";
-                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
-
-                    var len = similarQuestionsArray.length;
-                    console.log(similarQuestionsArray, len);
-                    if( len != 0) {
-                        for(var i = 0; i < len; i++) {
-                            if(similarQuestionsArray[i] === "How to implement a singleton in java") {
-                                score +=((len - i) / len);
-                            }
-                        }
-                        console.log(score);
-                    }
-                });
-                done();
-            });
-
-            it('Returns similar queston 7', function (done) {
-                var currentQuestion = "Regular Expression split with white spaces";
-                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
-
-                    var len = similarQuestionsArray.length;
-                    console.log(similarQuestionsArray, len);
-                    if( len != 0) {
-                        for(var i = 0; i < len; i++) {
-                            if(similarQuestionsArray[i] === "How to split regex with soaces") {
-                                score +=((len - i) / len);
-                            }
-                        }
-                        console.log(score);
-                    }
-                });
-                done();
-            });
-
-            it('Returns similar queston 8', function (done) {
-                var currentQuestion = "Sort array of objects by string property value in JavaScript";
-                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
-
-                    var len = similarQuestionsArray.length;
-                    console.log(similarQuestionsArray, len);
-                    if( len != 0) {
-                        for(var i = 0; i < len; i++) {
-                            if(similarQuestionsArray[i] === "how to sort array of objects in javascript?") {
-                                score +=((len - i) / len);
-                            }
-                        }
-                        console.log(score);
-                    }
-                });
-                done();
-            });
-
-            it('Returns similar queston 9', function (done) {
-                var currentQuestion = "How to revert to previous commit";
-                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
-
-                    var len = similarQuestionsArray.length;
-                    console.log(similarQuestionsArray, len);
-                    if( len != 0) {
-                        for(var i = 0; i < len; i++) {
-                            if(similarQuestionsArray[i] === "How do you undo the last commit?"
-                            || similarQuestionsArray[i] === "Remove or revert previous commit in master from local") {
-                                score +=((len - i) / len);
-                            }
-                        }
-                        console.log(score);
-                    }
-                });
-                done();
-            });
-
-            it('Returns similar queston 10', function (done) {
-                var currentQuestion = "How to create a file and write to a file in Java?";
-                similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray){
-
-                    var len = similarQuestionsArray.length;
-                    console.log(similarQuestionsArray, len);
-                    if( len != 0) {
-                        for(var i = 0; i < len; i++) {
-                            if(similarQuestionsArray[i] === "How to create and write a .Txt file in Java?") {
-                                score +=((len - i) / len);
-                            }
-                        }
-                        console.log(score/10);
-                    }
-                });
                 done();
             });
         });
     });
 
     function readTextFile(file) {
+
         var rawFile = new XMLHttpRequest();
         rawFile.open("GET", file, false);
         rawFile.onreadystatechange = function () {
-            if(rawFile.readyState === 4) {
-                if(rawFile.status === 200 || rawFile.status == 0) {
-                    queueTemp = String(rawFile.responseText).split('\n');
+            if (rawFile.readyState === 4) {
+                if (rawFile.status === 200 || rawFile.status == 0) {
+                    if (file === "queueQuestions.txt") {
+                        queueTemp = String(rawFile.responseText).split('\n');
+                    } else if (file === "queryQuestions.txt") {
+                        queriesTemp = String(rawFile.responseText).split('\n');
+                    } else if (file === "similarQuestions.txt") {
+                        simTemp = String(rawFile.responseText).split('\n');
+                    }
                 }
             }
         };

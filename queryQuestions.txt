@@ -1,0 +1,10 @@
+Return data after ajax call success
+How to change commit message?
+A simple explanation of Naive Bayes Classification
+How to create a generic array in Java?
+Replacing all occurrences of a string in JavaScript
+What is an efficient way to implement a singleton pattern in Java?
+Regular Expression split with white spaces
+Sort array of objects by string property value in JavaScript
+How to revert to previous commit
+How to create a file and write to a file in Java?
