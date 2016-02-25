@@ -14,6 +14,7 @@ define(function(require) {
         this.rootFolderId = null;
         this.workspaceList = [];
         this.configId = null;
+        this.classList = [];
         this.adapter = new Adapter();
     }
 
@@ -32,7 +33,12 @@ define(function(require) {
                     that.rootFolderId = rootFolderId[0].result.rootFolderId;
                     console.log(that.configId);
                     console.log(that.rootFolderId);
-                    return that.getWorkspaceList();
+                }).then(function() {
+                    return that.getWorkspaceList().then(function(){
+                        return that.getStudentClassList();
+                    });
+                }).then(function(){
+                    return [that.workspaceList, that.classList]
                 });
         };
 
@@ -85,11 +91,10 @@ define(function(require) {
         this.getStudentClassList = function () {
             var that = this;
 
-            return this.adapter.getStudentList();
-            //return this.adapter.getClassList(classID).then(function(contents){
-            //    that.classList.push(contents);
-            //    return that.classList;
-            //})
+            return this.adapter.getStudentList().then(function(classes){
+                that.classList = classes;
+                return that.classList;
+            });
         };
 
         this.addClass = function(classID) {
@@ -114,15 +119,12 @@ define(function(require) {
                             }).then( function (){
                                 return that.adapter.loadConfiguration().then(function(response){
                                     var config = response[0];
-                                    console.log(response);
                                     console.log("pushing " + classID + " " + className);
                                     config.result.joinedClasses.push({
                                         'id': classID,
                                         'name': className
                                     });
-                                    console.log(config);
                                     return that.adapter.updateConfigurationFile(config.result,that.configId).then(function(response){
-                                        console.log(response)
                                         return that.getStudentClassList()
                                     });
                                 });
