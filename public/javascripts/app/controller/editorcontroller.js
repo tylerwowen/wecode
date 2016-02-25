@@ -85,7 +85,7 @@ define(function (require) {
                 that.editor.resize();
             });
 
-            $('#fileButton').on('click', function() {
+            $('#fileForm').submit(function(){
                 that.createFile($('#fileName').val());
             });
 

@@ -4,11 +4,12 @@
             li#renameContent Rename
             li#deleteContent Delete
     #wsName Workspace
-    .input-group#fileForm
-        input#fileName.form-control(placeholder="Create a File")
-        span.input-group-btn(type='text', autocomplete='off')
-            button#fileButton.btn.btn-info(type='button')
-                span.glyphicon.glyphicon-plus
+    form#fileForm
+        .input-group#fileForm
+            input#fileName.form-control(type='text', placeholder='Create a File', autocomplete='off')
+            span.input-group-btn
+                button#fileButton.btn.btn-info
+                    span.glyphicon.glyphicon-plus
     ul#menu-content.menu-content.collapse.out
         li#folders.collapsed(data-toggle='collapse', data-target='#files')
             a(href='#')
