@@ -63,6 +63,28 @@ define(function (require) {
             });
         };
 
+        this.updateConfigurationFile = function(config, configFileId) {
+            var body = JSON.stringify(config);
+
+            return gapi.client.request({
+                'path': '/upload/drive/v3/files',
+                'method': 'PATCH',
+                'params': {
+                    'fileId': configFileId,
+                    'uploadType': 'media'
+                },
+                'headers': {
+                    'Content-Type': 'Content-Type: application/json\r\n\r\n'
+                },
+                'body': body
+            }).then(function(response) {
+                console.log(response);
+                return response;
+            }, function(error) {
+                console.error(error);
+            });
+        };
+
         this.loadConfiguration = function() {
             var request = {
                 spaces: 'appDataFolder',
@@ -74,6 +96,8 @@ define(function (require) {
                         return null;
                     }
                     if (response.result.files[0].name == 'config.json') {
+                        console.log(response.result.files);
+                        console.log(response.result.files[0].id);
                         return gapi.client.drive.files.get({
                             fileId: response.result.files[0].id,
                             alt: 'media'
