@@ -2,6 +2,7 @@ define(function (require) {
     "use strict";
 
     var $ = require('jquery');
+    require('lib/stemmer');
 
     function SimilarQuestions() {}
 
@@ -10,16 +11,8 @@ define(function (require) {
         this.constructor = SimilarQuestions;
         var that = this;
 
-        this.init = function() {
-
-        };
-
-        this.connectToView = function() {
-            var that = this;
-        };
-
         this.getSimilarQuestions = function(currentquestion, queue, callback) {
-            var question = currentquestion.toLowerCase();
+            var question = currentquestion;
             var queueTemp = queue;
 
             var len = queueTemp.length;
@@ -31,24 +24,28 @@ define(function (require) {
                 rankQuestionsArray[k] = [];
                 queueQuestion = this.getStringArray(queueTemp[k]);
                 counter = 0;
-                for (var i = 0; i < array.length; i++) {
-                    for (var j = 0; j < queueQuestion.length; j++) {
-                        if(!this.isStopWord(array[i]) && !this.isStopWord(queueQuestion[j])) {
-                            var res = array[i].localeCompare(queueQuestion[j]);
-                            if(res == 0 ){
-                                counter++;
+
+                array.forEach(function(arrayWordTemp){
+                    if(!that.isStopWord(arrayWordTemp)){
+                        arrayWordTemp = stemmer(arrayWordTemp);
+                        queueQuestion.forEach(function(queueWordTemp){
+                            if(!that.isStopWord(queueWordTemp)){
+                                queueWordTemp = stemmer(queueWordTemp);
+                                var result = arrayWordTemp.localeCompare(queueWordTemp);
+                                if(result == 0){
+                                    counter++;
+                                }
                             }
-                        }
+                        });
                     }
-                }
+                });
+
                 rankQuestionsArray[k][0] = k;
                 rankQuestionsArray[k][1] = counter;
             }
 
-            rankQuestionsArray.sort(this.sortByCounter);
-
+            rankQuestionsArray = rankQuestionsArray.sort(this.sortByCounter);
             var similarQuestionsArray = [];
-
             var coef = 0;
             if(len > 10) coef = 10;
             else coef = 1;
@@ -65,6 +62,10 @@ define(function (require) {
             return stopwords.includes(word);
         };
 
+        this.stemWord = function(word){
+            return stemmer(word);
+        };
+
         this.sortByCounter = function(a, b){
             return (a[1] > b[1] ? -1 : (a[1] < b[1] ? 1 : 0));
         };
@@ -72,7 +73,8 @@ define(function (require) {
         this.getStringArray = function(string) {
             var array;
             string = string.replace(/['`]/g,"");
-            string = string.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g," ");
+            string = string.replace(/[^A-Za-z]/g," ");
+            string = string.trim();
             array = (string.toLowerCase()).split(/\s+/);
             return array;
         };

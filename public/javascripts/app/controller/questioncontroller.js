@@ -72,8 +72,6 @@ define(function (require, exports, module) {
             that.displayQuestionList();
         });
 
-
-
         this.displayQuestionList = function() {
             socket.emit('getQuestionList', that.classId, function(queue) {
                 var updateStudentQuestionList = function(questionObject) {
