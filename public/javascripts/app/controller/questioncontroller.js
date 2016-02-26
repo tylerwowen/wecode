@@ -1,19 +1,17 @@
 define(function (require, exports, module) {
-    var $ = require('jquery');
-    var io = require('socketio');
-    var socket = io('/questions');  // I think need to change later
-    var getParam = require('lib/getparam');
-    var userManager = require('app/model/usermanager')();
-    var SimilarQuestions = require('app/model/similarquestions');
+    var $                   = require('jquery');
+    var io                  = require('socketio');
+    var socket              = io('/questions');  // I think need to change later
+    var getParam            = require('lib/getparam');
+    var userManager         = require('app/model/usermanager')();
+    var SimilarQuestions    = require('app/model/similarquestions');
 
     var QuestionController = function () {
         var that = this;
         this.classId = getParam('id');
         this.className = getParam('name');
         this.similarQuestions = new SimilarQuestions();
-        socket.emit('create or join', that.classId); // need to change later
-
-        var questionCol = ["How to change commit message", "Edit commit history", "How to revert a commit"];
+        socket.emit('join', that.classId); // need to change later
 
         this.init = function() {
             this.createButtonListeners();
@@ -35,6 +33,10 @@ define(function (require, exports, module) {
                 $('#questionReturn').click(function(){
                     $('#questionFormPage').hide();
                 });
+
+                $('#simquestionAddButton').click(function() {
+                    $('#similarQuestionsPage').hide();
+                })
             } else { //If instructor
                 // Add button listeners if you need to
             }
@@ -59,13 +61,15 @@ define(function (require, exports, module) {
             var question = {
                 topic: "github",
                 question: questiontext,
-                email: userManager.email
+                email: userManager.email,
+                name: userManager.userName
             };
 
-            socket.emit('addQuestion', that.classId, question);
+            socket.emit('addQuestion', that.classId, question, function(question, queue) {
+                that.displaySimilarQuestions(question.question, queue);
+            });
             $('#questionInput').val('');
             $('#questionFormPage').hide();
-            that.displaySimilarQuestions(question.question, questionCol);
         };
 
         socket.on('updateQuestionList', function() {
@@ -76,33 +80,33 @@ define(function (require, exports, module) {
 
         this.displayQuestionList = function() {
             socket.emit('getQuestionList', that.classId, function(queue) {
-                var updateStudentQuestionList = function(questionObject) {
+                var updateStudentQuestionList = function(questionObject, index) {
                     questionBody.append(
                         '<li>' +
-                            '<a id="' + questionObject.email + '" href="/main?' + params + '">' + questionObject.question + '</a>' +
+                        '<a id="' + questionObject.email + index + '" href="/main?' + params + '">' + questionObject.question + '</a>' +
                         '</li>');
                 };
 
                 var updateTAQuestionList = function(questionObject) {
+                    var id = Date.now();
                     questionBody.append(
                         '<li>' +
-                        '<button id=' + questionObject.email + '>' + questionObject.question + '</button>' +
-                        '<button id=' + questionObject.email + 'kickout>' + 'kickout ' + questionObject.question + '</button>' +
+                        '<button id=' + id + '>' + questionObject.question + '</button>' +
+                        '<button id=' + id + 'kick' + '>X</button>' +
                         '</li>');
 
                     var bringStudentIn = function() {
-                        var self = this;
-                        socket.emit('bringUserIn', self.id, url, that.classId);
+                        socket.emit('bringUserIn', questionObject.email, url, that.classId);
                     };
 
                     var kickStudentOut = function() { //TODO Not implemented yet
-                        var self = this;
-                        socket.emit('kickUserOut', self.id, url, that.classId);
+                        socket.emit('kickUserOut', questionObject.email, url, that.classId);
                     };
 
                     // Set event handlers for clicks
-                    document.getElementById(questionObject.email).onclick = bringStudentIn;
-                    document.getElementById(questionObject.email.toString() + 'kickout').onclick = kickStudentOut; //TODO Not working atm
+
+                    $('#' + id).click(bringStudentIn);
+                    $('#' + id + 'kick').click(kickStudentOut);
                 };
 
                 // If queue is undefined, set it to empty and do nothing

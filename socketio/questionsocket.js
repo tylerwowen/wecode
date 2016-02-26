@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var classes = new Map();
 var QuestionSocket = function(sio, socket, questionNSP) {
     var self = this;
@@ -7,7 +8,8 @@ var QuestionSocket = function(sio, socket, questionNSP) {
         callback(self.classes.get(classId));
     });
 
-    socket.on('addQuestion', function(classId, question) {
+    socket.on('addQuestion', function(classId, question, callback) {
+        callback(question, _.map(self.classes.get(classId), function(questionObject) { return questionObject.question}));
         if(self.classes.has(classId)) {
             self.classes.get(classId).push(question);
         }
@@ -23,10 +25,15 @@ var QuestionSocket = function(sio, socket, questionNSP) {
     });
 
     socket.on('kickUserOut', function(email, href, classId) { //TODO Not done yet
-        questionNSP.to(classId).emit('kickUserOut', email,href, classId);
+        _.remove(self.classes.get(classId), function(question) {
+            return question.email === email;
+        });
+
+        questionNSP.to(classId).emit('updateQuestionList');
+        questionNSP.to(classId).emit('kickUserOut', email, href, classId);
     });
 
-    socket.on('create or join', function(roomId) {
+    socket.on('join', function(roomId) {
         socket.join(roomId);
     });
 };
