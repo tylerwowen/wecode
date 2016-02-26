@@ -69,11 +69,9 @@ define(function (require) {
             this.updateStatus();
             this.onEventuallySuccess();
             $('#login-hovering').hide();
-            this.userManager.onGapiSuccess(googleUser);
         };
 
         this.onGapiFailure = function(error) {
-            console.log(error);
             this.userManager.onGapiFailure(error);
         };
 
