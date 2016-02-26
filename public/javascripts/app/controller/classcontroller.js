@@ -68,11 +68,13 @@ define(function (require, exports, module) {
                 })
                 .then(function() {
                     self.showClasses();
+                    window.location.reload();
                 });
         };
 
         this.showClasses = function() {
             var that = this;
+            console.log("show classes");
             classManager.init().then(function (response) {
                 that.showTAClasses(response[0]);
                 that.showStudentClasses(response[1]);
@@ -116,8 +118,10 @@ define(function (require, exports, module) {
             var that = this;
             var name = $('#studentAddNewClassInput').val();
             classManager.addClass(name).then(function (response){
-                if(response != null)
+                if(response != null) {
                     that.showStudentClasses();
+                    window.location.reload();
+                }
             });
         }
     };
