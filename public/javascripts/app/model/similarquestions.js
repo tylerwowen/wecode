@@ -19,40 +19,6 @@ define(function (require) {
         };
 
         this.getSimilarQuestions = function(currentquestion, queue, callback) {
-            this.ques = currentquestion.question.toLowerCase();
-            this.topic = currentquestion.topic;
-            this.queueTemp = queue;
-
-            var array = this.ques.split(" ");
-            var counter = 0;
-            var queueQues;
-            var countQuestArray = [];
-            for (var k = 0; k < this.queueTemp.length; k++) {
-                queueQues = (this.queueTemp[k].question.toLowerCase()).split("\\s+");
-                counter = 0;
-                for (var i = 0; i < array.length; i++) {
-                    for (var j = 0; j <queueQues.length; j++) {
-                        if(array[i].localeCompare(queueQues[j]) == 0 ){
-                            counter++;
-                        }
-                    }
-                }
-                countQuestArray.push(counter);
-            }
-            var max = countQuestArray[0];
-            var maxIndex = 0;
-
-            for (var i = 1; i < countQuestArray.length; i++) {
-                if (countQuestArray[i] > max) {
-                    maxIndex = i;
-                    max = countQuestArray[i];
-                }
-            }
-            if (callback) callback();
-            return this.queueTemp[maxIndex].question;
-        };
-
-        this.getSimilarQuestionsWOTopics = function(currentquestion, queue, callback) {
             var question = currentquestion.toLowerCase();
             var queueTemp = queue;
 

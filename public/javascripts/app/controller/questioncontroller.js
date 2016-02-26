@@ -13,6 +13,7 @@ define(function (require, exports, module) {
         this.similarQuestions = new SimilarQuestions();
         socket.emit('create or join', that.classId); // need to change later
 
+        // this questionCol needs to be deleted once actual list of questions passed in
         var questionCol = ["How to change commit message", "Edit commit history", "How to revert a commit"];
 
         this.init = function() {
@@ -57,7 +58,6 @@ define(function (require, exports, module) {
             var questiontext = $('#questionInput').val();
 
             var question = {
-                topic: "github",
                 question: questiontext,
                 email: userManager.email
             };
@@ -125,7 +125,7 @@ define(function (require, exports, module) {
         };
 
         this.displaySimilarQuestions = function(question, questionCol) {
-            this.similarQuestions.getSimilarQuestionsWOTopics(question, questionCol, function(similarQuestionsArray){
+            this.similarQuestions.getSimilarQuestions(question, questionCol, function(similarQuestionsArray){
                 if(similarQuestionsArray.length != 0) {
                     for (var q = 0; q < similarQuestionsArray.length; q++) {
                         var question =  '<tr><td>' + similarQuestionsArray[q] + '</td></tr>';
