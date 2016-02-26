@@ -8,7 +8,6 @@ define(function (require, exports, module) {
         this.init = function() {
             self.createButtonListeners();
             self.showClasses();
-            self.showStudentClasses();
         };
 
         this.createButtonListeners = function() {
@@ -40,7 +39,7 @@ define(function (require, exports, module) {
 
             $('#StudentSelector').addClass('selected');
             $('#TAselector').addClass('inactive');
-            
+
             $('#StudentSelector').click(function(){
                 $('li').addClass('inactive');
                 $('li').removeClass('selected');
@@ -73,57 +72,44 @@ define(function (require, exports, module) {
         };
 
         this.showClasses = function() {
+            var that = this;
             classManager.init().then(function (response) {
-                var classList = response[0];
-                $('#TAClassList').empty();
-                classList.forEach(function (singleClass) {
-                    var params = $.param({
-                        id: singleClass.id,
-                        name: singleClass.name
-                    });
-                    $('#TAClassList').append(
-                        '<li>' +
-                        '<a href="/main?' + params + '">' +
-                        singleClass.name+ '</a>' +
-                        '</li>');
-                })
+                that.showTAClasses(response[0]);
+                that.showStudentClasses(response[1]);
             }, function (error) {
                 console.error(error);
             });
         };
 
-        this.showStudentClasses = function() {
-            classManager.init().then(function (response) {
-                var classList = response[1];
-                $('#StudentClassList').empty();
-                classList.forEach(function (singleClass) {
-                    console.log(singleClass);
-                    var params = $.param({
-                        id: singleClass.id,
-                        name: singleClass.name
-                    });
-                    $('#StudentClassList').append(
-                        '<li>' +
-                        '<a href="/questionlist?' + params +'">' +
-                        singleClass.name+ '</a>' +
-                        '</li>');
+        this.showTAClasses = function(TAClassList) {
+            $('#TAClassList').empty();
+            TAClassList.forEach(function (singleClass) {
+                var params = $.param({
+                    id: singleClass.id,
+                    name: singleClass.name
                 });
-            }, function (error) {
-                console.error(error);
+                $('#TAClassList').append(
+                    '<li>' +
+                    '<a href="/main?' + params + '">' +
+                    singleClass.name + '</a>' +
+                    '</li>');
+            });
+        };
+
+        this.showStudentClasses = function(studentClassList) {
+            $('#StudentClassList').empty();
+            studentClassList.forEach(function (singleClass) {
+                var params = $.param({
+                    id: singleClass.id,
+                    name: singleClass.name
+                });
+                $('#StudentClassList').append(
+                    '<li>' +
+                    '<a href="/questionlist?' + params + '">' +
+                    singleClass.name + '</a>' +
+                    '</li>');
             });
 
-            //$('#studentClassList').empty();
-            //classList.forEach(function (singleClass) {
-            //    var params = $.param({
-            //        id: singleClass.id,
-            //        name: singleClass.name
-            //    });
-            //    $('#studentClassList').append(
-            //        '<li>' +
-            //        '<a href="/questionlist?' + params +'">' +
-            //        singleClass.name+ '</a>' +
-            //        '</li>');
-            //});
         };
 
         this.studentClass = function() {

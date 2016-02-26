@@ -13,7 +13,7 @@ define(function(require) {
         }
         this.rootFolderId = null;
         this.workspaceList = [];
-        this.configId = null;
+        this.configFileId = null;
         this.classList = [];
         this.adapter = new Adapter();
     }
@@ -28,36 +28,23 @@ define(function(require) {
             return this.adapter.load()
                 .then(function() {
                     return that.loadConfiguration();
-                }).then(function(rootFolderId) {
-                    that.configId = rootFolderId[1].id;
-                    that.rootFolderId = rootFolderId[0].result.rootFolderId;
-                    console.log(that.configId);
-                    console.log(that.rootFolderId);
-                }).then(function() {
-                    return that.getWorkspaceList().then(function(){
-                        return that.getStudentClassList();
-                    });
-                }).then(function(){
-                    return [that.workspaceList, that.classList]
+                }).then(function(responseArr) {
+                    that.rootFolderId = responseArr[0].rootFolderId;
+                    that.configFileId = responseArr[1];
+                    that.config = responseArr[0];
+                    return that.getWorkspaceList();
                 });
         };
 
         this.loadConfiguration = function() {
             var that = this;
-            return this.adapter.loadConfiguration().then(function(rootFolderId) {
-                if (rootFolderId != null) {
-                    return rootFolderId;
+            return this.adapter.loadConfiguration().then(function(response) {
+                if (response != null) {
+                    return response;
                 }
                 // first time, create rootFolder and configuration
                 return that.adapter.createRootFolder().then(function(rootFolderId) {
-                    return Q.all([
-                        rootFolderId,
-                        that.adapter.createConfigurationFile(rootFolderId).then(function(response) {
-
-                        })
-                    ]).spread(function(rootFolderId) {
-                        return rootFolderId;
-                    });
+                    return that.adapter.createConfigurationFile(rootFolderId);
                 });
             });
         };
@@ -71,7 +58,7 @@ define(function(require) {
             }
             return this.adapter.getWorkspaceList(this.rootFolderId).then(function(contents) {
                 that.workspaceList = contents;
-                return that.workspaceList;
+                return [that.workspaceList, that.config ? that.config.joinedClasses : null];
             });
         };
 
@@ -86,15 +73,6 @@ define(function(require) {
                 .then(function(workspace) {
                     return that.adapter.addPublicPermissions(workspace.id);
                 });
-        };
-
-        this.getStudentClassList = function () {
-            var that = this;
-
-            return this.adapter.getStudentList().then(function(classes){
-                that.classList = classes;
-                return that.classList;
-            });
         };
 
         this.addClass = function(classID) {
@@ -117,17 +95,11 @@ define(function(require) {
                             .then( function(response) {
                                 return className = response;
                             }).then( function (){
-                                return that.adapter.loadConfiguration().then(function(response){
-                                    var config = response[0];
-                                    console.log("pushing " + classID + " " + className);
-                                    config.result.joinedClasses.push({
-                                        'id': classID,
-                                        'name': className
-                                    });
-                                    return that.adapter.updateConfigurationFile(config.result,that.configId).then(function(response){
-                                        return that.getStudentClassList()
-                                    });
+                                that.config.joinedClasses.push({
+                                    'id': classID,
+                                    'name': className
                                 });
+                                return that.adapter.updateConfigurationFile(that.config,that.configFileId);
                             });
                     }
                     else{

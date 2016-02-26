@@ -34,10 +34,12 @@ define(function (require) {
                 'parents': [ 'appDataFolder']
             };
 
-            var configuration = JSON.stringify({
+            var config = {
                 rootFolderId: rootFolderId,
                 joinedClasses: []
-            });
+            };
+
+            var configJSON = JSON.stringify(config);
 
             var body =
                 delimiter +
@@ -45,7 +47,7 @@ define(function (require) {
                 JSON.stringify(metadata) +
                 delimiter +
                 'Content-Type: application/json\r\n\r\n' +
-                configuration +
+                configJSON +
                 close_delim;
 
             return gapi.client.request({
@@ -57,8 +59,7 @@ define(function (require) {
                 },
                 'body': body
             }).then(function(response) {
-                //console.log(response);
-                return response;
+                return [config, response.result.id];
             }, function(error) {
                 console.error(error);
             });
@@ -85,25 +86,24 @@ define(function (require) {
         };
 
         this.loadConfiguration = function() {
-
-            console.log("loading config");
             var request = {
                 spaces: 'appDataFolder',
                 q: 'name = "config.json"'
             };
             return gapi.client.drive.files.list(request)
                 .then(function(response) {
-                    var config = response.result.files[0];
+                    var configFileId;
                     if (response.result.files.length < 1) {
                         return null;
                     }
                     if (response.result.files[0].name == 'config.json') {
+                        configFileId = response.result.files[0].id;
                         return gapi.client.drive.files.get({
-                            fileId: response.result.files[0].id,
+                            fileId: configFileId,
                             alt: 'media'
                         }).then(function(json) {
-                            //console.log([json,config]);
-                            return [json, config];
+                            var config = json.result;
+                            return [config, configFileId];
                         });
                     }
                 });
@@ -152,21 +152,6 @@ define(function (require) {
             });
         };
 
-        this.getClassList = function(folderId) {
-            console.log("in classList");
-            var that = this;
-
-            return gapi.client.drive.files.get(
-                {fileId: folderId}
-            ).then(function(response) {
-                    var contentList ={
-                        id: response.result.id,
-                        name: response.result.name
-                    };
-                return contentList;
-            });
-        };
-
         /**
          * Fetches all the workspace
          * @param {!string} folderId is the ID of the root folder.
@@ -193,14 +178,6 @@ define(function (require) {
                 return contentList;
             });
         };
-
-        this.getStudentList = function() {
-            var that = this;
-
-            return this.loadConfiguration().then(function(config){
-                return config[0].result.joinedClasses;
-            });
-        }
 
         this.createRootFolder = function() {
             var folderName = this.rootFolderName;
