@@ -42,6 +42,12 @@ define(function(require) {
                     client_id: clientId,
                     scope: scopes
                 });
+                that.auth2.isSignedIn.listen(function(isSignedIn) {
+                    if (isSignedIn) {
+                        that.onGapiSuccess(that.auth2.currentUser.get());
+                    }
+                });
+
                 deferred.resolve();
             });
             return deferred.promise;
@@ -49,10 +55,13 @@ define(function(require) {
 
         this.onGapiSuccess = function(googleUser) {
             console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-            this.gToken = googleUser.getAuthResponse().access_token;
             this.userName = googleUser.getBasicProfile().getName();
+            that.email = googleUser.getBasicProfile().getEmail();
             if (this.authTimer) {
                 window.clearTimeout(this.authTimer);
+            }
+            if (!this.gToken) {
+                this.authorize(false);
             }
             this.refreshAuth();
         };
@@ -76,19 +85,9 @@ define(function(require) {
             }, function(authResult) {
                 if (authResult && !authResult.error) {
                     that.gToken = authResult.access_token;
-                    that.auth2.then(function() {
-                        that.userName = that.auth2.currentUser.get().getBasicProfile().getName();
-                        that.email = that.auth2.currentUser.get().getBasicProfile().getEmail();
-                    });
-                    console.log('Authorization succeed');
                 }
                 deferred.resolve(authResult);
             });
-
-            if (this.authTimer) {
-                window.clearTimeout(this.authTimer);
-            }
-            this.refreshAuth();
 
             return deferred.promise;
         };

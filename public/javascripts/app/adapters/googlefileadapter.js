@@ -2,7 +2,8 @@ define(function(require) {
     "use strict";
 
     var Q = require('q'),
-        gapi = require('gapi');
+        gapi = require('gapi'),
+        userManager = require('app/model/usermanager')();
 
     function GoogleFileAdapter() {}
 
@@ -33,21 +34,16 @@ define(function(require) {
         this.onError = function(error) {
             if (error.type == gapi.drive.realtime.ErrorType
                     .TOKEN_REFRESH_REQUIRED) {
-                this.authorizer.authorize(function () {
-                    console.log('Error, auth refreshed');
-                }, false);
+                userManager.authorize(false);
             } else if (error.type == gapi.drive.realtime.ErrorType
                     .CLIENT_ERROR) {
                 alert('An Error happened: ' + error.message);
-                window.location.href = '/';
             } else if (error.type == gapi.drive.realtime.ErrorType.NOT_FOUND) {
                 alert('The file was not found. It does not exist or you do not have ' +
                     'read access to the file.');
-                window.location.href = '/';
             } else if (error.type == gapi.drive.realtime.ErrorType.FORBIDDEN) {
                 alert('You do not have access to this file. Try having the owner share' +
                     'it with you from Google Drive.');
-                window.location.href = '/';
             }
         };
 
