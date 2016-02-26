@@ -89,6 +89,8 @@ define(function (require) {
                 that.createFile($('#fileName').val());
             });
 
+            $('#wsName').text(that.workspace.name);
+
             $('#files')
                 .on('click', 'li.file', function() {
                     $('#files').find('li.current').removeClass('current');
