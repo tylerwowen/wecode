@@ -33,19 +33,11 @@ define(function(require) {
         presenting.removeClass('selected');
 
         if (presenting && presenting[0] != $(this)[0]) {
-            console.log("Click");
-            if ($(this).hasClass('terminal')) {
-                //$('#termwrapper').show();
-                $(this).addClass('selected');
-            }
-            else {
-                $($(this).attr('associated')).animate({
-                    right: "4%",
-                    width: "toggle"
-                }, 250);
-                $(this).addClass('selected');
-                console.log("Add non-terminal class");
-            }
+            $($(this).attr('associated')).animate({
+                right: "4%",
+                width: "toggle"
+            }, 250);
+            $(this).addClass('selected');
         }
     });
 
