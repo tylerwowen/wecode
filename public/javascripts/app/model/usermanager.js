@@ -56,7 +56,7 @@ define(function(require) {
         this.onGapiSuccess = function(googleUser) {
             console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
             this.userName = googleUser.getBasicProfile().getName();
-            that.email = googleUser.getBasicProfile().getEmail();
+            this.email = googleUser.getBasicProfile().getEmail();
             if (this.authTimer) {
                 window.clearTimeout(this.authTimer);
             }

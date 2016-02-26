@@ -3,6 +3,7 @@ define(function (require) {
 
     var $ = require('jquery'),
         ace = require('ace/ace'),
+        Q = require('q'),
         Workspace = require('app/model/workspace'),
         WorkspaceAdapter = require('app/adapters/googleworkspaceadapter'),
         FileAdapter = require('app/adapters/googlefileadapter'),
@@ -41,8 +42,10 @@ define(function (require) {
 
         this.init = function() {
             var that = this;
-            this.fileAdapter.load();
-            this.workspaceAdapter.load().then(function() {
+            return Q.all([
+                this.fileAdapter.load(),
+                this.workspaceAdapter.load()
+            ]).then(function() {
                 that.loadWorkspace();
                 that.connectToView();
             });
