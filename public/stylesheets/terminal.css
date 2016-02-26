@@ -3,7 +3,7 @@
     right: 0;
     width: 45%;
     height: 100%;
-    z-index: 103;
+    z-index: 105;
     display: none;
 }
 
@@ -41,9 +41,7 @@
     width: 100%;
 }
 
-#terminalForm:hover {
-    background-color: #363B40 !important;
-}
+
 
 #terminalHeader {
     font-family: 'Muli', sans-serif;
