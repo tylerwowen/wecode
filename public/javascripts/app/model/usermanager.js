@@ -23,6 +23,7 @@ define(function(require) {
         this.onGapiSuccess = this.onGapiSuccess.bind(this);
         this.onGapiFailure = this.onGapiFailure.bind(this);
         this.handleAuthResult = this.handleAuthResult.bind(this);
+        this.handlers = [];
     }
 
     (function() {
@@ -64,6 +65,9 @@ define(function(require) {
                 this.authorize(false);
             }
             this.refreshAuth();
+            this.handlers.forEach(function(handler) {
+                handler();
+            });
         };
 
         this.onGapiFailure = function(error) {
@@ -128,6 +132,16 @@ define(function(require) {
                 that.authorize(false);
                 that.refreshAuth();
             }, this.refreshInterval);
+        };
+
+        this.onProfileReady = function(handler) {
+            // username ready, fire directly
+            if (this.userName) {
+                handler();
+            }
+            else {
+                this.handlers.push(handler);
+            }
         };
 
     }).call(UserManager.prototype);
