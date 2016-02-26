@@ -1,7 +1,3 @@
-/**
- * This module
- *
- */
 define(function (require, exports, module) {
     var $ = require('jquery');
     var io = require('socketio');
@@ -133,7 +129,7 @@ define(function (require, exports, module) {
                 if(similarQuestionsArray.length != 0) {
                     for (var q = 0; q < similarQuestionsArray.length; q++) {
                         var question =  '<tr><td>' + similarQuestionsArray[q] + '</td></tr>';
-                        $('#simquestionList').append(question);
+                        $('#simquestionTableBody').append(question);
                     }
                     $('#similarQuestionsPage').show();
                 }
