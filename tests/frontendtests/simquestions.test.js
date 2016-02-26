@@ -4,16 +4,24 @@ define(function(require) {
     var ace = require('ace/ace');
 
     var SimilarQuestions = require('app/model/similarquestions');
-    var queue;
+    var similarQuestions = null;
+
+
+    var queueTemp = null;
+    var queriesTemp = null;
+    var simTemp = null;
 
     describe("Similar Questions tests ", function () {
 
         this.timeout(5000);
 
-        var similarQuestions = null;
+
 
         before(function() {
             similarQuestions = new SimilarQuestions();
+            readTextFile("queueQuestions.txt");
+            readTextFile("queryQuestions.txt");
+            readTextFile("similarQuestions.txt");
         });
 
         it('testing 1 is equal to 1', function () {
@@ -21,11 +29,6 @@ define(function(require) {
         });
 
         describe("Test Similar questions feature", function () {
-            it('Reads questions from file', function (done) {
-                readTextFile("questions.txt");
-                expect(queueTemp.length).to.be.equal(50);
-                done();
-            });
 
             it('Removes punctuation', function (done) {
                 var s = "This., -/ is #! an $ % ^ & * example ;: {} of a = -_ string with `~)()hello's punctuation";
@@ -51,40 +54,54 @@ define(function(require) {
                 done();
             });
 
-            //it('Sort by word count questions', function (done) {
-            //    var currentQuestion = "JavaScript function that return AJAX call data";
-            //    // How to call javascript validate function before form submit on an ajax call
-            //    var simQuestion = similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp);
-            //    console.log(simQuestion);
-            //    //expect(simQuestion).to.be.equal("Return data after ajax call success");
-            //    done();
-            //});
+            it('Calculate similar questions accuracy', function (done) {
 
-            it('Returns similar questons 1', function (done) {
-                var currentQuestion = "JavaScript function that return AJAX call data";
-                // How to call javascript validate function before form submit on an ajax call
-                var simQuestion = similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp);
-                console.log(simQuestion);
-                //expect(simQuestion).to.be.equal("Return data after ajax call success");
+                var queryCount = queriesTemp.length;
+                var currentQuestion, simArrayLength;
+                var totalQuestionsCount = 0, score = 0;
+
+                for(var q = 0; q < queryCount; q++) {
+                    currentQuestion = queriesTemp[q];
+                    similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray) {
+                        //console.log(similarQuestionsArray);
+                        simArrayLength = similarQuestionsArray.length;
+                        totalQuestionsCount += simArrayLength;
+                        if( simArrayLength != 0) {
+                            for(var i = 0; i < simArrayLength; i++) {
+                                if(similarQuestionsArray[i] === simTemp[q]) {
+                                    score += (simArrayLength - i);
+                                }
+                            }
+                            //console.log("Total returned question" , totalQuestionsCount);
+                            //console.log("Total score" , score);
+                            console.log("");
+                        }
+                    });
+                }
+                console.log("Total accuracy: ", (score/totalQuestionsCount*100).toFixed(2),"%");
+
                 done();
             });
-
-
         });
     });
 
     function readTextFile(file) {
+
         var rawFile = new XMLHttpRequest();
         rawFile.open("GET", file, false);
         rawFile.onreadystatechange = function () {
-            if(rawFile.readyState === 4) {
-                if(rawFile.status === 200 || rawFile.status == 0) {
-                    queueTemp = String(rawFile.responseText).split('\n');
+            if (rawFile.readyState === 4) {
+                if (rawFile.status === 200 || rawFile.status == 0) {
+                    if (file === "queueQuestions.txt") {
+                        queueTemp = String(rawFile.responseText).split('\n');
+                    } else if (file === "queryQuestions.txt") {
+                        queriesTemp = String(rawFile.responseText).split('\n');
+                    } else if (file === "similarQuestions.txt") {
+                        simTemp = String(rawFile.responseText).split('\n');
+                    }
                 }
             }
         };
         rawFile.send(null);
     }
-
-
 });
