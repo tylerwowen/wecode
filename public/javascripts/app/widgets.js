@@ -14,19 +14,11 @@ define(function(require) {
     });
 
     $('#openTerminal').click(function () {
-        if ($(this).hasClass('selected')) {
-            //$(this).removeClass('selected');
-            //$('#termwrapper').hide();
-            //        //$('#editor').css('width', '100%').trigger('resize');
-        }
-        else {
-            //        $(this).addClass('selected');
-            //$('#termwrapper').show();
+        if (!$(this).hasClass('selected')) {
             $('#termwrapper').animate({
                 right: "0%",
                 width: "toggle"
             }, 250);
-            //        //$('#editor').css('width', '55%').trigger('resize');
         }
     });
 
@@ -37,7 +29,6 @@ define(function(require) {
                 right: "0%",
                 width: "toggle"
             }, 250);
-            //$('#termwrapper').hide();
         }
         else {
             $(presenting.attr('associated')).animate({
@@ -46,22 +37,13 @@ define(function(require) {
             }, 250);
         }
         presenting.removeClass('selected');
-        console.log("Removed");
 
         if (presenting && presenting[0] != $(this)[0]) {
-            console.log("Click");
-            if ($(this).hasClass('terminal')) {
-                //$('#termwrapper').show();
-                $(this).addClass('selected');
-            }
-            else {
-                $($(this).attr('associated')).animate({
-                    right: "4%",
-                    width: "toggle"
-                }, 250);
-                $(this).addClass('selected');
-                console.log("Add non-terminal class");
-            }
+            $($(this).attr('associated')).animate({
+                right: "4%",
+                width: "toggle"
+            }, 250);
+            $(this).addClass('selected');
         }
     });
 
