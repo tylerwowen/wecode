@@ -59,7 +59,6 @@ define(function (require, exports, module) {
             var questiontext = $('#questionInput').val();
 
             var question = {
-                topic: "github",
                 question: questiontext,
                 email: userManager.email,
                 name: userManager.userName
@@ -129,7 +128,7 @@ define(function (require, exports, module) {
         };
 
         this.displaySimilarQuestions = function(question, questionCol) {
-            this.similarQuestions.getSimilarQuestionsWOTopics(question, questionCol, function(similarQuestionsArray){
+            this.similarQuestions.getSimilarQuestions(question, questionCol, function(similarQuestionsArray){
                 if(similarQuestionsArray.length != 0) {
                     for (var q = 0; q < similarQuestionsArray.length; q++) {
                         var question =  '<tr><td>' + similarQuestionsArray[q] + '</td></tr>';

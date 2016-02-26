@@ -15,8 +15,6 @@ define(function(require) {
 
         this.timeout(5000);
 
-
-
         before(function() {
             similarQuestions = new SimilarQuestions();
             readTextFile("queueQuestions.txt");
@@ -30,15 +28,19 @@ define(function(require) {
 
         describe("Test Similar questions feature", function () {
 
+            it('testing stemming', function () {
+                expect(similarQuestions.stemWord("international")).to.be.equal("intern");
+            });
+
             it('Removes punctuation', function (done) {
-                var s = "This., -/ is #! an $ % ^ & * example ;: {} of a = -_ string with `~)()hello's punctuation";
+                var s = "This., -/ is #! an $ % ^ & * example ;: {} of a = -_ string with `~)()hello's punctuation?";
                 var array = similarQuestions.getStringArray(s);
                 expect(array).to.deep.equal(["this", "is", "an", "example", "of", "a", "string", "with", "hellos", "punctuation"]);
                 done();
             });
 
             it('Checks stop word', function (done) {
-                var s = "this is that to be if anything is here";
+                var s = "this is that to be if anything is here how to";
                 var array = similarQuestions.getStringArray(s);
                 for(var i = 0; i < array.length; i++) {
                     expect(similarQuestions.isStopWord(array[i])).to.be.equal(true);
@@ -55,15 +57,13 @@ define(function(require) {
             });
 
             it('Calculate similar questions accuracy', function (done) {
-
                 var queryCount = queriesTemp.length;
                 var currentQuestion, simArrayLength;
                 var totalQuestionsCount = 0, score = 0;
 
                 for(var q = 0; q < queryCount; q++) {
                     currentQuestion = queriesTemp[q];
-                    similarQuestions.getSimilarQuestionsWOTopics(currentQuestion, queueTemp, function(similarQuestionsArray) {
-                        //console.log(similarQuestionsArray);
+                    similarQuestions.getSimilarQuestions(currentQuestion, queueTemp, function(similarQuestionsArray) {
                         simArrayLength = similarQuestionsArray.length;
                         totalQuestionsCount += simArrayLength;
                         if( simArrayLength != 0) {
@@ -72,14 +72,10 @@ define(function(require) {
                                     score += (simArrayLength - i);
                                 }
                             }
-                            //console.log("Total returned question" , totalQuestionsCount);
-                            //console.log("Total score" , score);
-                            console.log("");
                         }
                     });
                 }
                 console.log("Total accuracy: ", (score/totalQuestionsCount*100).toFixed(2),"%");
-
                 done();
             });
         });
