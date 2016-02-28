@@ -27,6 +27,15 @@
     overflow-y: auto;
 }
 
+#refreshFiles {
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    vertical-align: middle;
+    float: right;
+}
+
 #files li {
     background-color: #404040;
     font-family: Verdana, sans-serif;
@@ -77,4 +86,79 @@
 
 #fileForm {
     padding: 10px;
+}
+
+#rmenu {
+    z-index:1000;
+    position: absolute;
+    background-color:#C0C0C0;
+    display: none;
+    margin: auto;
+}
+
+#rmenu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#rmenu li {
+    padding: 5px 20px 5px 10px;
+    list-style: none;
+    margin: 0;
+}
+
+#rmenu li:hover {
+    background-color: #6B6969;
+}
+
+
+#renameFormPage {
+    display: none;
+}
+
+#page {
+    position: absolute;
+    z-index: 999;
+    background-color: white;
+    height: 100vh;
+    width: 100vw;
+    opacity: .8;
+    text-align: center !important;
+}
+
+#renameForm {
+    position: absolute;
+    z-index: 1000;
+    background-color: #4E4D4D;
+    padding: 10px 15px 15px 15px;
+    border-radius: 15px;
+    border-color:#d2d2d2;
+    border-width: 5px;
+    box-shadow:0 1px 0 #cfcfcf;
+    top: 50%;
+    left: 50%;
+    text-align: center !important;
+    transform: translate(-50%, -50%);
+}
+
+#addHeader {
+    text-align: center;
+    padding: 5px;
+    font-weight: bold;
+    color: white;
+}
+
+.btn-group {
+    text-align: center !important;
+    margin: auto !important;
+    padding-top: 5px;
+}
+
+#renameButton, #renameCancel {
+    border: none;
+}
+
+#renameCancel {
+    border-left: 1px #363B40 solid !important;
 }
