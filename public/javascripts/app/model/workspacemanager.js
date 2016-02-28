@@ -91,7 +91,7 @@ define(function(require) {
                     filePermissionID = response;
 
                     if(userPermissionID != filePermissionID){
-                        return that.adapter.getClassName(classID)
+                        return that.adapter.getWorkspaceName(classID)
                             .then( function(response) {
                                 return className = response;
                             }).then( function (){
