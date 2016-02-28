@@ -61,6 +61,8 @@ define(function(require) {
                 var currentQuestion, simArrayLength;
                 var totalQuestionsCount = 0, score = 0;
 
+                var start = new Date().getTime();
+
                 for(var q = 0; q < queryCount; q++) {
                     currentQuestion = queriesTemp[q];
                     similarQuestions.getSimilarQuestions(currentQuestion, queueTemp, function(similarQuestionsArray) {
@@ -75,6 +77,10 @@ define(function(require) {
                         }
                     });
                 }
+
+                var end = new Date().getTime();
+                var time = end - start;
+                console.log("Average time for a question: ", time/1000, "seconds");
                 console.log("Total accuracy: ", (score/totalQuestionsCount*100).toFixed(2),"%");
                 done();
             });
@@ -82,7 +88,6 @@ define(function(require) {
     });
 
     function readTextFile(file) {
-
         var rawFile = new XMLHttpRequest();
         rawFile.open("GET", file, false);
         rawFile.onreadystatechange = function () {

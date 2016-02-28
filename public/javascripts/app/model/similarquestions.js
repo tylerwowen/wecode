@@ -29,9 +29,15 @@ define(function (require) {
                 array.forEach(function(arrayWordTemp){
                     if(!that.isStopWord(arrayWordTemp)){
                         arrayWordTemp = stemmer(arrayWordTemp);
+                        if(that.synonyms != undefined && that.synonyms[arrayWordTemp] != undefined){
+                            arrayWordTemp = that.synonyms.get(arrayWordTemp);
+                        }
                         queueQuestion.forEach(function(queueWordTemp){
                             if(!that.isStopWord(queueWordTemp)){
                                 queueWordTemp = stemmer(queueWordTemp);
+                                if(that.synonyms != undefined && that.synonyms[queueWordTemp] != undefined){
+                                    queueWordTemp = that.synonyms.get(queueWordTemp);
+                                }
                                 var result = arrayWordTemp.localeCompare(queueWordTemp);
                                 if(result == 0){
                                     counter++;
@@ -82,7 +88,7 @@ define(function (require) {
 
         var stopwords = ["a", "about", "above", "above", "across", "after", "against",
             "almost", "alone", "along", "already", "also","although","am","among", "amongst",
-            "amoungst", "amount",  "an", "and", "another", "any","anyhow","anyone", "anything",
+            "amoungst", "amount",  "an", "and", "any","anyhow","anyone", "anything",
             "anyway", "anywhere", "are", "around", "as",  "at", "back", "be", "because",
             "been", "beforehand", "behind", "being", "below", "between", "beyond", "bill",
             "by", "can", "could",  "down", "due", "during", "each", "eg", "either","else",
@@ -109,6 +115,14 @@ define(function (require) {
             "yourselves", "the", "youre", "hes", "ive", "theyll", "whos", "wheres", "whens",
             "whys", "hows", "whats", "were", "shes", "im", "thats"
         ];
+
+        var synonyms = {};
+        synonyms["modify"] = "edit";
+        synonyms["change"] = "edit";
+        synonyms["eliminate"] = "remove";
+        synonyms["delete"] = "remove";
+        synonyms["another"] = "different";
+
 
     }).call(SimilarQuestions.prototype);
 

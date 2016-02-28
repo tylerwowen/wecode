@@ -1,5 +1,5 @@
 Return data after ajax call success
-How to change commit message?
+How to change commit message in git?
 A simple explanation of Naive Bayes Classification
 How to create a generic array in Java?
 Replacing all occurrences of a string in JavaScript
