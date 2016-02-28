@@ -2,6 +2,7 @@ define(function (require) {
     "use strict";
 
     var $ = require('jquery');
+    var _ = require('lodash');
     require('lib/stemmer');
 
     function SimilarQuestions() {}
@@ -13,7 +14,7 @@ define(function (require) {
 
         this.getSimilarQuestions = function(currentquestion, queue, callback) {
             var question = currentquestion;
-            var queueTemp = queue;
+            var queueTemp = _.map(queue, function(questionObject) { return questionObject.question});
 
             var len = queueTemp.length;
             var array = this.getStringArray(question);
@@ -52,7 +53,7 @@ define(function (require) {
 
             for (k = 0; k < len / coef; k++) {
                 if(rankQuestionsArray[k][1]!=0) {
-                    similarQuestionsArray.push(queueTemp[rankQuestionsArray[k][0]]);
+                    similarQuestionsArray.push(queue[rankQuestionsArray[k][0]]);
                 }
             }
             if (callback) callback(similarQuestionsArray);

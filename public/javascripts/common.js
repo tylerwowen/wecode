@@ -11,7 +11,8 @@ requirejs.config({
         'bootstrap': '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min',
         'q': '//cdnjs.cloudflare.com/ajax/libs/q.js/1.4.1/q.min',
         'login.bootstrap':  '//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min',
-        'login.jquery': '//code.jquery.com/jquery.min'
+        'login.jquery': '//code.jquery.com/jquery.min',
+        'lodash': 'https://cdn.jsdelivr.net/lodash/3.6.0/lodash'
     },
     shim: {
         'gapi': {
