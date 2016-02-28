@@ -12,7 +12,10 @@ define(function(require) {
     userController.init(onEventuallySuccess);
 
     function onEventuallySuccess() {
-        requirejs(['app/webrtc', 'app/widgets','app/controller/draggableObjects']);
+        requirejs(['app/controller/draggableObjects']);
         editorController.init();
+        userController.userManager.onProfileReady(function(){
+            requirejs(['app/webrtc', 'app/widgets']);
+        });
     }
 });
