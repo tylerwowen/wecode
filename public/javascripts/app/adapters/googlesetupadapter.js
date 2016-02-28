@@ -134,7 +134,7 @@ define(function (require) {
                 });
         };
 
-        this.getClassName = function(fileId){
+        this.getWorkspaceName = function(fileId){
             return gapi.client.drive.files.get({
                 'fileId': fileId
             }).then(function(response){
