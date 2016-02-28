@@ -15,20 +15,14 @@ define(function(require) {
 
     $('#openTerminal').click(function () {
         if (!$(this).hasClass('selected')) {
-            $('#termwrapper').animate({
-                right: "0%",
-                width: "toggle"
-            }, 250);
+            $('#termwrapper').show();
         }
     });
 
     $(".non-psersistent").click(function() {
         var presenting = $('.non-psersistent.selected');
         if (presenting.hasClass('terminal')) {
-            $('#termwrapper').animate({
-                right: "0%",
-                width: "toggle"
-            }, 250);
+            $('#termwrapper').hide();
         }
         else {
             $(presenting.attr('associated')).animate({

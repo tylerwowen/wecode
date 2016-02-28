@@ -26,13 +26,6 @@ a {
     width:      100%;
 }
 
-#rmenu {
-    z-index:1000;
-    position: absolute;
-    background-color:#C0C0C0;
-    display: none;
-}
-
 #vidwrapper {
     height:     15%;
     display: inline-block;
