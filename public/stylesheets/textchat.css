@@ -2,7 +2,7 @@
     position: absolute;
     top: 0;
     right: 4%;
-    width: 35%;
+    width: 36%;
     height: 100%;
     z-index: 105;
     background-color: white;
@@ -30,7 +30,7 @@
 #messages {
     list-style-type: none;
     margin: 0;
-    padding: 6px 6px 0 0px;
+    padding: 6px 6px 0 0;
     width: 100%;
     word-wrap:break-word;
     height: 86%;

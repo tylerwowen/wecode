@@ -134,9 +134,17 @@ define(function (require) {
                 that.refreshWorkSpace();
             });
 
+            $('#renameCancel').click(function(){
+                $('#renameFormPage').hide();
+            });
+
             $('#renameContent').on('click', function() {
                 var id = $(this).parents('div').attr('contentId');
-                that.renameFile(id);
+                $('#renameFormPage').show();
+                $('#renameButton').click(function(){
+                    that.renameFile(id);
+                    $('#renameFormPage').hide();
+                });
             });
 
             $('#deleteContent').on('click', function() {
@@ -164,7 +172,7 @@ define(function (require) {
          * @param {string} id
          */
         this.renameFile = function(id) {
-            var fileName = prompt("Please enter the new file name", "");
+            var fileName = $('#renameInput').val();
             if (fileName != null) {
                 this.workspaceAdapter.renameFile(id, fileName);
             }

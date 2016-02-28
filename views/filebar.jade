@@ -1,19 +1,19 @@
 #filebar
-    #rmenu
-        ul
-            li#renameContent Rename
-            li#deleteContent Delete
     #wsName &nbsp;
     form#fileForm
         .input-group#fileForm
-            input#fileName.form-control(type='text', placeholder='Create a File', autocomplete='off')
+            input#fileName.form-control(size=33, type='text', placeholder='Create a File', autocomplete='off')
             span.input-group-btn
                 button#fileButton.btn.btn-info
                     span.glyphicon.glyphicon-plus
-    ul#menu-content.menu-content.collapse.out
-        li#folders.collapsed(data-toggle='collapse', data-target='#files')
+    ul#menu-content
+        li#folders
             a(href='#')
                 i.fa.fa-folder.fa-lg
                 | Files
-                span.arrow
+                i#refreshFiles.fa.fa-refresh.fa-lg
         ul#files.elements
+#rmenu
+    ul
+        li#renameContent Rename
+        li#deleteContent Delete
