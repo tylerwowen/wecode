@@ -12,8 +12,7 @@ define(function (require) {
         this.constructor = SimilarQuestions;
         var that = this;
 
-        this.getSimilarQuestions = function(currentquestion, queue, callback) {
-            var question = currentquestion;
+        this.getSimilarQuestions = function(question, queue, callback) {
             var queueTemp = _.map(queue, function(questionObject) { return questionObject.question});
 
             var len = queueTemp.length;
@@ -29,9 +28,11 @@ define(function (require) {
                 array.forEach(function(arrayWordTemp){
                     if(!that.isStopWord(arrayWordTemp)){
                         arrayWordTemp = stemmer(arrayWordTemp);
+                        arrayWordTemp = that.getSynonym(arrayWordTemp);
                         queueQuestion.forEach(function(queueWordTemp){
                             if(!that.isStopWord(queueWordTemp)){
                                 queueWordTemp = stemmer(queueWordTemp);
+                                queueWordTemp = that.getSynonym(queueWordTemp);
                                 var result = arrayWordTemp.localeCompare(queueWordTemp);
                                 if(result == 0){
                                     counter++;
@@ -82,7 +83,7 @@ define(function (require) {
 
         var stopwords = ["a", "about", "above", "above", "across", "after", "against",
             "almost", "alone", "along", "already", "also","although","am","among", "amongst",
-            "amoungst", "amount",  "an", "and", "another", "any","anyhow","anyone", "anything",
+            "amoungst", "amount",  "an", "and", "any","anyhow","anyone", "anything",
             "anyway", "anywhere", "are", "around", "as",  "at", "back", "be", "because",
             "been", "beforehand", "behind", "being", "below", "between", "beyond", "bill",
             "by", "can", "could",  "down", "due", "during", "each", "eg", "either","else",
@@ -109,6 +110,22 @@ define(function (require) {
             "yourselves", "the", "youre", "hes", "ive", "theyll", "whos", "wheres", "whens",
             "whys", "hows", "whats", "were", "shes", "im", "thats"
         ];
+
+        var synonyms = {
+            "modify" : "edit",
+            "change" : "edit",
+            "eliminate" : "remove",
+            "delete" : "remove",
+            "another" : "different"
+        };
+
+        this.getSynonym = function(word){
+            if(synonyms[word]) {
+                return synonyms[word];
+            }
+            return word;
+        };
+
 
     }).call(SimilarQuestions.prototype);
 

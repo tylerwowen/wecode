@@ -13,7 +13,8 @@ requirejs.config({
         'mocha': '//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha',
         'q': 'https://cdnjs.cloudflare.com/ajax/libs/q.js/1.4.1/q.min',
         'sinon': '//cdnjs.cloudflare.com/ajax/libs/sinon.js/1.15.4/sinon.min',
-        'chaiaspromised': '//cdn.rawgit.com/domenic/chai-as-promised/master/lib/chai-as-promised'
+        'chaiaspromised': '//cdn.rawgit.com/domenic/chai-as-promised/master/lib/chai-as-promised',
+        'lodash': '//cdn.jsdelivr.net/lodash/3.6.0/lodash'
     },
     shim: {
         'gapi': {

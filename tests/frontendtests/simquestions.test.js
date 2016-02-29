@@ -48,6 +48,16 @@ define(function(require) {
                 done();
             });
 
+            it('Checks synonym', function (done) {
+                var s = "modify change eliminate remove delete";
+                var array = similarQuestions.getStringArray(s);
+                for(var i = 0; i < array.length; i++) {
+                    array[i] = similarQuestions.getSynonym(array[i]);
+                }
+                expect(array).to.deep.equal(["edit", "edit", "remove", "remove", "remove"]);
+                done();
+            });
+
             it('Sort by word count example', function (done) {
                 var arr = [[0, 10], [3, 9], [1, 8], [9, 7]];
                 var resArr = [[9, 7], [1, 8], [3, 9], [0, 10]];
@@ -60,6 +70,8 @@ define(function(require) {
                 var queryCount = queriesTemp.length;
                 var currentQuestion, simArrayLength;
                 var totalQuestionsCount = 0, score = 0;
+
+                var start = new Date().getTime();
 
                 for(var q = 0; q < queryCount; q++) {
                     currentQuestion = queriesTemp[q];
@@ -75,6 +87,10 @@ define(function(require) {
                         }
                     });
                 }
+
+                var end = new Date().getTime();
+                var time = end - start;
+                console.log("Average time for a question: ", time/1000, "seconds");
                 console.log("Total accuracy: ", (score/totalQuestionsCount*100).toFixed(2),"%");
                 done();
             });
@@ -82,7 +98,6 @@ define(function(require) {
     });
 
     function readTextFile(file) {
-
         var rawFile = new XMLHttpRequest();
         rawFile.open("GET", file, false);
         rawFile.onreadystatechange = function () {
