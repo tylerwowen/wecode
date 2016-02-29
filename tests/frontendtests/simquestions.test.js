@@ -48,6 +48,16 @@ define(function(require) {
                 done();
             });
 
+            it('Checks synonym', function (done) {
+                var s = "modify change eliminate remove delete";
+                var array = similarQuestions.getStringArray(s);
+                for(var i = 0; i < array.length; i++) {
+                    array[i] = similarQuestions.getSynonym(array[i]);
+                }
+                expect(array).to.deep.equal(["edit", "edit", "remove", "remove", "remove"]);
+                done();
+            });
+
             it('Sort by word count example', function (done) {
                 var arr = [[0, 10], [3, 9], [1, 8], [9, 7]];
                 var resArr = [[9, 7], [1, 8], [3, 9], [0, 10]];

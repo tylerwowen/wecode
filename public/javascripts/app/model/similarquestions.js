@@ -12,8 +12,7 @@ define(function (require) {
         this.constructor = SimilarQuestions;
         var that = this;
 
-        this.getSimilarQuestions = function(currentquestion, queue, callback) {
-            var question = currentquestion;
+        this.getSimilarQuestions = function(question, queue, callback) {
             var queueTemp = _.map(queue, function(questionObject) { return questionObject.question});
 
             var len = queueTemp.length;
@@ -29,15 +28,11 @@ define(function (require) {
                 array.forEach(function(arrayWordTemp){
                     if(!that.isStopWord(arrayWordTemp)){
                         arrayWordTemp = stemmer(arrayWordTemp);
-                        if(that.synonyms != undefined && that.synonyms[arrayWordTemp] != undefined){
-                            arrayWordTemp = that.synonyms.get(arrayWordTemp);
-                        }
+                        arrayWordTemp = that.getSynonym(arrayWordTemp);
                         queueQuestion.forEach(function(queueWordTemp){
                             if(!that.isStopWord(queueWordTemp)){
                                 queueWordTemp = stemmer(queueWordTemp);
-                                if(that.synonyms != undefined && that.synonyms[queueWordTemp] != undefined){
-                                    queueWordTemp = that.synonyms.get(queueWordTemp);
-                                }
+                                queueWordTemp = that.getSynonym(queueWordTemp);
                                 var result = arrayWordTemp.localeCompare(queueWordTemp);
                                 if(result == 0){
                                     counter++;
@@ -116,12 +111,20 @@ define(function (require) {
             "whys", "hows", "whats", "were", "shes", "im", "thats"
         ];
 
-        var synonyms = {};
-        synonyms["modify"] = "edit";
-        synonyms["change"] = "edit";
-        synonyms["eliminate"] = "remove";
-        synonyms["delete"] = "remove";
-        synonyms["another"] = "different";
+        var synonyms = {
+            "modify" : "edit",
+            "change" : "edit",
+            "eliminate" : "remove",
+            "delete" : "remove",
+            "another" : "different"
+        };
+
+        this.getSynonym = function(word){
+            if(synonyms[word]) {
+                return synonyms[word];
+            }
+            return word;
+        };
 
 
     }).call(SimilarQuestions.prototype);
