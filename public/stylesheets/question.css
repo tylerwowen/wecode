@@ -73,11 +73,11 @@ body {
 }
 
 #questionReturn {
-    border-left: 1px #921515 solid !important;
+    border-left: 1px #212C4C solid !important;
 }
 
 button:hover {
-    background-color: #921515 !important;
+    background-color:  #354882 !important;
 }
 
 
@@ -117,11 +117,11 @@ button:hover {
 }
 
 #navbar li:hover {
-    background-color: #B72C2C;
+    background-color:  #354882;
 }
 
 #navbar li {
-    background-color: #921515;
+    background-color:  #354882;
 }
 
 #navbar li.selected:hover {
@@ -148,7 +148,7 @@ button:hover {
 }
 
 .navbar {
-    background: #921515!important;
+    background:  #354882!important;
 }
 
 .navbar a{
@@ -177,21 +177,21 @@ button:hover {
     padding: 5px;
     display: block;
     border-radius: 3px;
-    background-color: #B72C2C;
+    background-color:  #354882;
     color: white;
     margin: 5px 0 5px 0;
 }
 
 button {
-    background: #B72C2C !important;
+    background:  #354882 !important;
 }
 
 #questionAddButton {
     text-align: center !important;
     margin: 0 auto;
     display: block;
-    background: #B72C2C !important;
-    border: #B72C2C !important;
+    background:  #354882 !important;
+    border:  #354882 !important;
     bottom: 0;
 }
 
@@ -231,7 +231,7 @@ ol > li:before {
     margin-right:8px;
     padding:4px;
     color:#fff;
-    background: #B72C2C;
+    background:  #354882;
     font-weight:bold;
     font-family:"Helvetica Neue", Arial, sans-serif;
     text-align:center;
