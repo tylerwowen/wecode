@@ -8,10 +8,22 @@
 }
 
 #similarQuestionsForm {
-    position: absolute;
-    z-index: 1000;
-    width: 100vw;
-    height: 100vh;
+    text-align: center;
+}
+
+tbody {
+    alignment: center;
+}
+
+table {
+    background-color: white;
+    padding: 10px;
+    width: 100%;
+}
+
+#simquestionTableBody {
+    background-color: white;
+    padding: 10px;
 }
 
 body {
@@ -32,7 +44,7 @@ body {
     text-align: center !important;
 }
 
-#questionForm {
+#questionForm, #similarQuestionsForm {
     position: absolute;
     z-index: 1000;
     background-color: #4E4D4D;
