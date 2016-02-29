@@ -2,7 +2,8 @@ define(function(require) {
     "use strict";
 
     var Q = require('q'),
-        Adapter = require('app/adapters/googlesetupadapter');
+        Adapter = require('app/adapters/googlesetupadapter'),
+        _ = require('lodash');
 
     var instance = null;
 
@@ -99,7 +100,11 @@ define(function(require) {
                                     'id': classID,
                                     'name': className
                                 });
+                                // Gets rid/doesn't allow for duplicates
+                                that.config.joinedClasses = _.uniqWith(that.config.joinedClasses, _.isEqual);
                                 return that.adapter.updateConfigurationFile(that.config,that.configFileId);
+                            }).then(function() {
+                                return that.config.joinedClasses;
                             });
                     }
                     else{
