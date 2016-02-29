@@ -49,7 +49,19 @@ body {
     margin: auto !important;
 }
 
-#studentReturn, #TAreturn {
+#studentAddClassButton, #studentReturn {
+    background-color: #354882 !important;
+}
+
+#studentAddClassButton:hover, #studentReturn:hover {
+    background-color: #212C4C !important;
+}
+
+#studentReturn {
+    border-left: 1px #212C4C solid !important;
+}
+
+#TAreturn {
     border-left: 1px #921515 solid !important;
 }
 
@@ -92,16 +104,24 @@ button:hover {
     border-radius: 5px;
 }
 
-#navbar li:hover {
-    background-color: #B72C2C;
-}
-
-#navbar li {
+#TAselector {
     background-color: #921515;
 }
 
+#TAselector:hover {
+    background-color: #B72C2C;
+}
+
+#StudentSelector {
+    background-color: #354882;
+}
+
+#StudentSelector:hover {
+    background-color: #212C4C;
+}
+
 #navbar li.selected:hover {
-    background-color: white;
+    background-color: white !important;
     color: #404040 !important;
 }
 
@@ -123,8 +143,12 @@ button:hover {
     width: 100vm;
 }
 
+.navbar.instructor {
+    background-color: #B72C2C !important;
+}
+
 .navbar {
-    background: #921515!important;
+    background: #354882!important;
 }
 
 .navbar a{
@@ -153,16 +177,32 @@ button:hover {
     padding: 5px;
     display: block;
     border-radius: 3px;
-    background-color: #B72C2C;
     color: white;
     margin: 5px 0 5px 0;
+}
+
+#TAHeader {
+    background-color: #B72C2C;
+}
+
+#StudentHeader {
+    background-color: #354882;
 }
 
 button {
     background: #B72C2C !important;
 }
 
-#TAClassFormButton, #StudentAddClass {
+#StudentAddClass {
+    text-align: center !important;
+    margin: 0 auto;
+    display: block;
+    background: #354882 !important;
+    border: #354882 !important;
+    bottom: 0;
+}
+
+#TAClassFormButton {
     text-align: center !important;
     margin: 0 auto;
     display: block;
@@ -208,6 +248,15 @@ ol > li {
     list-style:none;
     background:#f6f6f6;
 }
+
+#TAClassList > li:before {
+    background-color: #B72C2C;
+}
+
+#StudentClassList > li:before {
+    background-color: #354882;
+}
+
 ol > li:before {
     content:counter(li);
     counter-increment:li;
@@ -220,7 +269,6 @@ ol > li:before {
     margin-right:8px;
     padding:4px;
     color:#fff;
-    background: #B72C2C;
     font-weight:bold;
     font-family:"Helvetica Neue", Arial, sans-serif;
     text-align:center;

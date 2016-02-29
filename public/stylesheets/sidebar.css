@@ -28,6 +28,10 @@
     color: white;
 }
 
+.blue {
+    background-color: #354882 !important;
+}
+
 .sidebar ul,
 .sidebar li { /* each element in side bar*/
     list-style: none;
