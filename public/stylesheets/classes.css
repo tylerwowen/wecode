@@ -43,32 +43,6 @@ body {
     padding-top: 5px;
 }
 
-.btn-success {
-    border: none !important;
-    text-align: center !important;
-    margin: auto !important;
-}
-
-#studentAddClassButton, #studentReturn {
-    background-color: #354882 !important;
-}
-
-#studentAddClassButton:hover, #studentReturn:hover {
-    background-color: #212C4C !important;
-}
-
-#studentReturn {
-    border-left: 1px #212C4C solid !important;
-}
-
-#TAreturn {
-    border-left: 1px #921515 solid !important;
-}
-
-button:hover {
-    background-color: #921515 !important;
-}
-
 .navwrapper {
     margin: 0 !important;
     padding-top: 120px ;
@@ -187,10 +161,6 @@ button:hover {
 
 #StudentHeader {
     background-color: #354882;
-}
-
-button {
-    background: #B72C2C !important;
 }
 
 #StudentAddClass {

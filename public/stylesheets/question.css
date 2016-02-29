@@ -15,10 +15,17 @@ tbody {
     alignment: center;
 }
 
+tbody button {
+    width: 100%;
+    display: inline-block;
+}
+
 table {
     background-color: white;
     padding: 10px;
     width: 100%;
+    list-style: none;
+    border: none;
 }
 
 #simquestionTableBody {
@@ -77,21 +84,6 @@ body {
     margin: auto !important;
     padding-top: 5px;
 }
-
-.btn-success {
-    border: none !important;
-    text-align: center !important;
-    margin: auto !important;
-}
-
-#questionReturn {
-    border-left: 1px #212C4C solid !important;
-}
-
-button:hover {
-    background-color:  #354882 !important;
-}
-
 
 .navwrapper {
     margin: 0 !important;
@@ -194,10 +186,6 @@ button:hover {
     margin: 5px 0 5px 0;
 }
 
-button {
-    background:  #354882 !important;
-}
-
 #questionAddButton {
     text-align: center !important;
     margin: 0 auto;
@@ -243,7 +231,7 @@ ol > li:before {
     margin-right:8px;
     padding:4px;
     color:#fff;
-    background:  #354882;
+    background: #354882;
     font-weight:bold;
     font-family:"Helvetica Neue", Arial, sans-serif;
     text-align:center;
