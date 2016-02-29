@@ -40,6 +40,7 @@ define(function (require, exports, module) {
             $('#StudentSelector').click(function(){
                 $('li').addClass('inactive');
                 $('li').removeClass('selected');
+                $('.navbar').removeClass('instructor');
                 $(this).addClass('selected');
                 $(this).removeClass('inactive');
                 $('#student').show();
@@ -49,6 +50,7 @@ define(function (require, exports, module) {
             $('#TAselector').click(function(){
                 $('li').addClass('inactive');
                 $('li').removeClass('selected');
+                $('.navbar').addClass('instructor');
                 $(this).addClass('selected');
                 $(this).removeClass('inactive');
                 $('#student').hide();

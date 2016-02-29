@@ -1,10 +1,13 @@
-.sidebar
+.sidebar.blue
    ul
-      li#search
-         i.fa.fa-search.fa-lg
+      li.non-psersistent#search(associated='#framewrapper')
+         i.fa.fa-search.fa-lg.n
          br
-      li#chat
+      li.non-psersistent#chat(associated='#chatwrapper')
          i.fa.fa-comments.fa-lg
+         br
+      li.non-psersistent.terminal#openTerminal
+         i.fa.fa-terminal.fa-lg
          br
       li#microphone
          i.fa.fa-microphone.fa-lg
@@ -12,5 +15,9 @@
       li#videoButton
          i.fa.fa-video-camera.fa-lg
          br
+      li
+         a(href='/classes')
+            i.fa.fa-home.fa-lg
+            br
 #framewrapper
    iframe#frame(src='//duckduckgo.com')

@@ -8,10 +8,29 @@
 }
 
 #similarQuestionsForm {
-    position: absolute;
-    z-index: 1000;
-    width: 100vw;
-    height: 100vh;
+    text-align: center;
+}
+
+tbody {
+    alignment: center;
+}
+
+tbody button {
+    width: 100%;
+    display: inline-block;
+}
+
+table {
+    background-color: white;
+    padding: 10px;
+    width: 100%;
+    list-style: none;
+    border: none;
+}
+
+#simquestionTableBody {
+    background-color: white;
+    padding: 10px;
 }
 
 body {
@@ -32,7 +51,7 @@ body {
     text-align: center !important;
 }
 
-#questionForm {
+#questionForm, #similarQuestionsForm {
     position: absolute;
     z-index: 1000;
     background-color: #4E4D4D;
@@ -65,21 +84,6 @@ body {
     margin: auto !important;
     padding-top: 5px;
 }
-
-.btn-success {
-    border: none !important;
-    text-align: center !important;
-    margin: auto !important;
-}
-
-#questionReturn {
-    border-left: 1px #921515 solid !important;
-}
-
-button:hover {
-    background-color: #921515 !important;
-}
-
 
 .navwrapper {
     margin: 0 !important;
@@ -117,11 +121,11 @@ button:hover {
 }
 
 #navbar li:hover {
-    background-color: #B72C2C;
+    background-color:  #354882;
 }
 
 #navbar li {
-    background-color: #921515;
+    background-color:  #354882;
 }
 
 #navbar li.selected:hover {
@@ -148,7 +152,7 @@ button:hover {
 }
 
 .navbar {
-    background: #921515!important;
+    background:  #354882!important;
 }
 
 .navbar a{
@@ -177,21 +181,17 @@ button:hover {
     padding: 5px;
     display: block;
     border-radius: 3px;
-    background-color: #B72C2C;
+    background-color:  #354882;
     color: white;
     margin: 5px 0 5px 0;
-}
-
-button {
-    background: #B72C2C !important;
 }
 
 #questionAddButton {
     text-align: center !important;
     margin: 0 auto;
     display: block;
-    background: #B72C2C !important;
-    border: #B72C2C !important;
+    background:  #354882 !important;
+    border:  #354882 !important;
     bottom: 0;
 }
 
@@ -231,7 +231,7 @@ ol > li:before {
     margin-right:8px;
     padding:4px;
     color:#fff;
-    background: #B72C2C;
+    background: #354882;
     font-weight:bold;
     font-family:"Helvetica Neue", Arial, sans-serif;
     text-align:center;

@@ -130,7 +130,6 @@ define(function (require) {
          * @export
          */
         this.renameFile = function(id, fileName) {
-            console.log(id, fileName);
             var body = {'name': fileName};
             var request = {
                 'fileId': id,

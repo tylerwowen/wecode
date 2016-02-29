@@ -7,7 +7,11 @@ define(function (require) {
         Workspace = require('app/model/workspace'),
         WorkspaceAdapter = require('app/adapters/googleworkspaceadapter'),
         FileAdapter = require('app/adapters/googlefileadapter'),
-        ACEAdapter = require('app/adapters/aceadapter');
+        ACEAdapter = require('app/adapters/aceadapter'),
+        io = require('socketio');
+
+    var socket;
+    var wsID = getParam('id');
 
     ace.config.set("packaged", true);
     ace.config.set("basePath", require.toUrl("ace"));
@@ -46,13 +50,13 @@ define(function (require) {
                 this.fileAdapter.load(),
                 this.workspaceAdapter.load()
             ]).then(function() {
+                that.createSocketListeners();
                 that.loadWorkspace();
                 that.connectToView();
             });
         };
 
         this.loadWorkspace = function() {
-            var wsID = getParam('id');
             var wsName = getParam('name');
             var that = this;
             // Get a list of files from work space with wsID
@@ -81,6 +85,16 @@ define(function (require) {
             this.loadWorkspace();
         };
 
+        this.createSocketListeners = function() {
+            var that = this;
+            socket = io('/files');
+            socket.emit('join', wsID);
+
+            socket.on('updateEveryone', function() {
+                that.refreshWorkSpace();
+            })
+        };
+
         this.connectToView = function() {
             var that = this;
 
@@ -91,6 +105,8 @@ define(function (require) {
             $('#fileForm').submit(function(){
                 that.createFile($('#fileName').val());
             });
+
+            $('#wsName').text(that.workspace.name);
 
             $('#files')
                 .on('click', 'li.file', function() {
@@ -132,9 +148,17 @@ define(function (require) {
                 that.refreshWorkSpace();
             });
 
+            $('#renameCancel').click(function(){
+                $('#renameFormPage').hide();
+            });
+
             $('#renameContent').on('click', function() {
                 var id = $(this).parents('div').attr('contentId');
-                that.renameFile(id);
+                $('#renameFormPage').show();
+                $('#renameButton').click(function(){
+                    that.renameFile(id);
+                    $('#renameFormPage').hide();
+                });
             });
 
             $('#deleteContent').on('click', function() {
@@ -162,7 +186,7 @@ define(function (require) {
          * @param {string} id
          */
         this.renameFile = function(id) {
-            var fileName = prompt("Please enter the new file name", "");
+            var fileName = $('#renameInput').val();
             if (fileName != null) {
                 this.workspaceAdapter.renameFile(id, fileName);
             }
@@ -230,6 +254,7 @@ define(function (require) {
             '<li style="color:white" class="file content" id="' + contentId + '">' +
             fileName +
             '</li>');
+        socket.emit('updateEveryone', wsID);
     }
 
     /**
