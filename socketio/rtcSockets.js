@@ -6,7 +6,7 @@
  *   2. Handle sending messages from the client side
  *   3. Handle room joining/creating from the client side
  */
-function rtcSockets(sio, socket) {
+function RtcSockets(sio, socket) {
 
     socket.on('chat message', function(message, room){
         sio.sockets.in(room).emit('chat message', message);
@@ -86,4 +86,4 @@ function rtcSockets(sio, socket) {
     });
 }
 
-module.exports = rtcSockets;
+module.exports = RtcSockets;
