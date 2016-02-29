@@ -45,10 +45,12 @@ define(function (require, exports, module) {
         this.createSocketListeners = function() {
             var isStudent = $("#questionsTableBody") ? true : false; // Check if I'm a student
             if(isStudent) {
-                socket.on('bringUserIn', function(email, href, classId) {
-                    if(userManager.email === email) {
-                        window.location.href = href;
-                    }
+                socket.on('bringUserIn', function(emailArray, href, classId) {
+                    emailArray.forEach(function(email) {
+                        if(userManager.email === email) {
+                            window.location.href = href;
+                        }
+                    });
                 });
             } else { //If instructor
 
@@ -60,12 +62,12 @@ define(function (require, exports, module) {
 
             var question = {
                 question: questiontext,
-                email: userManager.email,
+                email: [userManager.email],
                 name: userManager.userName
             };
 
             socket.emit('addQuestion', that.classId, question, function(question, queue) {
-                that.displaySimilarQuestions(question.question, queue);
+                that.displaySimilarQuestions(question, queue);
             });
             $('#questionInput').val('');
             $('#questionFormPage').hide();
@@ -80,18 +82,19 @@ define(function (require, exports, module) {
         this.displayQuestionList = function() {
             socket.emit('getQuestionList', that.classId, function(queue) {
                 var updateStudentQuestionList = function(questionObject, index) {
+                    var id = Date.now() + index.toString();
                     questionBody.append(
                         '<li>' +
-                        '<a id="' + questionObject.email + index + '" href="/main?' + params + '">' + questionObject.question + '</a>' +
+                            '<a id="' + id + '" href="/main?' + params + '">' + questionObject.question + '</a>' +
                         '</li>');
                 };
 
-                var updateTAQuestionList = function(questionObject) {
-                    var id = Date.now();
+                var updateTAQuestionList = function(questionObject, index) {
+                    var id = Date.now() + index.toString();
                     questionBody.append(
                         '<li>' +
-                        '<button id=' + id + '>' + questionObject.question + '</button>' +
-                        '<button id=' + id + 'kick' + '>X</button>' +
+                            '<button id=' + id + '>' + questionObject.question + '</button>' +
+                            '<button id=' + id + 'kick' + '>X</button>' +
                         '</li>');
 
                     var bringStudentIn = function() {
@@ -99,7 +102,7 @@ define(function (require, exports, module) {
                     };
 
                     var kickStudentOut = function() { //TODO Not implemented yet
-                        socket.emit('kickUserOut', questionObject.email, url, that.classId);
+                        socket.emit('kickUserOut', questionObject, url, that.classId);
                     };
 
                     // Set event handlers for clicks
@@ -128,16 +131,26 @@ define(function (require, exports, module) {
         };
 
         this.displaySimilarQuestions = function(question, questionCol) {
-            this.similarQuestions.getSimilarQuestions(question, questionCol, function(similarQuestionsArray){
-                if(similarQuestionsArray.length != 0) {
-                    for (var q = 0; q < similarQuestionsArray.length; q++) {
-                        var question =  '<tr><td>' + similarQuestionsArray[q] + '</td></tr>';
-                        $('#simquestionTableBody').append(question);
-                    }
-                    $('#similarQuestionsPage').show();
-                }
+            this.similarQuestions.getSimilarQuestions(question.question, questionCol, function(similarQuestionsArray){
+                $('#simquestionTableBody').empty();
+                similarQuestionsArray.forEach(function(questionObject, index) {
+                    var joinQuestion = function() {
+                        $('#similarQuestionsPage').hide();
+                        socket.emit('joinQuestions', question, questionObject, that.classId);
+                    };
+
+                    var id = Date.now() + index.toString();
+                    $('#simquestionTableBody').append(
+                        '<li>' +
+                            '<button id=' + id + '>' + questionObject.question + '</button>' +
+                        '</li>');
+
+                    $('#' + id).click(joinQuestion);
+                });
+                similarQuestionsArray.length ? $('#similarQuestionsPage').show() : null;
             });
         };
+
         return that;
     };
 
