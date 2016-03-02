@@ -29,6 +29,10 @@ define(function (require) {
                     else if (authResult && !authResult.error) {
                         onEventuallySuccess();
                     }
+                }, function(err) {
+                    console.log(err);
+                    if(window.location.href.split('/').length !== 3)
+                        window.location.href = '/';
                 });
         };
 

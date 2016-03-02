@@ -36,32 +36,23 @@ define(function(require) {
 
         this.initGapi = function() {
             var that = this;
-            var deferred = Q.defer();
-            gapi.load('auth2', function(){
-                that.auth2 = gapi.auth2.init({
-                    client_id: clientId,
-                    scope: scopes
+            return new Promise(function(resolve, reject) {
+                gapi.load('signin2', function () {
+                    that.auth2 = gapi.auth2.init({
+                        client_id: clientId,
+                        scope: scopes
+                    });
+                    resolve();
                 });
-                that.auth2.isSignedIn.listen(function(isSignedIn) {
-                    if (isSignedIn) {
-                        that.onGapiSuccess(that.auth2.currentUser.get());
-                    }
-                });
-
-                deferred.resolve();
-            });
-            return deferred.promise;
+            })
         };
 
         this.onGapiSuccess = function(googleUser) {
             console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+            this.gToken = googleUser.getAuthResponse().access_token;
             this.userName = googleUser.getBasicProfile().getName();
-            this.email = googleUser.getBasicProfile().getEmail();
             if (this.authTimer) {
                 window.clearTimeout(this.authTimer);
-            }
-            if (!this.gToken) {
-                this.authorize(false);
             }
             this.refreshAuth();
         };
@@ -76,20 +67,27 @@ define(function(require) {
 
         this.startAuthorizing = function() {
             var that = this;
-            var deferred = Q.defer();
-
-            gapi.auth.authorize({
-                client_id: clientId,
-                scope: scopes,
-                immediate: true
-            }, function(authResult) {
-                if (authResult && !authResult.error) {
-                    that.gToken = authResult.access_token;
-                }
-                deferred.resolve(authResult);
+            return new Promise(function(resolve, reject) {
+                gapi.auth.authorize({
+                    client_id: clientId,
+                    scope: scopes,
+                    immediate: true
+                }, function(authResult) {
+                    if (authResult && !authResult.error) {
+                        that.gToken = authResult.access_token;
+                        that.auth2.then(function() {
+                            that.userName = that.auth2.currentUser.get().getBasicProfile().getName();
+                            that.email = that.auth2.currentUser.get().getBasicProfile().getEmail();
+                            resolve(authResult);
+                        });
+                        console.log('Authorization succeed');
+                    }
+                    if (that.authTimer) {
+                        window.clearTimeout(that.authTimer);
+                    }
+                    that.refreshAuth();
+                });
             });
-
-            return deferred.promise;
         };
 
         /**
