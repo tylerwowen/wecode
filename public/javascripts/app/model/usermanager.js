@@ -1,3 +1,4 @@
+var a;
 define(function(require) {
     "use strict";
 
@@ -79,6 +80,8 @@ define(function(require) {
                     if (authResult && !authResult.error) {
                         that.gToken = authResult.access_token;
                         that.auth2.then(function() {
+                            a = that.auth2;
+                            console.log('resolving from authorize and inside auth2 then');
                             that.userName = that.auth2.currentUser.get().getBasicProfile().getName();
                             that.email = that.auth2.currentUser.get().getBasicProfile().getEmail();
                             resolve(authResult);
@@ -88,6 +91,7 @@ define(function(require) {
                         console.log('Authorization succeed');
                     }
                     else {
+                        console.log('authResult doesnt have error so resolving it')
                         resolve(authResult);
                     }
                     if (that.authTimer) {

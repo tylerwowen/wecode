@@ -25,12 +25,15 @@ define(function (require) {
                 })
                 .then(function (authResult) {
                     if (authResult && authResult.error) {
+                        console.log('asking for login request');
                         that.loginRequest();
                     }
                     else if (authResult && !authResult.error) {
+                        console.log('succeeded with stuff');
                         onEventuallySuccess();
                     }
                 }, function(err) {
+                    console.log('found error boss');
                     console.log(err);
                     if(window.location.href.split('/').length !== 3)
                         window.location.href = '/';
