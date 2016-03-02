@@ -1,4 +1,4 @@
-define(function(require) {
+define(function (require) {
 
     var expect = require('chai').expect;
     var ace = require('ace/ace');
@@ -7,7 +7,7 @@ define(function(require) {
     var similarQuestions = null;
 
 
-    var queueTemp = null;
+    var queueTemp = [];
     var queriesTemp = null;
     var simTemp = null;
 
@@ -15,7 +15,7 @@ define(function(require) {
 
         this.timeout(5000);
 
-        before(function() {
+        before(function () {
             similarQuestions = new SimilarQuestions();
             readTextFile("queueQuestions.txt");
             readTextFile("queryQuestions.txt");
@@ -42,7 +42,7 @@ define(function(require) {
             it('Checks stop word', function (done) {
                 var s = "this is that to be if anything is here how to";
                 var array = similarQuestions.getStringArray(s);
-                for(var i = 0; i < array.length; i++) {
+                for (var i = 0; i < array.length; i++) {
                     expect(similarQuestions.isStopWord(array[i])).to.be.equal(true);
                 }
                 done();
@@ -51,7 +51,7 @@ define(function(require) {
             it('Checks synonym', function (done) {
                 var s = "modify change eliminate remove delete";
                 var array = similarQuestions.getStringArray(s);
-                for(var i = 0; i < array.length; i++) {
+                for (var i = 0; i < array.length; i++) {
                     array[i] = similarQuestions.getSynonym(array[i]);
                 }
                 expect(array).to.deep.equal(["edit", "edit", "remove", "remove", "remove"]);
@@ -61,7 +61,9 @@ define(function(require) {
             it('Sort by word count example', function (done) {
                 var arr = [[0, 10], [3, 9], [1, 8], [9, 7]];
                 var resArr = [[9, 7], [1, 8], [3, 9], [0, 10]];
-                arr.sort(function(a, b) { return (a[1] < b[1] ? -1 : (a[1] > b[1] ? 1 : 0)); });
+                arr.sort(function (a, b) {
+                    return (a[1] < b[1] ? -1 : (a[1] > b[1] ? 1 : 0));
+                });
                 expect(arr).to.deep.equal(resArr);
                 done();
             });
@@ -73,14 +75,14 @@ define(function(require) {
 
                 var start = new Date().getTime();
 
-                for(var q = 0; q < queryCount; q++) {
+                for (var q = 0; q < queryCount; q++) {
                     currentQuestion = queriesTemp[q];
-                    similarQuestions.getSimilarQuestions(currentQuestion, queueTemp, function(similarQuestionsArray) {
+                    similarQuestions.getSimilarQuestions(currentQuestion, queueTemp, function (similarQuestionsArray) {
                         simArrayLength = similarQuestionsArray.length;
                         totalQuestionsCount += simArrayLength;
-                        if( simArrayLength != 0) {
-                            for(var i = 0; i < simArrayLength; i++) {
-                                if(similarQuestionsArray[i] === simTemp[q]) {
+                        if (simArrayLength != 0) {
+                            for (var i = 0; i < simArrayLength; i++) {
+                                if (similarQuestionsArray[i].question === simTemp[q]) {
                                     score += (simArrayLength - i);
                                 }
                             }
@@ -90,8 +92,8 @@ define(function(require) {
 
                 var end = new Date().getTime();
                 var time = end - start;
-                console.log("Average time for a question: ", time/1000, "seconds");
-                console.log("Total accuracy: ", (score/totalQuestionsCount*100).toFixed(2),"%");
+                console.log("Average time for a question: ", time / 10000, "seconds");
+                console.log("Total accuracy: ", (score / totalQuestionsCount * 100).toFixed(2), "%");
                 done();
             });
         });
@@ -104,7 +106,10 @@ define(function(require) {
             if (rawFile.readyState === 4) {
                 if (rawFile.status === 200 || rawFile.status == 0) {
                     if (file === "queueQuestions.txt") {
-                        queueTemp = String(rawFile.responseText).split('\n');
+                        var questionStrings = String(rawFile.responseText).split('\n');
+                        questionStrings.forEach(function (question) {
+                            queueTemp.push({question: question});
+                        })
                     } else if (file === "queryQuestions.txt") {
                         queriesTemp = String(rawFile.responseText).split('\n');
                     } else if (file === "similarQuestions.txt") {

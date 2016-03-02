@@ -5,16 +5,18 @@ define(function (require) {
     var _ = require('lodash');
     require('lib/stemmer');
 
-    function SimilarQuestions() {}
+    function SimilarQuestions() {
+    }
 
     (function () {
 
         this.constructor = SimilarQuestions;
         var that = this;
 
-        this.getSimilarQuestions = function(question, queue, callback) {
-            var queueTemp = _.map(queue, function(questionObject) { return questionObject.question});
-
+        this.getSimilarQuestions = function (question, queue, callback) {
+            var queueTemp = _.map(queue, function (questionObject) {
+                return questionObject.question
+            });
             var len = queueTemp.length;
             var array = this.getStringArray(question);
             var counter = 0;
@@ -25,16 +27,16 @@ define(function (require) {
                 queueQuestion = this.getStringArray(queueTemp[k]);
                 counter = 0;
 
-                array.forEach(function(arrayWordTemp){
-                    if(!that.isStopWord(arrayWordTemp)){
+                array.forEach(function (arrayWordTemp) {
+                    if (!that.isStopWord(arrayWordTemp)) {
                         arrayWordTemp = stemmer(arrayWordTemp);
                         arrayWordTemp = that.getSynonym(arrayWordTemp);
-                        queueQuestion.forEach(function(queueWordTemp){
-                            if(!that.isStopWord(queueWordTemp)){
+                        queueQuestion.forEach(function (queueWordTemp) {
+                            if (!that.isStopWord(queueWordTemp)) {
                                 queueWordTemp = stemmer(queueWordTemp);
                                 queueWordTemp = that.getSynonym(queueWordTemp);
                                 var result = arrayWordTemp.localeCompare(queueWordTemp);
-                                if(result == 0){
+                                if (result == 0) {
                                     counter++;
                                 }
                             }
@@ -49,53 +51,53 @@ define(function (require) {
             rankQuestionsArray = rankQuestionsArray.sort(this.sortByCounter);
             var similarQuestionsArray = [];
             var coef = 0;
-            if(len > 10) coef = 10;
+            if (len > 10) coef = 10;
             else coef = 1;
 
             for (k = 0; k < len / coef; k++) {
-                if(rankQuestionsArray[k][1]!=0) {
+                if (rankQuestionsArray[k][1] != 0) {
                     similarQuestionsArray.push(queue[rankQuestionsArray[k][0]]);
                 }
             }
             if (callback) callback(similarQuestionsArray);
         };
 
-        this.isStopWord = function(word) {
+        this.isStopWord = function (word) {
             return stopwords.includes(word);
         };
 
-        this.stemWord = function(word){
+        this.stemWord = function (word) {
             return stemmer(word);
         };
 
-        this.sortByCounter = function(a, b){
+        this.sortByCounter = function (a, b) {
             return (a[1] > b[1] ? -1 : (a[1] < b[1] ? 1 : 0));
         };
 
-        this.getStringArray = function(string) {
+        this.getStringArray = function (string) {
             var array;
-            string = string.replace(/['`]/g,"");
-            string = string.replace(/[^A-Za-z]/g," ");
+            string = string.replace(/['`]/g, "");
+            string = string.replace(/[^A-Za-z]/g, " ");
             string = string.trim();
             array = (string.toLowerCase()).split(/\s+/);
             return array;
         };
 
         var stopwords = ["a", "about", "above", "above", "across", "after", "against",
-            "almost", "alone", "along", "already", "also","although","am","among", "amongst",
-            "amoungst", "amount",  "an", "and", "any","anyhow","anyone", "anything",
-            "anyway", "anywhere", "are", "around", "as",  "at", "back", "be", "because",
+            "almost", "alone", "along", "already", "also", "although", "am", "among", "amongst",
+            "amoungst", "amount", "an", "and", "any", "anyhow", "anyone", "anything",
+            "anyway", "anywhere", "are", "around", "as", "at", "back", "be", "because",
             "been", "beforehand", "behind", "being", "below", "between", "beyond", "bill",
-            "by", "can", "could",  "down", "due", "during", "each", "eg", "either","else",
+            "by", "can", "could", "down", "due", "during", "each", "eg", "either", "else",
             "elsewhere", "empty", "enough", "etc", "even", "ever", "every", "everyone",
             "everything", "everywhere", "few", "fill", "find", "fire", "for", "former",
-            "formerly", "found", "from", "front", "full","further", "he", "hence", "her",
+            "formerly", "found", "from", "front", "full", "further", "he", "hence", "her",
             "here", "hereafter", "hereby", "herein", "hereupon", "hers", "herself", "him",
             "himself", "his", "how", "however", "ie", "if", "in", "inc", "indeed", "interest",
-            "into", "is",  "it", "its", "itself", "last", "latter", "latterly", "least", "ltd",
+            "into", "is", "it", "its", "itself", "last", "latter", "latterly", "least", "ltd",
             "many", "may", "me", "meanwhile", "might", "mill", "mine", "moreover", "my",
             "myself", "next", "now", "of", "off", "often", "on", "once", "onto", "or", "other",
-            "others", "otherwise", "our", "ours", "ourselves", "out", "over", "own","part",
+            "others", "otherwise", "our", "ours", "ourselves", "out", "over", "own", "part",
             "per", "perhaps", "please", "rather", "re", "same", "seem", "seemed", "seeming",
             "seems", "serious", "she", "side", "since", "sincere", "so", "some", "somehow",
             "someone", "something", "sometime", "sometimes", "somewhere", "still", "such",
@@ -112,15 +114,15 @@ define(function (require) {
         ];
 
         var synonyms = {
-            "modify" : "edit",
-            "change" : "edit",
+            "modify"    : "edit",
+            "change"    : "edit",
             "eliminate" : "remove",
-            "delete" : "remove",
-            "another" : "different"
+            "delete"    : "remove",
+            "another"   : "different"
         };
 
-        this.getSynonym = function(word){
-            if(synonyms[word]) {
+        this.getSynonym = function (word) {
+            if (synonyms[word]) {
                 return synonyms[word];
             }
             return word;
