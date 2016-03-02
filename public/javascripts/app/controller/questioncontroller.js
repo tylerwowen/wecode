@@ -142,7 +142,7 @@ define(function (require, exports, module) {
                     var id = Date.now() + index.toString();
                     $('#simquestionTableBody').append(
                         '<li>' +
-                            '<button id=' + id + '>' + questionObject.question + '</button>' +
+                            '<a id=' + id + '>' + questionObject.question + '</a>' +
                         '</li>');
 
                     $('#' + id).click(joinQuestion);
