@@ -32,6 +32,25 @@
     color: white;
 }
 
+#workSpaceList:empty:before {
+    font-family: FontAwesome;
+    content: "\f05e";
+    color: #B72C2C;
+    display: block;
+    text-align: center;
+    font-size: 100px;
+    padding-top: 20px;
+}
+
+#workSpaceList:empty:after {
+    content: "There are currently no questions to display!";
+    color: black;
+    display: block;
+    text-align: center;
+    font-size: 16px;
+    padding-top: 20px;
+}
+
 #workSpaceList li {
     list-style: none;
     cursor: pointer;
