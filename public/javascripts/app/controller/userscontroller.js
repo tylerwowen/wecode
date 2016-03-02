@@ -13,6 +13,7 @@ define(function (require) {
     }
 
     (function () {
+        var that = this;
         this.constructor = Controller;
 
         this.init = function(onEventuallySuccess) {
@@ -47,12 +48,13 @@ define(function (require) {
         };
 
         this.updateStatus = function() {
-            if (this.userManager.isLoggedIn()) {
-                this.showLoggedInMessage();
-            }
-            else {
-                this.showNotLoggedInMessage();
-            }
+            this.userManager.isLoggedIn()
+                .then(function(loggedIn) {
+                    if(loggedIn)
+                        that.showLoggedInMessage();
+                    else
+                        that.showNotLoggedInMessage();
+                });
         };
 
         this.attachSignin = function() {

@@ -62,11 +62,14 @@ define(function(require) {
         };
 
         this.isLoggedIn = function() {
-            return this.auth2.isSignedIn.get();
+            return this.auth2.then(function() {
+                return that.auth2.isSignedIn.get();
+            });
         };
 
         this.startAuthorizing = function() {
             var that = this;
+
             return new Promise(function(resolve, reject) {
                 gapi.auth.authorize({
                     client_id: clientId,
@@ -79,8 +82,13 @@ define(function(require) {
                             that.userName = that.auth2.currentUser.get().getBasicProfile().getName();
                             that.email = that.auth2.currentUser.get().getBasicProfile().getEmail();
                             resolve(authResult);
+                        }).then(null, function() {
+                            resolve(authResult);
                         });
                         console.log('Authorization succeed');
+                    }
+                    else {
+                        resolve(authResult);
                     }
                     if (that.authTimer) {
                         window.clearTimeout(that.authTimer);
