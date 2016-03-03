@@ -91,9 +91,11 @@ define(function (require) {
         this.addSocketListeners = function() {
             var that = this;
             socket = window.socket;
-            socket.on('fileListChanged', function() {
-                that.refreshWorkSpace();
-            })
+            if (socket != null) {
+                socket.on('fileListChanged', function () {
+                    that.refreshWorkSpace();
+                })
+            }
         };
 
         this.connectToView = function() {
