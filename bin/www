@@ -9,10 +9,9 @@ var debug = require('debug')('WeStudy:server');
 var https = require('https');
 var fs = require('fs');
 var io = require('socket.io');
-var RtcSockets = require('../socketio/rtcSockets');
+var DefaultSockets = require('../socketio/rtcSockets');
 var TerminalSockets = require('../socketio/terminalsocket');
 var QuestionSockets = require('../socketio/questionsocket');
-var FileSockets = require('../socketio/filesocket');
 
 /**
  * Get port from environment and store in Express.
@@ -42,7 +41,7 @@ server.on('listening', onListening);
 
 var sio = io(server);
 sio.on('connection', function(socket) {
-  RtcSockets(sio, socket);
+    DefaultSockets(sio, socket);
 });
 
 var terminalNSP = sio.of('/terminal');
@@ -53,11 +52,6 @@ terminalNSP.on('connection', function(socket){
 var questionNSP = sio.of('/questions');
 questionNSP.on('connection', function(socket) {
     QuestionSockets(sio, socket, questionNSP);
-});
-
-var fileNSP = sio.of('/files');
-fileNSP.on('connection', function(socket) {
-    FileSockets(sio, socket, fileNSP);
 });
 
 /**

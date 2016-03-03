@@ -86,6 +86,7 @@ define(function(require) {
     if (webrtcDetectedBrowser === 'chrome' || webrtcDetectedBrowser === 'firefox') {
         var socket = io.connect();
         var joined = false;
+        window.socket = socket;
         room = getParam('id');
         if(!room){
             room = 'theUltimatePlayground';

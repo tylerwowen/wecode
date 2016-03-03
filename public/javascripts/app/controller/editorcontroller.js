@@ -8,10 +8,9 @@ define(function (require) {
         WorkspaceAdapter = require('app/adapters/googleworkspaceadapter'),
         FileAdapter = require('app/adapters/googlefileadapter'),
         ACEAdapter = require('app/adapters/aceadapter'),
-        io = require('socketio');
+        getParam = require('lib/getparam');
 
     var socket;
-    var wsID = getParam('id');
 
     ace.config.set("packaged", true);
     ace.config.set("basePath", require.toUrl("ace"));
@@ -50,19 +49,21 @@ define(function (require) {
                 this.fileAdapter.load(),
                 this.workspaceAdapter.load()
             ]).then(function() {
-                that.createSocketListeners();
-                that.loadWorkspace();
+                return that.loadWorkspace();
+            }).then(function() {
+                that.addSocketListeners();
                 that.connectToView();
             });
         };
 
         this.loadWorkspace = function() {
+            var wsID = getParam('id');
             var wsName = getParam('name');
             var that = this;
             // Get a list of files from work space with wsID
             if (wsID) {
                 this.workspace = new Workspace(wsID, wsName, this.workspaceAdapter);
-                this.workspace.getContentsList()
+                return this.workspace.getContentsList()
                     .then(function(contents) {
                         if (Object.keys(contents).length > 0) {
                             showList(contents);
@@ -82,15 +83,15 @@ define(function (require) {
 
         this.refreshWorkSpace = function() {
             $('#files').empty();
-            this.loadWorkspace();
+            this.loadWorkspace().then(function() {
+                $('#files').find('li:first-child').click();
+            });
         };
 
-        this.createSocketListeners = function() {
+        this.addSocketListeners = function() {
             var that = this;
-            socket = io('/files');
-            socket.emit('join', wsID);
-
-            socket.on('updateEveryone', function() {
+            socket = window.socket;
+            socket.on('fileListChanged', function() {
                 that.refreshWorkSpace();
             })
         };
@@ -129,14 +130,14 @@ define(function (require) {
                 .on('contextmenu','li.content', function(event) {
                     console.log('right clicked');
                     var id = $(this).attr('id');
-                    $("#rmenu")
+                    $('#rmenu')
                         .css('top', event.pageY)
                         .css('left', event.pageX)
                         .attr('contentId', id)
                         .show();
 
                     window.event.returnValue = false;
-                });
+                }).find('li:first-child').click();
 
             $(document).on('click', function() {
                 $("#rmenu")
@@ -144,7 +145,7 @@ define(function (require) {
                     .removeAttr('contentId');
             });
 
-            $('#refreshButton').on('click', function() {
+            $('#refreshFiles').on('click', function() {
                 that.refreshWorkSpace();
             });
 
@@ -165,6 +166,7 @@ define(function (require) {
                 var id = $(this).parents('div').attr('contentId');
                 that.deleteFile(id);
             });
+
         };
 
         this.createFile = function(fileName) {
@@ -174,6 +176,7 @@ define(function (require) {
                     .then(function (file) {
                         addContentToList(file.id, file.name);
                         $('#'+file.id).click();
+                        socket.emit('fileListChanged', that.workspace.id);
                     });
             }
             else {
@@ -197,10 +200,10 @@ define(function (require) {
          * @param {string} id
          */
         this.deleteFile = function(id) {
-            var that = this;
             this.workspaceAdapter.deleteFile(id).then(function (res) {
                 if (res.status == 204) {
                     $('#' + id).remove();
+                    socket.emit('fileListChanged', that.workspace.id);
                 }
             });
         };
@@ -226,7 +229,6 @@ define(function (require) {
     }).call(EditorController.prototype);
 
     function showList(contents) {
-        var first = true;
         for (var id in contents) {
             if (contents.hasOwnProperty(id)) {
                 if (contents[id].constructor.name == 'File') {
@@ -234,10 +236,6 @@ define(function (require) {
                         contents[id].name +
                         '</li>';
                     $('#files').append(file);
-                    if (first) {
-                        $('#' + id).click();
-                        first = false;
-                    }
                 } else if (contents[id].constructor.name == 'Folder') {
                     var folder = '<li style="color:white" class="content folder" id="' + id + '">' +
                         contents[id].name +
@@ -254,25 +252,6 @@ define(function (require) {
             '<li style="color:white" class="file content" id="' + contentId + '">' +
             fileName +
             '</li>');
-        socket.emit('updateEveryone', wsID);
-    }
-
-    /**
-     * Examines url query parameters for a specific parameter.
-     * @param {!string} urlParam to search for in url parameters.
-     * @return {?(string)} returns match as a string of null if no match.
-     * @export
-     */
-    function getParam(urlParam) {
-        var regExp = new RegExp(urlParam + '=(.*?)($|&)', 'g');
-        var match = window.location.search.match(regExp);
-        if (match && match.length) {
-            match = match[0];
-            match = match.replace(urlParam + '=', '').replace('&', '');
-        } else {
-            match = null;
-        }
-        return match;
     }
 
     return EditorController;
