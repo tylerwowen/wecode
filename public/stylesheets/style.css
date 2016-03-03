@@ -40,6 +40,7 @@ a {
     height: 100%;
     position: relative;
     bottom: 0;
+    border: 5px solid black;
 }
 
 .col-md-2, /* file bar */
