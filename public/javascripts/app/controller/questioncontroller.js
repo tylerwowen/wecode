@@ -84,9 +84,9 @@ define(function (require, exports, module) {
                 var updateStudentQuestionList = function(questionObject, index) {
                     var id = Date.now() + index.toString();
                     questionBody.append(
-                        '<li>' +
-                            '<a id="' + id + '" href="/main?' + params + '">' + questionObject.question + '</a>' +
-                        '</li>');
+                        '<li><div class="row"><div class="col-md-9 question">'+ questionObject.question
+                        + '</div><div class="col-md-3"><div class="name">'
+                        + questionObject.name + '</div></div></div></li>');
                 };
 
                 var updateTAQuestionList = function(questionObject, index) {

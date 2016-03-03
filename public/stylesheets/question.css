@@ -7,10 +7,6 @@
     width: 100vw;
 }
 
-#similarQuestionsForm {
-    text-align: center;
-}
-
 tbody button {
     width: 100%;
     display: inline-block;
@@ -29,6 +25,7 @@ table {
 #simquestionTableBody {
     background-color: white;
     padding: 10px;
+    text-align: left !important;
 }
 
 body {
@@ -46,7 +43,6 @@ body {
     height: 100vh;
     width: 100vw;
     opacity: .8;
-    text-align: center !important;
 }
 
 #questionForm, #similarQuestionsForm {
@@ -194,13 +190,39 @@ body {
     bottom: 0;
 }
 
+ol .col-md-3 {
+    padding-right: 5px !important;
+}
+
+ol .name {
+    float: right;
+}
+
+ol .question {
+    padding-left: 0 !important;
+}
+
 ol a {
     display: block;
     padding:4px 8px;
     color:#666;
+    margin: 0 !important;
 }
 
 ol a:hover {
+    text-decoration: none;
+    background-color: gray;
+    color: white;
+}
+
+ol .row {
+    display: block;
+    padding:4px 8px;
+    color:#666;
+    margin: 0 !important;
+}
+
+ol .row:hover {
     text-decoration: none;
     background-color: gray;
     color: white;
