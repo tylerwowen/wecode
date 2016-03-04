@@ -102,8 +102,8 @@ define(function (require, exports, module) {
                     var id = Date.now() + index.toString();
                     questionBody.append(
                         '<li>' +
-                            '<button id=' + id + '>' + questionObject.question + '</button>' +
-                            '<button id=' + id + 'kick' + '>X</button>' +
+                        '<button id=' + id + '>' + questionObject.question + '</button>' +
+                        '<button id=' + id + 'kick' + '>X</button>' +
                         '</li>');
 
                     var bringStudentIn = function() {
@@ -151,8 +151,7 @@ define(function (require, exports, module) {
                     var id = Date.now() + index.toString();
                     $('#simquestionTableBody').append(
                         '<li>' +
-                            '<button id=' + id + '>' + questionObject.question + '</button>' +
-                        '</li>');
+                        '<div id=' + id + '><div id="studentQuestion">' + questionObject.question + '</div><hr id="separator"><div id="asker">'+ questionObject.name + '</div></div></li>');
 
                     $('#' + id).click(joinQuestion);
                 });

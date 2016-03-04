@@ -7,13 +7,15 @@ body {
 }
 
 #separator {
-    margin-top: 2px !important;
-    margin-bottom: 5px !important;
+    margin-top: 5px !important;
+    margin-bottom: 0px !important;
+    border-color: #C5C1C1 !important;
 }
 
 #studentQuestion {
     text-align: left;
     word-wrap: break-word;
+    padding-left: 10px;
 }
 
 #studentQuestion:before {
@@ -199,12 +201,29 @@ table {
     display: none;
 }
 
+ul li {
+    position:relative;
+    margin: 0px 0 10px 0;
+    padding: 5px;
+    list-style:none;
+    background: #E8E5E5;
+}
+
+ul li:last-child {
+    margin-bottom: 0 !important;
+}
+
+ul li:hover {
+    background-color:#666;
+    color: white;
+}
+
 #questionHeader {
     text-align: center;
     padding: 5px;
     display: block;
     border-radius: 3px;
-    background-color:  #354882;
+    background-color: #354882;
     color: white;
     margin: 5px 0 5px 0;
 }
@@ -233,7 +252,7 @@ ol .question {
 ol .row {
     display: block;
     padding:4px 8px;
-    color:#666;
+    color: gray;
     margin: 0 !important;
 }
 
