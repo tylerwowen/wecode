@@ -30,7 +30,6 @@ body {
 
 #asker:before {
     content: "Asked by ";
-    font-style: italic;
 }
 
 #questionInfo {

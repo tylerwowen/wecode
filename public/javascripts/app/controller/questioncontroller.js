@@ -96,12 +96,6 @@ define(function (require, exports, module) {
                         socket.emit('joinQuestions', questionObject.question, questionObject, that.classId);
                         $('#joinQuestionsPage').hide();
                     });
-
-                    $('#' + id).click(function() {
-                        $('#asker').text(questionObject.name);
-                        $('#studentQuestion').text(questionObject.question);
-                        $('#joinQuestionsPage').show();
-                    });
                 };
 
                 var updateTAQuestionList = function(questionObject, index) {
