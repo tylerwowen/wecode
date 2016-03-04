@@ -87,15 +87,6 @@ define(function (require, exports, module) {
                         '<li><div class="row" id=' + id + '><div class="col-md-9 question">'+ questionObject.question
                         + '</div><div class="col-md-3"><div class="name">'
                         + questionObject.name + '</div></div></div></li>');
-
-                    $('#joinReturn').click(function(){
-                        $('#joinQuestionsPage').hide();
-                    });
-
-                    $('#joinButton').click(function(){
-                        socket.emit('joinQuestions', questionObject.question, questionObject, that.classId);
-                        $('#joinQuestionsPage').hide();
-                    });
                 };
 
                 var updateTAQuestionList = function(questionObject, index) {
