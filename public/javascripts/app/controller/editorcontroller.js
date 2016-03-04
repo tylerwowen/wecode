@@ -82,10 +82,13 @@ define(function (require) {
         };
 
         this.refreshWorkSpace = function() {
+            var currentId = $('#files').find('li.current').attr('id');
             $('#files').empty();
-            this.loadWorkspace().then(function() {
-                $('#files').find('li:first-child').click();
-            });
+            this.workspace.refreshContentList()
+                .then(function(contents) {
+                    showList(contents);
+                    $('#'+currentId).addClass('current');
+                });
         };
 
         this.addSocketListeners = function() {
@@ -202,12 +205,12 @@ define(function (require) {
          * @param {string} id
          */
         this.deleteFile = function(id) {
-            this.workspaceAdapter.deleteFile(id).then(function (res) {
-                if (res.status == 204) {
+            var that = this;
+            this.workspace.deleteFile(id)
+                .then(function() {
                     $('#' + id).remove();
                     socket.emit('fileListChanged', that.workspace.id);
-                }
-            });
+                });
         };
 
         this.setEditorMode = function(fileName) {
