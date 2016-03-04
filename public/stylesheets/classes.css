@@ -43,24 +43,6 @@ body {
     padding-top: 5px;
 }
 
-.btn-success {
-    border: none !important;
-    text-align: center !important;
-    margin: auto !important;
-}
-
-#studentReturn {
-    border-left: 1px #921515 solid !important;
-}
-
-#TAreturn {
-    border-left: 1px #921515 solid !important;
-}
-
-button:hover {
-    background-color: #921515 !important;
-}
-
 .navwrapper {
     margin: 0 !important;
     padding-top: 120px ;
@@ -72,7 +54,7 @@ button:hover {
 
 #classcontent {
     padding-top: 75px;
-    padding-bottom: 0px;
+    padding-bottom: 0;
     height: 100%;
 }
 
@@ -82,7 +64,7 @@ button:hover {
 
 #navbar {
     list-style: none;
-    padding: 0 0 0 0px !important;
+    padding: 0 !important;
     margin: 0 10px 0 10px !important;
     height: 100%;
     width: 100%;
@@ -96,16 +78,24 @@ button:hover {
     border-radius: 5px;
 }
 
-#navbar li:hover {
-    background-color: #B72C2C;
-}
-
-#navbar li {
+#TAselector {
     background-color: #921515;
 }
 
+#TAselector:hover {
+    background-color: #B72C2C;
+}
+
+#StudentSelector {
+    background-color: #354882;
+}
+
+#StudentSelector:hover {
+    background-color: #212C4C;
+}
+
 #navbar li.selected:hover {
-    background-color: white;
+    background-color: white !important;
     color: #404040 !important;
 }
 
@@ -127,8 +117,12 @@ button:hover {
     width: 100vm;
 }
 
+.navbar.instructor {
+    background-color: #B72C2C !important;
+}
+
 .navbar {
-    background: #921515!important;
+    background: #354882!important;
 }
 
 .navbar a{
@@ -157,16 +151,28 @@ button:hover {
     padding: 5px;
     display: block;
     border-radius: 3px;
-    background-color: #B72C2C;
     color: white;
     margin: 5px 0 5px 0;
 }
 
-button {
-    background: #B72C2C !important;
+#TAHeader {
+    background-color: #B72C2C;
 }
 
-#TAClassFormButton, #StudentAddClass {
+#StudentHeader {
+    background-color: #354882;
+}
+
+#StudentAddClass {
+    text-align: center !important;
+    margin: 0 auto;
+    display: block;
+    background: #354882 !important;
+    border: #354882 !important;
+    bottom: 0;
+}
+
+#TAClassFormButton {
     text-align: center !important;
     margin: 0 auto;
     display: block;
@@ -175,9 +181,23 @@ button {
     bottom: 0;
 }
 
+#StudentClassList:empty:after {
+    content: "You are not a student in any classes!";
+    color: black;
+    display: block;
+    text-align: center;
+}
+
+#TAClassList:empty:after {
+    content: "You are not an instructor in any classes!";
+    color: black;
+    display: block;
+    text-align: center;
+}
+
 ol a {
     display: block;
-    padding:4px 8px; /* Add some spacing around the content */
+    padding:4px 8px;
     color:#666;
 }
 
@@ -188,44 +208,45 @@ ol a:hover {
 }
 
 ol {
-    counter-reset:li; /* Initiate a counter */
-    margin-left:0; /* Remove the default left margin */
-    padding-left:0; /* Remove the default left padding */
+    counter-reset:li;
+    margin-left:0;
+    padding-left:0;
 }
 ol > li {
-    position:relative; /* Create a positioning context */
-    margin:0 0 6px 2em; /* Give each list item a left margin to make room for the numbers */
-    list-style:none; /* Disable the normal item numbering */
+    position:relative;
+    margin:0 0 6px 2em;
+    list-style:none;
     background:#f6f6f6;
 }
+
+#TAClassList > li:before {
+    background-color: #B72C2C;
+}
+
+#StudentClassList > li:before {
+    background-color: #354882;
+}
+
 ol > li:before {
-    content:counter(li); /* Use the counter as content */
-    counter-increment:li; /* Increment the counter by 1 */
-    /* Position and style the number */
+    content:counter(li);
+    counter-increment:li;
     position:absolute;
     left:-2em;
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
     box-sizing:border-box;
     width:2em;
-    /* Some space between the number and the content in browsers that support
-       generated content but not positioning it (Camino 2 is one example) */
     margin-right:8px;
     padding:4px;
     color:#fff;
-    background: #B72C2C;
     font-weight:bold;
     font-family:"Helvetica Neue", Arial, sans-serif;
     text-align:center;
 }
 li ol,
-li ul {margin-top:6px;}
-ol ol li:last-child {margin-bottom:0;}
-
-ol:empty:after {
-    content: "You do not have any classes!";
-    color: black;
-    display: block;
-    text-align: center;
+li ul {
+    margin-top:6px;
 }
-
+ol ol li:last-child {
+    margin-bottom:0;
+}

@@ -2,7 +2,8 @@ define(function(require) {
     "use strict";
 
     var Q = require('q'),
-        Adapter = require('app/adapters/googlesetupadapter');
+        Adapter = require('app/adapters/googlesetupadapter'),
+        _ = require('lodash');
 
     var instance = null;
 
@@ -13,6 +14,7 @@ define(function(require) {
         }
         this.rootFolderId = null;
         this.workspaceList = [];
+        this.configFileId = null;
         this.classList = [];
         this.adapter = new Adapter();
     }
@@ -27,26 +29,23 @@ define(function(require) {
             return this.adapter.load()
                 .then(function() {
                     return that.loadConfiguration();
-                }).then(function(rootFolderId) {
-                    that.rootFolderId = rootFolderId;
+                }).then(function(responseArr) {
+                    that.rootFolderId = responseArr[0].rootFolderId;
+                    that.configFileId = responseArr[1];
+                    that.config = responseArr[0];
                     return that.getWorkspaceList();
                 });
         };
 
         this.loadConfiguration = function() {
             var that = this;
-            return this.adapter.loadConfiguration().then(function(rootFolderId) {
-                if (rootFolderId != null) {
-                    return rootFolderId;
+            return this.adapter.loadConfiguration().then(function(response) {
+                if (response != null) {
+                    return response;
                 }
                 // first time, create rootFolder and configuration
                 return that.adapter.createRootFolder().then(function(rootFolderId) {
-                    return Q.all([
-                        rootFolderId,
-                        that.adapter.createConfigurationFile(rootFolderId)
-                    ]).spread(function(rootFolderId) {
-                        return rootFolderId;
-                    });
+                    return that.adapter.createConfigurationFile(rootFolderId);
                 });
             });
         };
@@ -60,7 +59,7 @@ define(function(require) {
             }
             return this.adapter.getWorkspaceList(this.rootFolderId).then(function(contents) {
                 that.workspaceList = contents;
-                return that.workspaceList;
+                return [that.workspaceList, that.config ? that.config.joinedClasses : null];
             });
         };
 
@@ -77,30 +76,42 @@ define(function(require) {
                 });
         };
 
-        this.getStudentClassList = function (classID) {
-            var that = this;
-            return this.adapter.getClassList(classID).then(function(contents){
-                that.classList.push(contents);
-                return that.classList;
-            })
-        };
-
         this.addClass = function(classID) {
             var that = this;
             var filePermissionID;
             var userPermissionID;
+            var className;
 
-            return userPermissionID = this.adapter.getUserPermissionID().then(function() {
-                return filePermissionID = that.adapter.getFilePermissionId(classID);
-            }).then(function () {
-                if(userPermissionID != filePermissionID){
-                    return that.getStudentClassList(classID);
-                }
-                else{
-                    console.log("Can't be a student and a TA in the same class");
-                    return null;
-                }
-            });
+            return this.adapter.getUserPermissionID()
+                .then( function (response) {
+                    userPermissionID = response;
+
+                    return that.adapter.getFilePermissionId(classID);
+                }).then( function (response) {
+                    console.log(response);
+                    filePermissionID = response;
+
+                    if(userPermissionID != filePermissionID){
+                        return that.adapter.getWorkspaceName(classID)
+                            .then( function(response) {
+                                return className = response;
+                            }).then( function (){
+                                that.config.joinedClasses.push({
+                                    'id': classID,
+                                    'name': className
+                                });
+                                // Gets rid/doesn't allow for duplicates
+                                that.config.joinedClasses = _.uniqWith(that.config.joinedClasses, _.isEqual);
+                                return that.adapter.updateConfigurationFile(that.config,that.configFileId);
+                            }).then(function() {
+                                return that.config.joinedClasses;
+                            });
+                    }
+                    else{
+                        console.log("Can't be a student and a TA in the same class");
+                        return null;
+                    }
+                });
         };
 
     }).call(WorkspaceManager.prototype);

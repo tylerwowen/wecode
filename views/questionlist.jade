@@ -9,12 +9,14 @@ html
         script(src='//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.min.js', data-main='javascripts/question')
     body
         include questionform
-        h3
-            | Question List
-        table
-            thead
-                tr
-                    th Topic
-                    th Question
-            tbody#questionTableBody
-        button#questionAddButton.btn.btn-success(type='button') Add Question
+        include similarquestions
+        .container#questioncontainer
+            .navbar.navbar-default.navbar-fixed-top
+                a(href="/").navbar-brand WeCode
+            .row#questioncontent
+                .col-md-offset-2.col-md-8#questions
+                    #questionHeader Questions List
+                    br
+                    ol#questionList
+                    br
+                    button#questionAddButton.btn.btn-success(type='button') Add Question

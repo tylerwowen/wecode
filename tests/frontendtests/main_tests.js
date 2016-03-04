@@ -9,11 +9,12 @@ requirejs.config({
         'jqueryui': '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min',
         'angular': '//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min',
         'bootstrap': '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min',
-        'chai': '//chaijs.com/chai',
+        'chai': '//cdnjs.cloudflare.com/ajax/libs/chai/3.5.0/chai.min',
         'mocha': '//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha',
         'q': 'https://cdnjs.cloudflare.com/ajax/libs/q.js/1.4.1/q.min',
         'sinon': '//cdnjs.cloudflare.com/ajax/libs/sinon.js/1.15.4/sinon.min',
-        'chaiaspromised': '//cdn.rawgit.com/domenic/chai-as-promised/master/lib/chai-as-promised'
+        'chaiaspromised': '//cdn.rawgit.com/domenic/chai-as-promised/master/lib/chai-as-promised',
+        'lodash': '//cdn.jsdelivr.net/lodash/3.6.0/lodash'
     },
     shim: {
         'gapi': {
@@ -46,7 +47,6 @@ define(function(require) {
     var chai = require('chai');
     var mocha = require('mocha');
     var chaiAsPromised = require('chaiaspromised');
-    //requirejs(['public/javascripts/webrtc','public/javascripts/draggableObjects', 'public/javascripts/searchwindow', 'bootstrap']);
 
     chai.use(chaiAsPromised);
 
@@ -55,9 +55,10 @@ define(function(require) {
     });
 
     require([
-        '../../tests/frontendtests/gfileadapter.test',
-        '../../tests/frontendtests/gworkspaceadapter.test',
-        '../../tests/frontendtests/gsetupadapter.test'
+        //'../../tests/frontendtests/gfileadapter.test',
+        //'../../tests/frontendtests/gworkspaceadapter.test',
+        //'../../tests/frontendtests/gsetupadapter.test',
+        '../../tests/frontendtests/simquestions.test'
     ], function(require) {
         mocha.run();
     });

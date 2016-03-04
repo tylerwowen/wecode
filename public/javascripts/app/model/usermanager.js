@@ -30,6 +30,7 @@ define(function(require) {
 
         this.auth2 = null;
         this.userName = null;
+        this.email = null;
         this.gToken = null;
         this.refreshInterval = 1800000;
 
@@ -55,6 +56,7 @@ define(function(require) {
         this.onGapiSuccess = function(googleUser) {
             console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
             this.userName = googleUser.getBasicProfile().getName();
+            this.email = googleUser.getBasicProfile().getEmail();
             if (this.authTimer) {
                 window.clearTimeout(this.authTimer);
             }

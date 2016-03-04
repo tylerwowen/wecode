@@ -1,4 +1,4 @@
-#questionFormPage {
+#similarQuestionsPage {
     display: none;
     position: absolute;
     z-index: 999;
@@ -6,9 +6,249 @@
     height: 100vh;
     width: 100vw;
 }
-#questionForm {
+
+#similarQuestionsForm {
+    text-align: center;
+}
+
+tbody {
+    alignment: center;
+}
+
+tbody button {
+    width: 100%;
+    display: inline-block;
+}
+
+table {
+    background-color: white;
+    padding: 10px;
+    width: 100%;
+    list-style: none;
+    border: none;
+}
+
+#simquestionTableBody {
+    background-color: white;
+    padding: 10px;
+}
+
+body {
+    background-color: #404040 !important;
+}
+
+#questionFormPage {
+    display: none;
+}
+
+#page {
+    position: absolute;
+    z-index: 999;
+    background-color: white;
+    height: 100vh;
+    width: 100vw;
+    opacity: .8;
+    text-align: center !important;
+}
+
+#questionForm, #similarQuestionsForm {
     position: absolute;
     z-index: 1000;
-    width: 100vw;
-    height: 100vh;
+    background-color: #4E4D4D;
+    padding: 10px 15px 15px 15px;
+    border-radius: 15px;
+    border-color:#d2d2d2;
+    border-width: 5px;
+    box-shadow:0 1px 0 #cfcfcf;
+    top: 50%;
+    left: 50%;
+    text-align: center !important;
+    transform: translate(-50%, -50%);
 }
+
+#addHeader {
+    text-align: center;
+    padding: 5px;
+    font-weight: bold;
+    color: white;
+}
+
+#questionInput {
+    width: 330px;
+    height: 110px;
+    resize: none;
+}
+
+.btn-group  {
+    text-align: center !important;
+    margin: auto !important;
+    padding-top: 5px;
+}
+
+.navwrapper {
+    margin: 0 !important;
+    padding-top: 120px ;
+    width: 20%;
+    height: 100%;
+    float: left;
+    text-align: center;
+}
+
+#questioncontent {
+    padding-top: 75px;
+    padding-bottom: 0px;
+    height: 100%;
+}
+
+.navbar-default {
+    border: none !important;
+}
+
+#navbar {
+    list-style: none;
+    padding: 0 0 0 0px !important;
+    margin: 0 10px 0 10px !important;
+    height: 100%;
+    width: 100%;
+}
+
+#navbar li {
+    padding: 5px 15px 5px 15px !important;
+    font-size: 16px;
+    color: white;
+    line-height: 40px;
+    border-radius: 5px;
+}
+
+#navbar li:hover {
+    background-color:  #354882;
+}
+
+#navbar li {
+    background-color:  #354882;
+}
+
+#navbar li.selected:hover {
+    background-color: white;
+    color: #404040 !important;
+}
+
+.navwrapper li.selected{
+    background-color: white !important;
+    color: #404040 !important;
+}
+
+#navbar {
+    color: white !important;
+    text-decoration: none;
+    display: block;
+}
+
+#questioncontainer {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100vh;
+    width: 100vm;
+}
+
+.navbar {
+    background:  #354882!important;
+}
+
+.navbar a{
+    color: white !important;
+}
+
+#questionList {
+    list-style: none;
+    min-height: 300px;
+    overflow-y: auto;
+}
+
+#questions {
+    background-color: white;
+    padding: 10px 15px 10px 15px;
+    border-radius: 5px;
+    min-height: 70vh;
+}
+
+#instructor {
+    display: none;
+}
+
+#questionHeader {
+    text-align: center;
+    padding: 5px;
+    display: block;
+    border-radius: 3px;
+    background-color:  #354882;
+    color: white;
+    margin: 5px 0 5px 0;
+}
+
+#questionAddButton {
+    text-align: center !important;
+    margin: 0 auto;
+    display: block;
+    background:  #354882 !important;
+    border:  #354882 !important;
+    bottom: 0;
+}
+
+ol a {
+    display: block;
+    padding:4px 8px;
+    color:#666;
+}
+
+ol a:hover {
+    text-decoration: none;
+    background-color: gray;
+    color: white;
+}
+
+ol {
+    counter-reset:li;
+    margin-left:0;
+    padding-left:0;
+}
+ol > li {
+    position:relative;
+    margin:0 0 6px 2em;
+    list-style:none;
+    background:#f6f6f6;
+}
+
+ol > li:before {
+    content:counter(li);
+    counter-increment:li;
+    position:absolute;
+    left:-2em;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+    width:2em;
+    margin-right:8px;
+    padding:4px;
+    color:#fff;
+    background: #354882;
+    font-weight:bold;
+    font-family:"Helvetica Neue", Arial, sans-serif;
+    text-align:center;
+}
+
+li ol,
+li ul {
+    margin-top:6px;
+}
+ol ol li:last-child {
+    margin-bottom:0;
+}
+
+ol:empty:after {
+    content: "The questions list is currently empty!";
+    color: black;
+    display: block;
+    text-align: center;
+}
+
