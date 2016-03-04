@@ -84,17 +84,17 @@ define(function (require, exports, module) {
                 var updateStudentQuestionList = function(questionObject, index) {
                     var id = Date.now() + index.toString();
                     questionBody.append(
-                        '<li>' +
-                            '<a id="' + id + '" href="/main?' + params + '">' + questionObject.question + '</a>' +
-                        '</li>');
+                        '<li><div class="row" id=' + id + '><div class="col-md-9 question">'+ questionObject.question
+                        + '</div><div class="col-md-3"><div class="name">'
+                        + questionObject.name + '</div></div></div></li>');
                 };
 
                 var updateTAQuestionList = function(questionObject, index) {
                     var id = Date.now() + index.toString();
                     questionBody.append(
                         '<li>' +
-                            '<button id=' + id + '>' + questionObject.question + '</button>' +
-                            '<button id=' + id + 'kick' + '>X</button>' +
+                        '<button id=' + id + '>' + questionObject.question + '</button>' +
+                        '<button id=' + id + 'kick' + '>X</button>' +
                         '</li>');
 
                     var bringStudentIn = function() {
@@ -142,8 +142,7 @@ define(function (require, exports, module) {
                     var id = Date.now() + index.toString();
                     $('#simquestionTableBody').append(
                         '<li>' +
-                            '<button id=' + id + '>' + questionObject.question + '</button>' +
-                        '</li>');
+                        '<div id=' + id + '><div id="studentQuestion">' + questionObject.question + '</div><hr id="separator"><div id="asker">'+ questionObject.name + '</div></div></li>');
 
                     $('#' + id).click(joinQuestion);
                 });
