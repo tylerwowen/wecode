@@ -93,8 +93,9 @@ define(function (require, exports, module) {
                     var id = Date.now() + index.toString();
                     questionBody.append(
                         '<li>' +
-                        '<button id=' + id + '>' + questionObject.question + '</button>' +
-                        '<button id=' + id + 'kick' + '>X</button>' +
+                        '<div class="questionWrapper"><button class="queueQuestion" id=' + id + '>' + questionObject.question + '</button>' +
+                        '<button class="removeQuestion" id=' + id + 'kick' + '>&nbsp;</button>' +
+                        '<div class="author">'+ questionObject.name + '</div></div>' +
                         '</li>');
 
                     var bringStudentIn = function() {
