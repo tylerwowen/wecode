@@ -87,10 +87,6 @@ define(function (require) {
     function addSocketListeners() {
         socket = io('/terminal');
 
-        socket.on('connect', function () {
-
-        });
-
         socket.on('output', function (data) {
             if (!term) {
                 buf += data;
