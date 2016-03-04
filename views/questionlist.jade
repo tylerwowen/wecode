@@ -10,13 +10,8 @@ html
     body
         include questionform
         include similarquestions
+        include joinquestions
+        include questions
         .container#questioncontainer
             .navbar.navbar-default.navbar-fixed-top
                 a(href="/").navbar-brand WeCode
-            .row#questioncontent
-                .col-md-offset-2.col-md-8#questions
-                    #questionHeader Questions List
-                    br
-                    ol#questionList
-                    br
-                    button#questionAddButton.btn.btn-success(type='button') Add Question

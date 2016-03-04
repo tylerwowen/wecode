@@ -1,10 +1,46 @@
+body {
+    background-color: #404040 !important;
+}
+
 #similarQuestionsPage {
     display: none;
-    position: absolute;
-    z-index: 999;
+}
+
+#separator {
+    margin-top: 2px !important;
+    margin-bottom: 5px !important;
+}
+
+#studentQuestion {
+    text-align: left;
+    word-wrap: break-word;
+}
+
+#studentQuestion:before {
+    content: "\"";
+}
+
+#studentQuestion:after {
+    content: "\"";
+}
+
+#asker {
+    text-align: right;
+}
+
+#asker:before {
+    content: "Asked by ";
+    font-style: italic;
+}
+
+#questionInfo {
     background-color: white;
-    height: 100vh;
-    width: 100vw;
+    margin: auto;
+    padding: 10px;
+}
+
+#questionFormPage, #joinQuestionsPage {
+    display: none;
 }
 
 tbody button {
@@ -28,14 +64,6 @@ table {
     text-align: left !important;
 }
 
-body {
-    background-color: #404040 !important;
-}
-
-#questionFormPage {
-    display: none;
-}
-
 #page {
     position: absolute;
     z-index: 999;
@@ -45,7 +73,7 @@ body {
     opacity: .8;
 }
 
-#questionForm, #similarQuestionsForm {
+#questionForm, #similarQuestionsForm, #joinQuestionsForm {
     position: absolute;
     z-index: 1000;
     background-color: #4E4D4D;
@@ -165,6 +193,7 @@ body {
     padding: 10px 15px 10px 15px;
     border-radius: 5px;
     min-height: 70vh;
+    top: 100px;
 }
 
 #instructor {
@@ -202,14 +231,31 @@ ol .question {
     padding-left: 0 !important;
 }
 
-ol a {
+ol .row {
     display: block;
     padding:4px 8px;
     color:#666;
     margin: 0 !important;
 }
 
-ol a:hover {
+ol .row:hover {
+    text-decoration: none;
+    background-color: gray;
+    color: white;
+}
+
+ol button {
+    border: none !important;
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+    padding:4px 8px;
+    background-color: #f6f6f6;
+    color:#666;
+    margin: 0 !important;
+}
+
+ol button:hover {
     text-decoration: none;
     background-color: gray;
     color: white;
