@@ -32,10 +32,13 @@ define(function (require) {
                 return that.contentList;
             });
         };
-
-        this.reload = function() {
-            this.contentList = null;
-            return this.load();
+        // Add and/or remove contents form content list
+        this.update = function() {
+            var that = this;
+            return this.adapter.getContentsList(this.id).then(function(contents) {
+                that.updateContentList(contents);
+                return that.contentList;
+            });
         };
 
         this.makeContentList = function(contents) {
@@ -45,6 +48,22 @@ define(function (require) {
                 list[id] = contents[i];
             }
             return list;
+        };
+
+        this.updateContentList = function(contents) {
+            var list = {};
+            for (var i = 0; i < contents.length; i++) {
+                var id = contents[i].id;
+                list[id] = null;
+                if (!this.contentList.hasOwnProperty(id)) {
+                    this.contentList[id] = contents[i];
+                }
+            }
+            for (var contentId in this.contentList) {
+                if (!list.hasOwnProperty(contentId)) {
+                    delete this.contentList[contentId];
+                }
+            }
         };
 
     }).call(Folder.prototype);

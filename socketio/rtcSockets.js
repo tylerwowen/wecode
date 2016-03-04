@@ -24,6 +24,10 @@ function RtcSockets(sio, socket) {
         sio.sockets.in(room).emit('quit message', data);
     });
 
+    socket.on('fileListChanged', function(room) {
+        sio.to(room).emit('fileListChanged');
+    });
+
     /**
      * Listens to a message from a client to handle peer connections, the different steps
      * it performs are:

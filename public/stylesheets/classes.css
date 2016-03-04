@@ -78,19 +78,19 @@ body {
     border-radius: 5px;
 }
 
-#TAselector {
-    background-color: #921515;
-}
-
-#TAselector:hover {
+#StudentSelector {
     background-color: #B72C2C;
 }
 
-#StudentSelector {
+#StudentSelector:hover {
+    background-color: #921515;
+}
+
+#TAselector {
     background-color: #354882;
 }
 
-#StudentSelector:hover {
+#TAselector:hover {
     background-color: #212C4C;
 }
 
@@ -131,7 +131,8 @@ body {
 
 #TAClassList, #StudentClassList {
     list-style: none;
-    min-height: 300px;
+    min-height: 50vh;
+    max-height: 50vh;
     overflow-y: auto;
 }
 

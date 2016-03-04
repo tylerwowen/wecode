@@ -33,7 +33,7 @@ define(function (require) {
         };
 
         this.refreshContentList = function() {
-            return this.rootFolder.reload();
+            return this.rootFolder.update();
         };
 
         // File operations
@@ -56,6 +56,7 @@ define(function (require) {
 
         this.deleteFile = function(fileId) {
             var that = this;
+            this.unloadFile(fileId);
             return this.adapter.deleteFile(fileId).then(function() {
                 delete that.contentList[fileId];
             });
