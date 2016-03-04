@@ -1,5 +1,5 @@
 Jquery Javascript Function Undefined
-JavaScript Seems to Stop After AJAX Call
+JavaScript Seems not working
 How to call javascript validate function before form submit on an ajax call
 java regular expression split pattern
 json to javascript array and storing for outside ajax call use
@@ -27,7 +27,7 @@ Regular Expression Split on nᵗʰ occurrence
 How do you access the matched groups in a JavaScript regular expression?
 Aspect Oriented / Object Oriented Programming?
 Aspect Oriented Programming vs. Object-Oriented Programming
-How to rebase commits in Git (Github)
+How to rebase in Git (Github)
 JavaScript promise confusion
 Regular expression to match line that doesn't contain a word?
 Implement Gaussian Naive Bayes
@@ -81,3 +81,8 @@ how to sort array of objects in javascript?
 What is the correct JSON content type?
 How can I access an array/object?
 How to create and write a .Txt file in Java?
+How to create a fixed size array of a generic type in Java?
+What is an efficient way to implement singleton pattern in C#?
+What is the issue with this java singleton class implementation?
+Sort array of objects by string property value in JavaScript
+removing commit permanently on local

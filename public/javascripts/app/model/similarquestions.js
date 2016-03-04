@@ -62,6 +62,73 @@ define(function (require) {
             if (callback) callback(similarQuestionsArray);
         };
 
+        this.getSimilarQuestionsTest = function (question, queue, callback) {
+            //console.log("The question is: ", question);
+            var queueTemp = _.map(queue, function (questionObject) {
+                return questionObject.question
+            });
+            var len = queueTemp.length;
+            var array = this.getStringArray(question);
+            array = this.removeDuplicate(array);
+            var counter = 0;
+            var queueQuestion;
+            var rankQuestionsArray = [];
+
+            var wordCountPerCurrentQuestion = 0;
+            var wordCountPerQueueQuestion = 0;
+
+
+            for (var k = 0; k < len; k++) {
+                rankQuestionsArray[k] = [];
+                queueQuestion = that.getStringArray(queueTemp[k]);
+                queueQuestion = that.removeDuplicate(queueQuestion);
+
+                counter = 0;
+                wordCountPerCurrentQuestion = 0;
+
+                array.forEach(function (arrayWordTemp) {
+                    if (!that.isStopWord(arrayWordTemp)) {
+                        arrayWordTemp = stemmer(arrayWordTemp);
+                        arrayWordTemp = that.getSynonym(arrayWordTemp);
+                        wordCountPerCurrentQuestion++;
+                        wordCountPerQueueQuestion = 0;
+
+                        queueQuestion.forEach(function (queueWordTemp) {
+                            if (!that.isStopWord(queueWordTemp)) {
+                                queueWordTemp = stemmer(queueWordTemp);
+                                queueWordTemp = that.getSynonym(queueWordTemp);
+
+                                wordCountPerQueueQuestion++;
+                                var result = arrayWordTemp.localeCompare(queueWordTemp);
+                                if (result == 0) {
+                                    counter++;
+                                }
+                            }
+                        });
+                    }
+                });
+
+                rankQuestionsArray[k][0] = k;
+                rankQuestionsArray[k][1] = counter;
+                rankQuestionsArray[k][2] = wordCountPerCurrentQuestion;
+                rankQuestionsArray[k][3] = counter/wordCountPerCurrentQuestion;
+                rankQuestionsArray[k][4] = wordCountPerQueueQuestion;
+            }
+
+            rankQuestionsArray = rankQuestionsArray.sort(this.sortByCounter);
+            var similarQuestionsArray = [];
+
+            for (k = 0; k < len; k++) {
+                if (rankQuestionsArray[k][3] >= 0.5) {
+                    //console.log(queue[rankQuestionsArray[k][0]], rankQuestionsArray[k][1],
+                    //    rankQuestionsArray[k][2], rankQuestionsArray[k][3]);
+                    similarQuestionsArray.push(queue[rankQuestionsArray[k][0]]);
+                } else {
+                    break;
+                }
+            }
+            if (callback) callback(similarQuestionsArray);
+        };
         this.isStopWord = function (word) {
             return stopwords.includes(word);
         };
@@ -127,6 +194,14 @@ define(function (require) {
             }
             return word;
         };
+
+        this.removeDuplicate = function(array) {
+            var result = [];
+            for(var i =0; i < array.length ; i++) {
+                if(result.indexOf(array[i]) == -1) result.push(array[i]);
+            }
+            return result;
+        }
 
 
     }).call(SimilarQuestions.prototype);

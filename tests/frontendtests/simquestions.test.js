@@ -59,8 +59,8 @@ define(function (require) {
             });
 
             it('Sort by word count example', function (done) {
-                var arr = [[0, 10], [3, 9], [1, 8], [9, 7]];
-                var resArr = [[9, 7], [1, 8], [3, 9], [0, 10]];
+                var arr = [[0, 10, 4, 4], [3, 9, 3, 3], [1, 8, 2, 2], [9, 7, 1, 1]];
+                var resArr = [[9, 7, 1, 1], [1, 8, 2, 2], [3, 9, 3, 3], [0, 10, 4, 4]];
                 arr.sort(function (a, b) {
                     return (a[1] < b[1] ? -1 : (a[1] > b[1] ? 1 : 0));
                 });
@@ -68,34 +68,338 @@ define(function (require) {
                 done();
             });
 
-            it('Calculate similar questions accuracy', function (done) {
-                var queryCount = queriesTemp.length;
+            it('Remove duplicates', function (done) {
+                var arr = ["hello", "may", "hello"];
+                var resArr = ["hello", "may"];
+                expect(similarQuestions.removeDuplicate(arr)).to.deep.equal(resArr);
+                done();
+            });
+
+            var total = 0;
+            it('Calculate similar questions accuracy 1', function (done) {
                 var currentQuestion, simArrayLength;
                 var totalQuestionsCount = 0, score = 0;
 
                 var start = new Date().getTime();
 
-                for (var q = 0; q < queryCount; q++) {
-                    currentQuestion = queriesTemp[q];
-                    similarQuestions.getSimilarQuestions(currentQuestion, queueTemp, function (similarQuestionsArray) {
-                        simArrayLength = similarQuestionsArray.length;
-                        totalQuestionsCount += simArrayLength;
-                        if (simArrayLength != 0) {
-                            for (var i = 0; i < simArrayLength; i++) {
-                                if (similarQuestionsArray[i].question === simTemp[q]) {
-                                    score += (simArrayLength - i);
-                                }
+                currentQuestion = "Return data after ajax call success";
+                similarQuestions.getSimilarQuestionsTest(currentQuestion, queueTemp, function (similarQuestionsArray) {
+                    simArrayLength = similarQuestionsArray.length;
+                    totalQuestionsCount = simArrayLength;
+                    if (simArrayLength != 0) {
+                        for (var i = 0; i < simArrayLength; i++) {
+                            if (similarQuestionsArray[i].question === "How to return data to variable after ajax call success") {
+                                score += 1;
+                            }
+                            if (similarQuestionsArray[i].question === "Jquery Ajax Call Return") {
+                                score += 1;
                             }
                         }
-                    });
-                }
+                    }
+                });
 
+
+                var accuracy = (score / totalQuestionsCount);
+                var recall = (score / 2 );
+                var f_score = 2*accuracy*recall / (accuracy+recall);
                 var end = new Date().getTime();
                 var time = end - start;
                 console.log("Average time for a question: ", time / 10000, "seconds");
-                console.log("Total accuracy: ", (score / totalQuestionsCount * 100).toFixed(2), "%");
+                console.log("f_socre: ", f_score*100 , "%");
+                total +=f_score;
+                console.log("total",total);
                 done();
             });
+
+            it('Calculate similar questions accuracy 2', function (done) {
+                var currentQuestion, simArrayLength;
+                var totalQuestionsCount = 0, score = 0;
+
+                var start = new Date().getTime();
+
+                currentQuestion = "How to change commit message in git?";
+                similarQuestions.getSimilarQuestionsTest(currentQuestion, queueTemp, function (similarQuestionsArray) {
+                    simArrayLength = similarQuestionsArray.length;
+                    totalQuestionsCount = simArrayLength;
+                    if (simArrayLength != 0) {
+                        for (var i = 0; i < simArrayLength; i++) {
+                            if (similarQuestionsArray[i].question === "Edit an incorrect commit message in command line Git"
+                                || similarQuestionsArray[i].question === "How to modify a specified commit in git?"
+                                || similarQuestionsArray[i].question === "Change commit author at one specific commit") {
+                                score += 1;
+                            }
+                        }
+                    }
+                });
+
+                var accuracy = (score / totalQuestionsCount);
+                var recall = (score / 3 );
+                var f_score = 2*accuracy*recall / (accuracy+recall);
+                var end = new Date().getTime();
+                var time = end - start;
+                console.log("Average time for a question: ", time / 10000, "seconds");
+                console.log("f_socre: ", f_score*100 , "%");
+                total +=f_score;
+                console.log("total",total);
+                done();
+            });
+
+            it('Calculate similar questions accuracy 3', function (done) {
+                var currentQuestion, simArrayLength;
+                var totalQuestionsCount = 0, score = 0;
+
+                var start = new Date().getTime();
+
+                currentQuestion = "A simple explanation of Naive Bayes Classification";
+                similarQuestions.getSimilarQuestionsTest(currentQuestion, queueTemp, function (similarQuestionsArray) {
+                    simArrayLength = similarQuestionsArray.length;
+                    totalQuestionsCount = simArrayLength;
+                    if (simArrayLength != 0) {
+                        for (var i = 0; i < simArrayLength; i++) {
+                            if (similarQuestionsArray[i].question === "Gaussian Naive Bayes classification") {
+                                score += 1;
+                            }
+                        }
+                    }
+                });
+
+                var accuracy = (score / totalQuestionsCount);
+                var recall = (score / 1);
+                var f_score = 2*accuracy*recall / (accuracy+recall);
+                var end = new Date().getTime();
+                var time = end - start;
+                console.log("Average time for a question: ", time / 10000, "seconds");
+                console.log("f_socre: ", f_score*100 , "%");
+                total +=f_score;
+                console.log("total",total);
+                done();
+            });
+
+            it('Calculate similar questions accuracy 4', function (done) {
+                var currentQuestion, simArrayLength;
+                var totalQuestionsCount = 0, score = 0;
+
+                var start = new Date().getTime();
+
+                currentQuestion = "How to create a generic array in Java?";
+                similarQuestions.getSimilarQuestionsTest(currentQuestion, queueTemp, function (similarQuestionsArray) {
+                    simArrayLength = similarQuestionsArray.length;
+                    totalQuestionsCount = simArrayLength;
+                    if (simArrayLength != 0) {
+                        for (var i = 0; i < simArrayLength; i++) {
+                            if (similarQuestionsArray[i].question === "How to create a fixed size array of a generic type in Java?"
+                            || similarQuestionsArray[i].question === "How to create an array of a generic object in java") {
+                                score += 1;
+                            }
+                        }
+                    }
+                });
+
+                var accuracy = (score / totalQuestionsCount);
+                var recall = (score / 2);
+                var f_score = 2*accuracy*recall / (accuracy+recall);
+                var end = new Date().getTime();
+                var time = end - start;
+                console.log("Average time for a question: ", time / 10000, "seconds");
+                console.log("f_socre: ", f_score*100 , "%");
+                total +=f_score;
+                console.log("total",total);
+                done();
+            });
+
+            it('Calculate similar questions accuracy 5', function (done) {
+                var currentQuestion, simArrayLength;
+                var totalQuestionsCount = 0, score = 0;
+
+                var start = new Date().getTime();
+
+                currentQuestion = "Replacing all occurrences of a string in JavaScript";
+                similarQuestions.getSimilarQuestionsTest(currentQuestion, queueTemp, function (similarQuestionsArray) {
+                    simArrayLength = similarQuestionsArray.length;
+                    totalQuestionsCount = simArrayLength;
+                    if (simArrayLength != 0) {
+                        for (var i = 0; i < simArrayLength; i++) {
+                            if (similarQuestionsArray[i].question === "How to replace all occurrences of a string in a HTML page using Javascript") {
+                                score += 1;
+                            }
+                        }
+                    }
+                });
+
+                var accuracy = (score / totalQuestionsCount);
+                var recall = (score / 1);
+                var f_score = 2*accuracy*recall / (accuracy+recall);
+                var end = new Date().getTime();
+                var time = end - start;
+                console.log("Average time for a question: ", time / 10000, "seconds");
+                console.log("f_socre: ", f_score*100 , "%");
+                total +=f_score;
+                console.log("total",total);
+                done();
+            });
+
+            it('Calculate similar questions accuracy 6', function (done) {
+                var currentQuestion, simArrayLength;
+                var totalQuestionsCount = 0, score = 0;
+
+                var start = new Date().getTime();
+
+                currentQuestion = "What is an efficient way to implement a singleton pattern in Java?";
+                similarQuestions.getSimilarQuestionsTest(currentQuestion, queueTemp, function (similarQuestionsArray) {
+                    simArrayLength = similarQuestionsArray.length;
+                    totalQuestionsCount = simArrayLength;
+                    if (simArrayLength != 0) {
+                        for (var i = 0; i < simArrayLength; i++) {
+                            if (similarQuestionsArray[i].question === "What is an efficient way to implement singleton pattern in C#?"
+                                || similarQuestionsArray[i].question === "What is the issue with this java singleton class implementation?"
+                                || similarQuestionsArray[i].question === "How to implement a singleton in java") {
+                                score += 1;
+                            }
+                        }
+                    }
+                });
+
+                var accuracy = (score / totalQuestionsCount);
+                var recall = (score / 3);
+                var f_score = 2*accuracy*recall / (accuracy+recall);
+                var end = new Date().getTime();
+                var time = end - start;
+                console.log("Average time for a question: ", time / 10000, "seconds");
+                console.log("f_socre: ", f_score*100 , "%");
+                total +=f_score;
+                console.log("total",total);
+                done();
+            });
+
+            it('Calculate similar questions accuracy 7', function (done) {
+                var currentQuestion, simArrayLength;
+                var totalQuestionsCount = 0, score = 0;
+
+                var start = new Date().getTime();
+
+                currentQuestion = "Regular Expression split with white spaces";
+                similarQuestions.getSimilarQuestionsTest(currentQuestion, queueTemp, function (similarQuestionsArray) {
+                    simArrayLength = similarQuestionsArray.length;
+                    totalQuestionsCount = simArrayLength;
+                    if (simArrayLength != 0) {
+                        for (var i = 0; i < simArrayLength; i++) {
+                            if (similarQuestionsArray[i].question === "How to split regular expression with spaces"
+                                || similarQuestionsArray[i].question === "Regular Expression Split on nᵗʰ occurrence"
+                                || similarQuestionsArray[i].question === "java regular expression split pattern"
+                                || similarQuestionsArray[i].question === "Regular expression split") {
+                                score += 1;
+                            }
+                        }
+                    }
+                });
+
+                var accuracy = (score / totalQuestionsCount);
+                var recall = (score / 4);
+                var f_score = 2*accuracy*recall / (accuracy+recall);
+                var end = new Date().getTime();
+                var time = end - start;
+                console.log("Average time for a question: ", time / 10000, "seconds");
+                console.log("f_socre: ", f_score*100 , "%");
+                total +=f_score;
+                console.log("total",total);
+                done();
+            });
+
+            it('Calculate similar questions accuracy 8', function (done) {
+                var currentQuestion, simArrayLength;
+                var totalQuestionsCount = 0, score = 0;
+
+                var start = new Date().getTime();
+
+                currentQuestion = "Sort array of objects by string property value in JavaScript";
+                similarQuestions.getSimilarQuestionsTest(currentQuestion, queueTemp, function (similarQuestionsArray) {
+                    simArrayLength = similarQuestionsArray.length;
+                    totalQuestionsCount = simArrayLength;
+                    if (simArrayLength != 0) {
+                        for (var i = 0; i < simArrayLength; i++) {
+                            if (similarQuestionsArray[i].question === "Sort array of objects by string property value in JavaScript"
+                                || similarQuestionsArray[i].question === "how to sort array of objects in javascript?") {
+                                score += 1;
+                            }
+                        }
+                    }
+                });
+
+                var accuracy = (score / totalQuestionsCount);
+                var recall = (score / 2);
+                var f_score = 2*accuracy*recall / (accuracy+recall);
+                var end = new Date().getTime();
+                var time = end - start;
+                console.log("Average time for a question: ", time / 10000, "seconds");
+                console.log("f_socre: ", f_score*100 , "%");
+                total +=f_score;
+                console.log("total",total);
+                done();
+            });
+
+            it('Calculate similar questions accuracy 9', function (done) {
+                var currentQuestion, simArrayLength;
+                var totalQuestionsCount = 0, score = 0;
+
+                var start = new Date().getTime();
+
+                currentQuestion = "How to remove to previous commit";
+                similarQuestions.getSimilarQuestionsTest(currentQuestion, queueTemp, function (similarQuestionsArray) {
+                    simArrayLength = similarQuestionsArray.length;
+                    totalQuestionsCount = simArrayLength;
+                    if (simArrayLength != 0) {
+                        for (var i = 0; i < simArrayLength; i++) {
+                            if (similarQuestionsArray[i].question === "Remove or revert previous commit in master from local"
+                                || similarQuestionsArray[i].question === "removing commit permanently on local") {
+                                score += 1;
+                            }
+                        }
+                    }
+                });
+
+                var accuracy = (score / totalQuestionsCount);
+                var recall = (score / 2);
+                var f_score = 2*accuracy*recall / (accuracy+recall);
+                var end = new Date().getTime();
+                var time = end - start;
+                console.log("Average time for a question: ", time / 10000, "seconds");
+                console.log("f_socre: ", f_score*100 , "%");
+                total +=f_score;
+                console.log("total",total);
+                done();
+            });
+
+            it('Calculate similar questions accuracy 10', function (done) {
+                var currentQuestion, simArrayLength;
+                var totalQuestionsCount = 0, score = 0;
+
+                var start = new Date().getTime();
+
+                currentQuestion = "What is a Null Pointer Exception, and how do I fix it?";
+                similarQuestions.getSimilarQuestionsTest(currentQuestion, queueTemp, function (similarQuestionsArray) {
+                    simArrayLength = similarQuestionsArray.length;
+                    totalQuestionsCount = simArrayLength;
+                    if (simArrayLength != 0) {
+                        for (var i = 0; i < simArrayLength; i++) {
+                            if (similarQuestionsArray[i].question === "How to fix null pointer exception?") {
+                                score += 1;
+                            }
+                        }
+                    }
+                });
+
+                var accuracy = (score / totalQuestionsCount);
+                var recall = (score / 1);
+                var f_score = 2*accuracy*recall / (accuracy+recall);
+                var end = new Date().getTime();
+                var time = end - start;
+                console.log("Average time for a question: ", time / 10000, "seconds");
+                console.log("f_socre: ", f_score*100 , "%");
+                total +=f_score;
+                console.log("total",total, (total*10).toFixed(2));
+                done();
+            });
+
         });
     });
 
