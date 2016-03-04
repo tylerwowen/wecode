@@ -84,9 +84,24 @@ define(function (require, exports, module) {
                 var updateStudentQuestionList = function(questionObject, index) {
                     var id = Date.now() + index.toString();
                     questionBody.append(
-                        '<li><div class="row"><div class="col-md-9 question">'+ questionObject.question
+                        '<li><div class="row" id=' + id + '><div class="col-md-9 question">'+ questionObject.question
                         + '</div><div class="col-md-3"><div class="name">'
                         + questionObject.name + '</div></div></div></li>');
+
+                    $('#joinReturn').click(function(){
+                        $('#joinQuestionsPage').hide();
+                    });
+
+                    $('#joinButton').click(function(){
+                        socket.emit('joinQuestions', questionObject.question, questionObject, that.classId);
+                        $('#joinQuestionsPage').hide();
+                    });
+
+                    $('#' + id).click(function() {
+                        $('#asker').text(questionObject.name);
+                        $('#studentQuestion').text(questionObject.question);
+                        $('#joinQuestionsPage').show();
+                    });
                 };
 
                 var updateTAQuestionList = function(questionObject, index) {
@@ -142,7 +157,7 @@ define(function (require, exports, module) {
                     var id = Date.now() + index.toString();
                     $('#simquestionTableBody').append(
                         '<li>' +
-                            '<a id=' + id + '>' + questionObject.question + '</a>' +
+                            '<button id=' + id + '>' + questionObject.question + '</button>' +
                         '</li>');
 
                     $('#' + id).click(joinQuestion);
