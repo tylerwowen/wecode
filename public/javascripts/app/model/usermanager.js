@@ -4,7 +4,7 @@ define(function(require) {
     var Q = require('q'),
         gapi = require('gapi');
 
-    var clientId = '315862064112-anadjteqedc54o1tkhg493e0jqntlfve.apps.googleusercontent.com';
+    var clientId = '7684475894-597hjdpnogjjo06eno4927ks706io0ae.apps.googleusercontent.com';
     var scopes =
         'https://www.googleapis.com/auth/drive.install ' +
         'https://www.googleapis.com/auth/drive.file ' +
